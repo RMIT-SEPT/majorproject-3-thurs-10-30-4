@@ -13,7 +13,7 @@
 
 * Github repository : https://github.com/RMIT-SEPT/majorproject-3-thurs-10-30-4
 * Trello Workspace : https://trello.com/b/Ek4mnzsS/sept-assignment
-
+* Scrum Documentation/Files: Available under the files tab in our MS Teams team
 
 ## Code documentation
 
