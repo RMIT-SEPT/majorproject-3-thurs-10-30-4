@@ -1,18 +1,18 @@
 # RMIT SEPT 2020 Major Project
 
-# Group 00
+# Group THU 10:30 4
 
 ## Members
-* SURNAME, GivenName (sXXXX)
-* SURNAME, GivenName (sXXXX)
-* SURNAME, GivenName (sXXXX)
-* SURNAME, GivenName (sXXXX)
-* SURNAME, GivenName (sXXXX)
+* Davoli, Luke (s3782747)
+* Babij, Ryan (s3589028)
+* Abera, Matthies (s3779748)
+* Sorrenti, Jordan (s3782534)
+* Steinman, Hollie (s3784783)
 
 ## Records
 
-* Github repository : https://github.com/RMIT-SEPT/MajorProject/Groupx
-* ClickUp Workspace : https://app.clickup.com/xxxx/yyyy
+* Github repository : https://github.com/RMIT-SEPT/majorproject-3-thurs-10-30-4
+* Trello Workspace : https://trello.com/b/Ek4mnzsS/sept-assignment
 
 
 ## Code documentation
