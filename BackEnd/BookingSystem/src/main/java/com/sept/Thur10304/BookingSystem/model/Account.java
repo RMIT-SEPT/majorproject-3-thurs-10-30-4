@@ -1,4 +1,4 @@
-package com.sept.Thur10304.BookingSystem;
+package com.sept.Thur10304.BookingSystem.model;
 
 import javax.persistence.*;
 // import javax.validation.constraints.NotBlank;
@@ -8,6 +8,9 @@ import java.util.Date;
 
 @Entity
 public class Account {
+
+    // Still needs more variables (email,etc)
+    // Also needs validation
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
