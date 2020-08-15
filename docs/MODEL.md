@@ -12,6 +12,7 @@ Field Name|Data Type|key-type|Description|Validation
 serviceId|Long|Primary key|Auto-generated id for the service|Auto-generated
 adminId|Long|Foreign key|Id for the admin that owns this service|admin exists
 serviceName|String|none|Name for the service|Name isn't already in use by another service (case-insensitive)
+serviceDescription|String|none|Description of the service|Not blank/empty
 
 # ServiceTimeSlot
 Field Name|Data Type|key-type|Description|Validation

@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
  */
 @Entity
 public class Service_ {
+    //TODO validation
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +19,8 @@ public class Service_ {
     // private Long adminId;
 
     private String serviceName;
+
+    private String serviceDescription;
 
     public Long getServiceId() {
         return this.serviceId;
@@ -35,4 +38,12 @@ public class Service_ {
         this.serviceName = serviceName;
     }
 
+    
+    public String getServiceDescription() {
+        return this.serviceDescription;
+    }
+
+    public void setServiceDescription(String serviceDescription) {
+        this.serviceDescription = serviceDescription;
+    }
 }
