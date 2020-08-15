@@ -23,7 +23,7 @@ date|Date|none|Date that the time slot is on|Date is at least one hour into the 
 startTime|Time|none|Time that the slot starts, in format hh:mm|Start time is before end time, hh is within 0-23, mm is within 0-59
 endTime|Time|none|Time that the slot ends, in format hh:mm|End time is after start time, hh is within 0-23, mm is within 0-59
 
-#Booking
+# Booking
 Field Name|Data Type|key-type|Description|Validation
 ---|---|---|---|---
 bookingId|Long|Primary key|auto-generated key for the booking|auto-generated
