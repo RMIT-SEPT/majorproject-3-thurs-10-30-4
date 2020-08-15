@@ -3,8 +3,12 @@ package com.sept.Thur10304.BookingSystem.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
+/**
+ * Entity for storing information about services offered on the site
+ * Different the services contained in the services package
+ */
 @Entity
-public class Service {
+public class Service_ {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
