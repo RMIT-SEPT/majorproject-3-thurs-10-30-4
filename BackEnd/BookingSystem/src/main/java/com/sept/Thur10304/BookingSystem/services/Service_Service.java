@@ -20,4 +20,10 @@ public class Service_Service {
         //check that service is valid
         return serviceRepository.save(service);
     }
+
+    public Iterable<Service_> getAllServices(){
+
+        Iterable<Service_> services = serviceRepository.findAll();
+        return services;
+    }
 }

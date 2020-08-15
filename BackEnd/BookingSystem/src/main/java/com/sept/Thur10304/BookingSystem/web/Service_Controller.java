@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,5 +32,12 @@ public class Service_Controller {
         }
         Service_ service1 = serviceService.saveOrUpdateService(service);
         return new ResponseEntity<Service_>(service1, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/getall")
+    public ResponseEntity<?> getAllServices() {
+
+        Iterable<Service_> services = serviceService.getAllServices();
+        return new ResponseEntity<Iterable<Service_>>(services, HttpStatus.CREATED);
     }
 }
