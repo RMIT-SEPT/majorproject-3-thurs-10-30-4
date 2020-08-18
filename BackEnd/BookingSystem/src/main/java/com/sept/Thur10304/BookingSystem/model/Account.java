@@ -25,7 +25,7 @@ public class Account {
     @NotBlank(message = "Email is required.")
     @Size(min=3, max=320, message = "Email must be between 3-320 characters.")
     private String email;
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateCreated;
 
 
