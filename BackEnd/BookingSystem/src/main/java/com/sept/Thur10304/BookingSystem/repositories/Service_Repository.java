@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface Service_Repository extends CrudRepository<Service_, Long> {
-    
 }

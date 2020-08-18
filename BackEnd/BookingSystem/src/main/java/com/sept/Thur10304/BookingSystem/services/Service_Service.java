@@ -4,6 +4,7 @@ import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 /**
  * The service for managing services.
@@ -25,5 +26,24 @@ public class Service_Service {
 
         Iterable<Service_> services = serviceRepository.findAll();
         return services;
+    }
+
+    public Service_ getServiceById(String stringId){
+        try {
+            // Tries parsing the id into a long
+            Long longId = Long.parseLong(stringId);
+            // Tries to find a service with the inputted id
+            Optional<Service_> service = serviceRepository.findById(longId);
+            // If a service was found, then return that service
+            if (service.isPresent()){
+                return service.get();
+            // If no service was found, then return null
+            } else {
+                return null;
+            }
+        // If there was an error parsing the long, return null
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }
