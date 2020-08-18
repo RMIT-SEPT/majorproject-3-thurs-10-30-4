@@ -15,10 +15,10 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String username;
-
     private String password;
+    private String email;
+
 
 
     public Long getId() {
@@ -26,6 +26,8 @@ public class Account {
     }
 
     public void setId(Long id) {
+
+        // validation
         this.id = id;
     }
 
@@ -34,6 +36,8 @@ public class Account {
     }
 
     public void setUsername(String username) {
+
+        // validation
         this.username = username;
     }
 
@@ -42,8 +46,22 @@ public class Account {
     }
 
     public void setPassword(String password) {
+        
+        // validation
         this.password = password;
     }
     
-    
+    public String getEmail()
+    {
+        return this.email;
+    }
+
+    public void setEmail(String email)
+    {
+        
+        // validation
+        this.email = email;
+    }
+
+
 }
