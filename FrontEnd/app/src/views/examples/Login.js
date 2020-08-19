@@ -94,7 +94,7 @@ class Login extends React.Component {
           <Row className="mt-3">
             <Col xs="6">
               <Link className="text-light">
-                <small>Create new account</small>
+                <small>Forgot password?</small>
               </Link>
             </Col>
             <Col className="text-right" xs="6">

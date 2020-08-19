@@ -38,7 +38,7 @@ class Register extends React.Component {
     return (
       <>
         <Col lg="6" md="8">
-          <Card className="bg-secondary shadow-2 border-0">
+          <Card className="bg-secondary shadow border-0">
             <CardHeader className="bg-transparent pb-5">
               <div className="text-muted text-center mt-2 mb-4">
                 <small>Sign up with</small>
