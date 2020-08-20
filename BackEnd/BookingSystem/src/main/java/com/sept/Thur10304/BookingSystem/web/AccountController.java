@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.validation.FieldError; // validation errors
 
+import org.springframework.web.bind.annotation.GetMapping;
+
 import javax.validation.Valid; // field validation
 import java.util.List;
 import java.util.Map; // error map.
@@ -37,5 +39,12 @@ public class AccountController {
         }
         Account account1 = accountService.saveOrUpdateAccount(account);
         return new ResponseEntity<Account>(account, HttpStatus.CREATED);
+    }
+
+
+    @GetMapping("")
+    public List<Account> allUsers() {
+
+        return accountService.findAll();
     }
 }
