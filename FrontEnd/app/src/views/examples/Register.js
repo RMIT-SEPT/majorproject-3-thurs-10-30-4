@@ -55,9 +55,11 @@ class Register extends React.Component {
           <Card className="bg-secondary shadow-2 border-0">
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center text-muted mb-4">
-                <small>Or sign up with credentials</small>
+                <small>Sign up with credentials</small>
               </div>
               <Form role="form">
+
+                {/* FIRST NAME INPUT */}
                 <FormGroup>
                   <InputGroup className="input-group-alternative mb-3">
                     <InputGroupAddon addonType="prepend">
@@ -65,9 +67,23 @@ class Register extends React.Component {
                         <i className="ni ni-hat-3" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Name" type="text" />
+                    <Input placeholder="First Name" type="text" />
                   </InputGroup>
                 </FormGroup>
+
+                {/* LAST NAME INPUT */}
+                <FormGroup>
+                  <InputGroup className="input-group-alternative mb-3">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-hat-3" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="Last Name" type="text" />
+                  </InputGroup>
+                </FormGroup>
+
+                {/* EMAIL INPUT */}
                 <FormGroup>
                   <InputGroup className="input-group-alternative mb-3">
                     <InputGroupAddon addonType="prepend">
@@ -78,6 +94,8 @@ class Register extends React.Component {
                     <Input placeholder="Email" type="email" autoComplete="new-email"/>
                   </InputGroup>
                 </FormGroup>
+
+                {/* PASSWORD INPUT */}
                 <FormGroup>
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
@@ -88,36 +106,21 @@ class Register extends React.Component {
                     <Input placeholder="Password" type="password" autoComplete="new-password"/>
                   </InputGroup>
                 </FormGroup>
-                <div className="text-muted font-italic">
-                  <small>
-                    password strength:{" "}
-                    <span className="text-success font-weight-700">strong</span>
-                  </small>
-                </div>
-                <Row className="my-4">
-                  <Col xs="12">
-                    <div className="custom-control custom-control-alternative custom-checkbox">
-                      <input
-                        className="custom-control-input"
-                        id="customCheckRegister"
-                        type="checkbox"
-                      />
-                      <label
-                        className="custom-control-label"
-                        htmlFor="customCheckRegister"
-                      >
-                        <span className="text-muted">
-                          I agree with the{" "}
-                          <a href="#pablo" onClick={e => e.preventDefault()}>
-                            Privacy Policy
-                          </a>
-                        </span>
-                      </label>
-                    </div>
-                  </Col>
-                </Row>
-                <div className="text-center">
-                  {/* Redirection button to dashboard after registration */}
+
+                {/* RE-INPUT PASSWORD INPUT */}
+                <FormGroup>
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-lock-circle-open" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="Re-Type Password" type="password" autoComplete="new-password"/>
+                  </InputGroup>
+                </FormGroup>
+
+                {/* Redirection button to dashboard after registration */}
+                <div className="text-center">  
                   {this.renderRedirect()}
                   <Button className="mt-4" color="primary" type="button" onClick={this.setRedirect}>
                     Create account
