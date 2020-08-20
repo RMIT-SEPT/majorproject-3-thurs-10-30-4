@@ -5,10 +5,24 @@ import com.sept.Thur10304.BookingSystem.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AccountService {
     @Autowired
     private AccountRepository AccountRepository;
+
+
+    public List<Account> findAll() {
+
+        Iterable<Account> it = AccountRepository.findAll();
+
+        ArrayList<Account> users = new ArrayList<Account>();
+        it.forEach(e -> users.add(e));
+
+        return users;
+    }
 
 
     public Account saveOrUpdateAccount(Account Account) {
