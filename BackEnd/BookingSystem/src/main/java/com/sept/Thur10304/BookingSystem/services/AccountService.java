@@ -34,4 +34,14 @@ public class AccountService {
     public String test() {
         return "THIS IS A TEST OF BACKEND OUTPUT.<br/><br/><marquee>AYYY</marquee>";
     }
+
+    public List<String> findAllEmails() {
+
+        Iterable<Account> it = AccountRepository.findAll();
+
+        ArrayList<String> emails = new ArrayList<String>();
+        it.forEach(e -> emails.add(e.getEmail()));
+
+        return emails;
+    }
 }

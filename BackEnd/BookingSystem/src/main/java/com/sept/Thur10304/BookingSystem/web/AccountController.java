@@ -57,4 +57,10 @@ public class AccountController {
         return accountService.test();
     }
 
+    @GetMapping("emails")
+    public List<String> allEmails() {
+
+        return accountService.findAllEmails();
+    }
+
 }
