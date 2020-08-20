@@ -4,6 +4,9 @@ import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,8 +20,23 @@ public class Service_Service {
 
     public Service_ saveOrUpdateService(Service_ service) {
 
-        // TODO
+        // TODO add way for same service to be updated, currently would return error for attempt to update with same service name
+
         //check that service is valid
+
+        // Get all services that have the same name
+        Iterator<Service_> servicesIterator = serviceRepository.findByServiceNameIgnoreCase(service.getServiceName()).iterator();
+        // While there are services that have the same name
+        while(servicesIterator.hasNext()){
+            // Gets the next service and checks if it has the same name
+            // (Would later add check to see if service is being updated here)
+            Service_ currService = servicesIterator.next();
+            if (service.getServiceName().toUpperCase().equals(currService.getServiceName().toUpperCase())){
+                return null;
+            }
+        }
+
+        // Save into repo
         return serviceRepository.save(service);
     }
 

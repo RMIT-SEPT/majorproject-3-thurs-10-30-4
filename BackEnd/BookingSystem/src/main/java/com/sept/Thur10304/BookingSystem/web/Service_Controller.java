@@ -33,7 +33,11 @@ public class Service_Controller {
             return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
         }
         Service_ service1 = serviceService.saveOrUpdateService(service);
-        return new ResponseEntity<Service_>(service1, HttpStatus.CREATED);
+        if (service1 != null){
+            return new ResponseEntity<Service_>(service1, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<String>("Service name already exists", HttpStatus.BAD_REQUEST);
+        }
     }
 
     // Returns all registered services
