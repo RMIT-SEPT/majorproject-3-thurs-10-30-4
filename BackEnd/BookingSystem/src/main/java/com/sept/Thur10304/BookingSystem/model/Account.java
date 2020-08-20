@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.*;
 import ch.qos.logback.core.joran.conditional.ElseAction;
 
 import java.util.Date; // for registration date
+import javax.validation.constraints.Pattern; // regex validation
 
 @Entity
 public class Account {
@@ -27,6 +28,8 @@ public class Account {
     private String password;
     @NotBlank(message = "Email is required.")
     @Size(min=3, max=320, message = "Email must be between 3-320 characters.")
+    // basic email regex but should be fine for project scope
+    @Pattern(regexp="^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$", message="Email format is not valid")
     private String email;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateCreated;
