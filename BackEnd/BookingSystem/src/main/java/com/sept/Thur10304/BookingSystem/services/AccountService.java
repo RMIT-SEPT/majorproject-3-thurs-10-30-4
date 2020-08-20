@@ -30,4 +30,8 @@ public class AccountService {
         //logic
         return AccountRepository.save(Account);
     }
+
+    public String test() {
+        return "THIS IS A TEST OF BACKEND OUTPUT.<br/><br/><marquee>AYYY</marquee>";
+    }
 }
