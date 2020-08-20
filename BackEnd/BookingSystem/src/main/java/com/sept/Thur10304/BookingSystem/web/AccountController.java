@@ -37,6 +37,14 @@ public class AccountController {
 
             //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
         }
+
+        if ( allEmails().contains(account.getEmail()))
+        {
+            // return duplicate email error message
+            FieldError fe = new FieldError("", "", null, false, null, null, "Email already registered");
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        }
+
         Account account1 = accountService.saveOrUpdateAccount(account);
         return new ResponseEntity<Account>(account, HttpStatus.CREATED);
     }
