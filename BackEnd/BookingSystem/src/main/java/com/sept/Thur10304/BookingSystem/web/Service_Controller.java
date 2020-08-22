@@ -30,7 +30,7 @@ public class Service_Controller {
     @PostMapping("/save")
     public ResponseEntity<?> createNewService(@Valid @RequestBody Service_ service, BindingResult result) {
         if (result.hasErrors()){
-            return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("Invalid Service Object", HttpStatus.BAD_REQUEST);
         }
         Service_ service1 = serviceService.saveOrUpdateService(service);
         if (service1 != null){
