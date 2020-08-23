@@ -18,6 +18,9 @@
 import ServicesDashboard from "views/ServicesDashboard.js";
 import Profile from "views/examples/Profile.js";
 import Login from "views/examples/Login.js";
+import Tables from "views/examples/Tables.js";
+import Icons from "views/examples/Icons.js";
+import About from "views/About.js";
 import Register from "views/examples/Register.js";
 
 
@@ -49,6 +52,12 @@ var routes = [
     icon: "ni ni-circle-08 text-pink",
     component: Register,
     layout: "/auth"
+  },
+  {
+    path: "/about-us",
+    name: "About Us",
+    icon: "ni ni-circle-08 text-pink",
+    component: About
   }
 ];
 export default routes;
