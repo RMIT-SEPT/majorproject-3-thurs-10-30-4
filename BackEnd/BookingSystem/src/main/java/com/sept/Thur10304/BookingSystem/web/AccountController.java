@@ -71,4 +71,31 @@ public class AccountController {
         return accountService.findAllEmails();
     }
 
+    // to login, make sure the account details match up with email and password.
+    // I assume we can just construct an account object with nulls for everything except email and password
+    // to start, I will just check password.
+    @PostMapping("Login")
+    public ResponseEntity<?> loginAccount(@Valid @RequestBody Account account, BindingResult result) {
+        if (result.hasErrors()){
+            //Map <String, String> errorMap = new HashMap<>();
+
+            //for (FieldError error : result.getFieldErrors()){
+                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            //}
+
+            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
+        }
+
+        if ( allEmails().contains(account.getEmail())==false)
+        {
+            // return duplicate email error message
+            FieldError fe = new FieldError("", "", null, false, null, null, "Invalid login credentials");
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        }
+        //Account account1 = accountService.saveOrUpdateAccount(account);
+
+        // login success goes here
+        return new ResponseEntity<Account>(account, HttpStatus.CREATED);
+    }
+
 }
