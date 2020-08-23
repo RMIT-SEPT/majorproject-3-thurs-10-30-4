@@ -19,15 +19,12 @@ import React from "react";
 
 // reactstrap components
 import { 
-    Button,
-    Card, 
-    CardBody,
-    CardTitle,
-    CardText, 
     Container, 
     Row, 
     Col 
 } from "reactstrap";
+
+import ServiceCard from "../Service/ServiceCard";
 
 class ServicesHeader extends React.Component {
   render() {
@@ -50,119 +47,28 @@ class ServicesHeader extends React.Component {
             </Container>
 
             {/* CONTAINS CARDS FOR SERVICES*/}
+            {/* PLACEHOLDERS FOR NOW */}
             <Container>
                 <div>
                     <Row>
                         <Col lg="6" xl="3">
-                            {/* SERVICE #1 */}
-                            <Card className="card-stats mb-4 mb-xl-0">
-                                {/* 
-                                CARD IMG HERE 
-
-                                <CardImg
-                                alt="..."
-                                src={require("assets/img/theme/img-1-1000x900.jpg")}
-                                top
-                                />
-                                */}
-                                <CardBody>
-                                <CardTitle>SERVICE NAME</CardTitle>
-                                <CardText>
-                                    INFORMATION ABOUT SERVICE
-                                </CardText>
-                                <Button
-                                    color="primary"
-                                    href="#pablo"
-                                    onClick={e => e.preventDefault()}
-                                >
-                                    LINK TO SERVICE PAGE
-                                </Button>
-                                </CardBody>
-                            </Card>
+                            {/* SERVICE #1? */}
+                            <ServiceCard/>
                         </Col>
                         
                         <Col lg="6" xl="3">
-                            {/* SERVICE #2 */}
-                            <Card className="card-stats mb-4 mb-xl-0">
-                                {/* 
-                                CARD IMG HERE 
-
-                                <CardImg
-                                alt="..."
-                                src={require("assets/img/theme/img-1-1000x900.jpg")}
-                                top
-                                />
-                                */}
-                                <CardBody>
-                                <CardTitle>SERVICE NAME</CardTitle>
-                                <CardText>
-                                    INFORMATION ABOUT SERVICE
-                                </CardText>
-                                <Button
-                                    color="primary"
-                                    href="#pablo"
-                                    onClick={e => e.preventDefault()}
-                                >
-                                    LINK TO SERVICE PAGE
-                                </Button>
-                                </CardBody>
-                            </Card>
+                            {/* SERVICE #2? */}
+                            <ServiceCard/>
                         </Col>
 
                         <Col lg="6" xl="3">
-                            {/* SERVICE #3 */}
-                            <Card className="card-stats mb-4 mb-xl-0">
-                                {/* 
-                                CARD IMG HERE 
-
-                                <CardImg
-                                alt="..."
-                                src={require("assets/img/theme/img-1-1000x900.jpg")}
-                                top
-                                />
-                                */}
-                                <CardBody>
-                                <CardTitle>SERVICE NAME</CardTitle>
-                                <CardText>
-                                    INFORMATION ABOUT SERVICE
-                                </CardText>
-                                <Button
-                                    color="primary"
-                                    href="#pablo"
-                                    onClick={e => e.preventDefault()}
-                                >
-                                    LINK TO SERVICE PAGE
-                                </Button>
-                                </CardBody>
-                            </Card>
+                            {/* SERVICE #3? */}
+                            <ServiceCard/>
                         </Col>
                         
                         <Col lg="6" xl="3">
-                            {/* SERVICE #4 */}
-                            <Card className="card-stats mb-4 mb-xl-0">
-                                {/* 
-                                CARD IMG HERE 
-
-                                <CardImg
-                                alt="..."
-                                src={require("assets/img/theme/img-1-1000x900.jpg")}
-                                top
-                                />
-                                */}
-                                <CardBody>
-                                <CardTitle>SERVICE NAME</CardTitle>
-                                <CardText>
-                                    INFORMATION ABOUT SERVICE
-                                </CardText>
-                                <Button
-                                    color="primary"
-                                    href="#pablo"
-                                    onClick={e => e.preventDefault()}
-                                >
-                                    LINK TO SERVICE PAGE
-                                </Button>
-                                </CardBody>
-                            </Card>
+                            {/* SERVICE #4? */}
+                            <ServiceCard/>
                         </Col>
                     </Row>
                 </div>

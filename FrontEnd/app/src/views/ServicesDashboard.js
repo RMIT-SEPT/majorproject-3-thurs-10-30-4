@@ -52,8 +52,6 @@ class ServicesDashboard extends React.Component {
     return (
       <>
         <ServicesHeader />
-        {/* Page content */}
-        
       </>
     );
   }
