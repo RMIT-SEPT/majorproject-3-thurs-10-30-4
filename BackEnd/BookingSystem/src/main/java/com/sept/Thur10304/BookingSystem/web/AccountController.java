@@ -73,7 +73,7 @@ public class AccountController {
 
     // to login, make sure the account details match up with email and password.
     // I assume we can just construct an account object with nulls for everything except email and password
-    // to start, I will just check password.
+    // Todo: Add password check
     @PostMapping("Login")
     public ResponseEntity<?> loginAccount(@Valid @RequestBody Account account, BindingResult result) {
         if (result.hasErrors()){
@@ -86,16 +86,30 @@ public class AccountController {
             //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
         }
 
+        // if the provided email isn't in the database
         if ( allEmails().contains(account.getEmail())==false)
         {
-            // return duplicate email error message
-            FieldError fe = new FieldError("", "", null, false, null, null, "Invalid login credentials");
-            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+            // return failed login message
+            FieldError fe = new FieldError("", "", null, false, null, null, "Invalid login credentials (Debug: USER)");
+            // HTTP Status for failed login is 401 Unauthorized
+            return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
         }
-        //Account account1 = accountService.saveOrUpdateAccount(account);
+        // email match, now check password
+        else if (account.getPassword().equals("TEST123"))
+        {
+            // login success goes here
+            // presumably we send an authentication token or do a redirect
+            //Account account1 = accountService.saveOrUpdateAccount(account);
+            // HTTP Status for successful login should be 200 OK
+            return new ResponseEntity<Account>(account, HttpStatus.OK);
+        }
 
-        // login success goes here
-        return new ResponseEntity<Account>(account, HttpStatus.CREATED);
+        // password does not match
+        // return failed login message
+        FieldError fe = new FieldError("", "", null, false, null, null, "Invalid login credentials (Debug: PASSWORD)");
+        // HTTP Status for failed login is 401 Unauthorized
+        return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+
     }
 
 }
