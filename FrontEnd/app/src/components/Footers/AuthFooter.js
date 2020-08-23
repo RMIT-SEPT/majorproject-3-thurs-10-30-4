@@ -21,6 +21,8 @@ import React from "react";
 // reactstrap components
 import { NavItem, NavLink, Nav, Container, Row, Col } from "reactstrap";
 
+import { Link } from "react-router-dom";
+
 class Login extends React.Component {
   render() {
     return (
@@ -37,9 +39,8 @@ class Login extends React.Component {
                 <Nav className="nav-footer justify-content-center justify-content-xl-end">
                   <NavItem>
                     <NavLink
-                      href="https://www.creative-tim.com/presentation?ref=adr-auth-footer"
-                      target="_blank"
-                    >
+                      to="/about-us"
+                      tag={Link}>
                       About Us
                     </NavLink>
                   </NavItem>

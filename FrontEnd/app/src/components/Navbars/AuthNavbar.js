@@ -39,9 +39,9 @@ class AdminNavbar extends React.Component {
           expand="md"
         >
           <Container className="px-4">
-            <h1 className="text-white">
-              AGME
-            </h1>
+            <NavbarBrand to="/" tag={Link}>
+              <h1 className="text-white">AGME</h1>
+            </NavbarBrand>
             <button className="navbar-toggler" id="navbar-collapse-main">
               <span className="navbar-toggler-icon" />
             </button>
