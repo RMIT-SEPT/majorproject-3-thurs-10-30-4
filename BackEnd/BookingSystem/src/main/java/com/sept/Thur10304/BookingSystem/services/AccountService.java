@@ -24,6 +24,24 @@ public class AccountService {
         return users;
     }
 
+    public Boolean verifyAccount(String email, String password)
+    {
+        List <Account> lAccount = findAll();
+        for (int i=0; i<lAccount.size();++i)
+        {
+            if (lAccount.get(i).getEmail().equals(email))
+            {
+                if (lAccount.get(i).getPassword().equals(password))
+                {
+                    return true;
+                }
+                // assume no duplicate emails in system
+                return false;
+            }
+        }
+        return false;
+    }
+
 
     public Account saveOrUpdateAccount(Account Account) {
 

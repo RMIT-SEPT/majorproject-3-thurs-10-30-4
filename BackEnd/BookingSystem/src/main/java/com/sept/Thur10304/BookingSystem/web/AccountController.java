@@ -86,30 +86,19 @@ public class AccountController {
             //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
         }
 
-        // if the provided email isn't in the database
-        if ( allEmails().contains(account.getEmail())==false)
+        if (accountService.verifyAccount(account.getEmail(), account.getPassword()))
         {
-            // return failed login message
-            FieldError fe = new FieldError("", "", null, false, null, null, "Invalid login credentials (Debug: USER)");
-            // HTTP Status for failed login is 401 Unauthorized
-            return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
-        }
-        // email match, now check password
-        else if (account.getPassword().equals("TEST123"))
-        {
-            // login success goes here
+            // login authorised
             // presumably we send an authentication token or do a redirect
             //Account account1 = accountService.saveOrUpdateAccount(account);
             // HTTP Status for successful login should be 200 OK
             return new ResponseEntity<Account>(account, HttpStatus.OK);
         }
-
-        // password does not match
+        // login not authorised
         // return failed login message
-        FieldError fe = new FieldError("", "", null, false, null, null, "Invalid login credentials (Debug: PASSWORD)");
+        FieldError fe = new FieldError("", "", null, false, null, null, "Invalid login credentials");
         // HTTP Status for failed login is 401 Unauthorized
         return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
-
     }
 
 }
