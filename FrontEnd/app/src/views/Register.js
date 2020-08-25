@@ -16,7 +16,7 @@
 
 */
 import React from "react";
-import { Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // reactstrap components
 import {
@@ -34,19 +34,6 @@ import {
 } from "reactstrap";
 
 class Register extends React.Component {
-  state = {
-    redirect: false
-  }
-  setRedirect = () => {
-    this.setState({
-      redirect: true
-    })
-  }
-  renderRedirect = () => {
-    if (this.state.redirect) {
-      return <Redirect to='/admin/services_dashboard' />
-    }
-  }
   
   render() {
     return (
@@ -120,11 +107,12 @@ class Register extends React.Component {
                 </FormGroup>
 
                 {/* Redirection button to dashboard after registration */}
-                <div className="text-center">  
-                  {this.renderRedirect()}
-                  <Button className="mt-4" color="primary" type="button" onClick={this.setRedirect}>
-                    Create account
-                  </Button>
+                <div className="text-center">
+                  <Link to="/admin/services_dashboard">
+                    <Button className="my-4" color="primary" type="button">
+                      Create Account
+                    </Button>
+                  </Link>
                 </div>
               </Form>
             </CardBody>
