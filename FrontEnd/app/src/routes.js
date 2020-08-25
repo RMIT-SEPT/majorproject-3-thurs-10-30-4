@@ -16,12 +16,10 @@
 
 */
 import ServicesDashboard from "views/ServicesDashboard.js";
-import Profile from "views/examples/Profile.js";
-import Login from "views/examples/Login.js";
-import Tables from "views/examples/Tables.js";
-import Icons from "views/examples/Icons.js";
+import Profile from "views/Profile.js";
+import Login from "views/Login.js";
 import About from "views/About.js";
-import Register from "views/examples/Register.js";
+import Register from "views/Register.js";
 
 
 var routes = [

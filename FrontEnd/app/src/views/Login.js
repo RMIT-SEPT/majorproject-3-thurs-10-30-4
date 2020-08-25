@@ -68,7 +68,7 @@ class Login extends React.Component {
                   </InputGroup>
                 </FormGroup>
                 <div className="text-center">
-                  <Link to="/admin/index">
+                  <Link to="/admin/services_dashboard">
                     <Button className="my-4" color="primary" type="button">
                       Sign in
                     </Button>
