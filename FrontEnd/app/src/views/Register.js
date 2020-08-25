@@ -16,6 +16,7 @@
 
 */
 import React from "react";
+import { Link } from "react-router-dom";
 
 // reactstrap components
 import {
@@ -32,23 +33,45 @@ import {
   Col
 } from "reactstrap";
 
-import {
-  Link
-} from "react-router-dom";
-
-class Login extends React.Component {
+class Register extends React.Component {
   render() {
     return (
       <>
-        <Col lg="5" md="7">
+        <Col lg="6" md="8">
           <Card className="bg-secondary shadow-2 border-0">
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center text-muted mb-4">
-                <small>Sign in with credentials</small>
+                <small>Sign up with credentials</small>
               </div>
               <Form role="form">
-                <FormGroup className="mb-3">
-                  <InputGroup className="input-group-alternative">
+
+                {/* FIRST NAME INPUT */}
+                <FormGroup>
+                  <InputGroup className="input-group-alternative mb-3">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-hat-3" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="First Name" type="text" />
+                  </InputGroup>
+                </FormGroup>
+
+                {/* LAST NAME INPUT */}
+                <FormGroup>
+                  <InputGroup className="input-group-alternative mb-3">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-hat-3" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="Last Name" type="text" />
+                  </InputGroup>
+                </FormGroup>
+
+                {/* EMAIL INPUT */}
+                <FormGroup>
+                  <InputGroup className="input-group-alternative mb-3">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className="ni ni-email-83" />
@@ -57,6 +80,8 @@ class Login extends React.Component {
                     <Input placeholder="Email" type="email" autoComplete="new-email"/>
                   </InputGroup>
                 </FormGroup>
+
+                {/* PASSWORD INPUT */}
                 <FormGroup>
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
@@ -67,32 +92,34 @@ class Login extends React.Component {
                     <Input placeholder="Password" type="password" autoComplete="new-password"/>
                   </InputGroup>
                 </FormGroup>
-                <div className="text-center">
-                  <Link to="/admin/index">
+
+                {/* RE-INPUT PASSWORD INPUT */}
+                <FormGroup>
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-lock-circle-open" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="Re-Type Password" type="password" autoComplete="new-password"/>
+                  </InputGroup>
+                </FormGroup>
+
+                {/* Redirection button to dashboard after registration */}
+                <div className="text-center">  
+                  <Link to="/admin/services_dashbaord">
                     <Button className="my-4" color="primary" type="button">
-                      Sign in
+                      Create Account
                     </Button>
                   </Link>
                 </div>
               </Form>
             </CardBody>
           </Card>
-          <Row className="mt-3">
-            <Col xs="6">
-              <Link className="text-light">
-                <small>Forgot password?</small>
-              </Link>
-            </Col>
-            <Col className="text-right" xs="6">
-              <Link to="/auth/register" className="text-light">
-                <small>Create new account</small>
-              </Link>
-            </Col>
-          </Row>
         </Col>
       </>
     );
   }
 }
 
-export default Login;
+export default Register;
