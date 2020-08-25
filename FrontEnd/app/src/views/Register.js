@@ -44,7 +44,7 @@ class Register extends React.Component {
   }
   renderRedirect = () => {
     if (this.state.redirect) {
-      return <Redirect to='/admin/index' />
+      return <Redirect to='/admin/services_dashboard' />
     }
   }
   
