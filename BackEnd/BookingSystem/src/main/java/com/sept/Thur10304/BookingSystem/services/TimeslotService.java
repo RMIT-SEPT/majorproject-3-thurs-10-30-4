@@ -23,6 +23,7 @@ public class TimeslotService {
         // Checks if service exists
         if (service != null
           // Checks that start time is before end time
+          // TODO doesn't currently work
           && timeslot.getStartTime().before(timeslot.getEndTime())
           // CHecks that date of timeslot is at least tomorrow 
           && timeslot.getDate().after(new Date())){

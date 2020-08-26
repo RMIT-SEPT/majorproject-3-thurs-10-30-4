@@ -13,20 +13,22 @@ public class Timeslot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long timeslotId;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "serviceId", nullable = false)
     private Service_ service;
 
     //TODO
     // private Long workerId
     
-    @NotBlank(message = "Date is required.")
+    // @NotBlank(message = "Date is required.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date date;
 
-    @NotBlank(message = "Start time is required.")
+    // @NotBlank(message = "Start time is required.")
     @JsonFormat(pattern = "hh:mm")
     private Date startTime;
 
-    @NotBlank(message = "First name is required.")
+    // @NotBlank(message = "First name is required.")
     @JsonFormat(pattern = "hh:mm")
     private Date endTime;
 
