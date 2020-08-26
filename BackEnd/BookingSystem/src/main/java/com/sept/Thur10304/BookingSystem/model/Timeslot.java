@@ -13,16 +13,21 @@ public class Timeslot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long timeslotId;
 
-    private Long serviceId;
+    private Service_ service;
 
     //TODO
     // private Long workerId
     
+    @NotBlank(message = "Date is required.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date date;
 
+    @NotBlank(message = "Start time is required.")
+    @JsonFormat(pattern = "hh:mm")
     private Date startTime;
 
+    @NotBlank(message = "First name is required.")
+    @JsonFormat(pattern = "hh:mm")
     private Date endTime;
 
     public Long getTimeslotId() {
@@ -57,12 +62,12 @@ public class Timeslot {
         this.endTime = endTime;
     }
 
-    public Long getServiceId() {
-        return this.serviceId;
+    public Service_ getService() {
+        return this.service;
     }
 
-    public void setServiceId(Long serviceId) {
-        this.serviceId = serviceId;
+    public void setService(Service_ service) {
+        this.service = service;
     }
-
 }
+    

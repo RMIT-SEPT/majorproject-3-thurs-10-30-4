@@ -4,6 +4,8 @@ import com.sept.Thur10304.BookingSystem.model.Timeslot;
 import com.sept.Thur10304.BookingSystem.repositories.TimeslotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.sept.Thur10304.BookingSystem.model.Service_;
+import java.util.Date;
 
 @Service
 public class TimeslotService {
@@ -14,10 +16,18 @@ public class TimeslotService {
     @Autowired
     private Service_Service serviceService;
 
-    public Timeslot saveOrUpdateTimeslot(Timeslot timeslot) {
-        // TODO do basic checks
+    public Timeslot saveOrUpdateTimeslot(Timeslot timeslot, Long serviceId) {
+        // TODO check if worker timetable conflicts
         // check for if service exists
-        if (serviceService.getServiceById(Long.toString(timeslot.getServiceId())) != null){
+        Service_ service = serviceService.getServiceById(Long.toString(serviceId));
+        // Checks if service exists
+        if (service != null
+          // Checks that start time is before end time
+          && timeslot.getStartTime().before(timeslot.getEndTime())
+          // CHecks that date of timeslot is at least tomorrow 
+          && timeslot.getDate().after(new Date())){
+            // Set service and save timeslot
+            timeslot.setService(service);
             return timeslotRepository.save(timeslot);
         } else {
             return null;

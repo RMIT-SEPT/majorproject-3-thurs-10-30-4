@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
@@ -24,12 +25,13 @@ public class TimeslotController {
     private TimeslotService timeslotService;
 
     // Saves a timeslot to the database
-    @PostMapping("/save")
-    public ResponseEntity<?> createNewTimeslot(@Valid @RequestBody Timeslot timeslot, BindingResult result) {
+    @PostMapping("/save/{serviceId}")
+    public ResponseEntity<?> createNewTimeslot(@Valid @RequestBody Timeslot timeslot, @PathVariable Long serviceId, BindingResult result) {
         if (result.hasErrors()){
             return new ResponseEntity<String>("Invalid Timeslot Object", HttpStatus.BAD_REQUEST);
         }
-        Timeslot timeslot1 = timeslotService.saveOrUpdateTimeslot(timeslot);
+
+        Timeslot timeslot1 = timeslotService.saveOrUpdateTimeslot(timeslot, serviceId);
         if (timeslot1 != null){
             return new ResponseEntity<Timeslot>(timeslot1, HttpStatus.CREATED);
         } else {
