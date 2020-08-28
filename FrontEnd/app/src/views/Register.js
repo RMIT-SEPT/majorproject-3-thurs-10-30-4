@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import {
   Card,
   CardBody,
+  Form,
   FormGroup,
   Input,
   InputGroupAddon,
@@ -31,24 +32,26 @@ import {
 } from "reactstrap";
 
 class Register extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
 
     this.state= {
-    firstName: "",
-    lastName: "",
-    password: "",
-    email: ""
-  }; 
-  this.onChange = this.onChange.bind(this);
-  this.onSubmit = this.onSubmit.bind(this);
+      firstName: "",
+      lastName: "",
+      password: "",
+      email: ""
+    }; 
 
-    }
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+
+  }
 
   onChange(e){
     this.setState({[e.target.name]: e.target.value});
   }
-  onSubmit(e){
+
+  onSubmit(e){  
     e.preventDefault();
     const newPerson = {
       firstName: this.state.firstName,
@@ -60,6 +63,8 @@ class Register extends React.Component {
     console.log(newPerson);
   }
 
+  component
+
   render() {
     return (
       <>
@@ -69,7 +74,7 @@ class Register extends React.Component {
               <div className="text-center text-muted mb-4">
                 <small>Sign up with credentials</small>
               </div>
-              <form onSubmit={this.onSubmit}>
+              <Form onSubmit={this.onSubmit} id="registerFormId">
 
                 {/* FIRST NAME INPUT */}
                 <FormGroup>
@@ -79,7 +84,8 @@ class Register extends React.Component {
                         <i className="ni ni-hat-3" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="text" 
+                    <Input required
+                      type="text" 
                       placeholder="First Name" 
                       name="firstName"
                       value= {this.state.firstName}
@@ -96,7 +102,8 @@ class Register extends React.Component {
                         <i className="ni ni-hat-3" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="text" 
+                    <Input required
+                      type="text" 
                       placeholder="Last Name" 
                       name="lastName"
                       value= {this.state.lastName}
@@ -113,7 +120,9 @@ class Register extends React.Component {
                         <i className="ni ni-email-83" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="email" autoComplete="new-email"
+                    <Input required
+                      type="email" 
+                      autoComplete="new-email"
                       placeholder="Email" 
                       name="email"
                       value= {this.state.email}
@@ -130,7 +139,9 @@ class Register extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input type="password" autoComplete="new-password"
+                    <Input required
+                      type="password" 
+                      autoComplete="new-password"
                       placeholder="Password" 
                       name="password"
                       value= {this.state.password}
@@ -147,17 +158,21 @@ class Register extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Re-Type Password" type="password" autoComplete="new-password"/>
+                    <Input required
+                      placeholder="Re-Type Password" 
+                      type="password" 
+                      autoComplete="new-password"
+                    />
                   </InputGroup>
                 </FormGroup>
 
                 {/* Redirection button to dashboard after registration */}
                 <div className="text-center">
-                  <Link to="/admin/services_dashboard">
+                  {/*<Link to="/admin/services_dashboard">*/}
                     <input type="submit" className="btn btn-primary btn-block mt-4" value="Create Account"/>
-                  </Link>
+                  {/*</Link>*/}
                 </div>
-              </form>
+              </Form>
             </CardBody>
           </Card>
         </Col>
