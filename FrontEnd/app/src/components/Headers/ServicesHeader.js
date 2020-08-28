@@ -16,18 +16,48 @@
 
 */
 import React from "react";
+import axios from 'axios';
 
 // reactstrap components
 import { 
+    Button,
     Container, 
     Row, 
-    Col 
+    Col, 
+    CardBody,
+    Card,
+    Table
 } from "reactstrap";
 
-import ServiceCard from "../Service/ServiceCard";
-
 class ServicesHeader extends React.Component {
-  render() {
+  
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            services : []
+        };
+    }
+
+    componentDidMount() {
+        this.getServices();
+    }
+
+    getServices() {
+        axios.get("http://localhost:8080/api/service/getall")
+        .then(response => response.data)
+        .then((data) => {
+            this.setState({services: data});
+        })
+        .catch(error => { 
+            console.log(error.response.data)
+            
+            {/* BIT OF A HACK*/}
+            this.setState({services: error.response.data});
+        });
+    }
+  
+    render() {
     return (
       <>
         <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
@@ -50,27 +80,43 @@ class ServicesHeader extends React.Component {
             {/* PLACEHOLDERS FOR NOW */}
             <Container>
                 <div>
-                    <Row>
-                        <Col lg="6" xl="3">
-                            {/* SERVICE #1? */}
-                            <ServiceCard/>
-                        </Col>
-                        
-                        <Col lg="6" xl="3">
-                            {/* SERVICE #2? */}
-                            <ServiceCard/>
-                        </Col>
+                    <Card>
+                        <CardBody>
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th> Service Name </th>
+                                        <th> Service Description </th>
+                                        <th> Actions </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.state.services.length === 0 ? 
+                                        <tr align="center">
+                                            <td colSpan="3"> No Services Available. </td>
+                                        </tr> : 
+                                        this.state.services.map((service) => (
+                                            <tr key={service.serviceId}>
+                                                <td>{service.serviceName}</td>
+                                                <td>{service.serviceDescription}</td>
+                                                <td>
+                                                    <Button
+                                                        color="primary"
+                                                        href="#pablo"
+                                                        onClick={e => e.preventDefault()}
+                                                    >
+                                                    BOOK SERVICE
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))
 
-                        <Col lg="6" xl="3">
-                            {/* SERVICE #3? */}
-                            <ServiceCard/>
-                        </Col>
-                        
-                        <Col lg="6" xl="3">
-                            {/* SERVICE #4? */}
-                            <ServiceCard/>
-                        </Col>
-                    </Row>
+                                } 
+                                </tbody>
+                            </Table>
+                        </CardBody>
+                    </Card>
                 </div>
             </Container>
         </div>
