@@ -6,7 +6,7 @@ class BookServiceButton extends Component {
     render() {
         return (
             <div>
-                <Link to="/admin/available_times" className="btn btn-primary btn-block mt-4"> BOOK SERVICE </Link>
+                <Link to="/admin/timeslots" className="btn btn-primary btn-block mt-4"> BOOK SERVICE </Link>
             </div>
         )
     }

@@ -19,7 +19,7 @@ import ServicesDashboard from "views/ServicesDashboard.js";
 import Profile from "views/Profile.js";
 import Login from "views/Login.js";
 import About from "views/About.js";
-import AvailableTimes from "views/AvailableTimes.js";
+import Timeslots from "views/Timeslots.js";
 import Register from "views/Register.js";
 
 
@@ -59,8 +59,8 @@ var routes = [
     component: About
   },
   {
-    path: "/available_times",
-    component: AvailableTimes,
+    path: "/timeslots",
+    component: Timeslots,
     layout: "/admin"
   }
 ];

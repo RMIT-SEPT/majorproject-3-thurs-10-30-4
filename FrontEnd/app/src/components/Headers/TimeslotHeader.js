@@ -20,7 +20,7 @@ import React from "react";
 // reactstrap components
 import { Container, Row, Col } from "reactstrap";
 
-class AvailableTimesHeader extends React.Component {
+class TimeslotHeader extends React.Component {
   render() {
     return (
       <>
@@ -31,7 +31,7 @@ class AvailableTimesHeader extends React.Component {
                 <div className="header-body text-center mb-7">
                     <Row className="justify-content-center">
                         <Col lg="5" md="6">
-                            <h1 className="text-white">Available Times</h1>
+                            <h1 className="text-white">Available Time slots</h1>
                             <p className="text-lead text-light">
                                 Pick from the list of available times to make a booking.
                             </p>
@@ -45,4 +45,4 @@ class AvailableTimesHeader extends React.Component {
   }
 }
 
-export default AvailableTimesHeader;
+export default TimeslotHeader;
