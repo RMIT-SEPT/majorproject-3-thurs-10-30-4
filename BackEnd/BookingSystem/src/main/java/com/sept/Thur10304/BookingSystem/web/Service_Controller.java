@@ -68,9 +68,9 @@ public class Service_Controller {
 
     @DeleteMapping("/delete/{serviceId}")
     public ResponseEntity<?> deleteService(@Valid @PathVariable Long serviceId) {
-        // Run service to delete service from databse
+        // Run service to delete service and its timeslots from databse
         boolean serviceDeleted = serviceService.deleteService(serviceId);
-        // If service deleted then return true, else false
+        // If service found and deleted then return true, else false
         if (serviceDeleted){
             return new ResponseEntity<Boolean>(true, HttpStatus.OK);
         } else {

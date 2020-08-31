@@ -71,6 +71,7 @@ public class Service_Service {
 
         // If service is found, then delete it and return true, else return false
         if (service.isPresent()){
+            // Note: also deletes all timeslots associated with service
             serviceRepository.delete(service.get());
             return true;
         } else {

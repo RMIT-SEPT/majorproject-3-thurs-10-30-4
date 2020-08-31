@@ -61,4 +61,17 @@ public class TimeslotService {
             return null;
         }
     }
+
+    public boolean deleteTimeslot(Long timeslotId){
+        // Finds the timeslot by its id
+        Optional<Timeslot> timeslot = timeslotRepository.findById(timeslotId);
+
+        // If timeslot is found, then delete it and return true, else return false
+        if (timeslot.isPresent()){
+            timeslotRepository.delete(timeslot.get());
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
