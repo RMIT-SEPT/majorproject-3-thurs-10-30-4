@@ -39,13 +39,13 @@ public class TimeslotService {
     public Iterable<Timeslot> getAllTimeslotsForService(Long serviceId){
         // Gets service from database
         Service_ service = serviceService.getServiceById(Long.toString(serviceId));
-        // Finds timeslots that are registered with that service
-        Iterable<Timeslot> timeslots = timeslotRepository.findByService(service);
-        // If there is at least one time slot then return the timeslots found
-        if (timeslots.iterator().hasNext()){
+        // If service found then return all found timeslots (or empty iterable if none)
+        // If no service found then return null
+        if (service != null){
+            // Finds timeslots that are registered with that service
+            Iterable<Timeslot> timeslots = timeslotRepository.findByService(service);
+            // Returns timeslots found (if any)
             return timeslots;
-        // If no timeslots then don't return timeslots
-        // TODO change to error so error message in controller can be more specific
         } else {
             return null;
         }
