@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import javax.validation.Valid;
 
 /**
@@ -61,6 +63,18 @@ public class Service_Controller {
         // If no service was found then return an error message
         } else {
             return new ResponseEntity<String>("Service not found", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/delete/{serviceId}")
+    public ResponseEntity<?> deleteService(@Valid @PathVariable Long serviceId) {
+        // Run service to delete service from databse
+        boolean serviceDeleted = serviceService.deleteService(serviceId);
+        // If service deleted then return true, else false
+        if (serviceDeleted){
+            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
     }
 }

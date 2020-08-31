@@ -64,4 +64,17 @@ public class Service_Service {
             return null;
         }
     }
+
+    public boolean deleteService(Long serviceId){
+        // Finds the service by its id
+        Optional<Service_> service = serviceRepository.findById(serviceId);
+
+        // If service is found, then delete it and return true, else return false
+        if (service.isPresent()){
+            serviceRepository.delete(service.get());
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
