@@ -33,6 +33,7 @@ import {
 } from "reactstrap";
 // core components
 import TimeslotHeader from "components/Headers/TimeslotHeader.js";
+import ServiceChosen from "../components/ServiceChosen.js";
 
 class Timeslots extends React.Component {
   constructor(props) {
@@ -43,23 +44,30 @@ class Timeslots extends React.Component {
     };
   }
 
-  // componentDidMount() {
-  //   this.getTimeslots();
-  // }
+  componentDidMount() {
+    this.getTimeslots();
+  }
 
-  // getTimeslots() {
-  //   axios.get("http://localhost:8080/api/timeslot/getbyservice/1")
-  //   .then(response => response.data)
-  //   .then((data) => {
-  //       this.setState({timeslots: data});
-  //   })
-  //   .catch(error => { 
-  //       console.log(error.response.data)
+  getServiceChosenID() {
+      return ServiceChosen.id;
+  }   
 
-  //       {/* BIT OF A HACK*/}
-  //       this.setState({timeslots: error.response.data});
-  //   });
-  // }
+  getTimeslots() {
+    console.log()
+    axios.get("http://localhost:8080/api/timeslot/getbyservice/" + this.getServiceChosenID())
+    .then(response => response.data)
+    .then((data) => {
+        this.setState({timeslots: data});
+    })
+    .catch(error => { 
+        console.log(error.response.data)
+
+        {/* BIT OF A HACK*/}
+        this.setState({timeslots: error.response.data});
+    });
+  }
+
+  
   
   render() {
     return (
@@ -77,7 +85,7 @@ class Timeslots extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">Date</th>
+                      <th scope="col"> Date</th>
                       <th scope="col">Start Time</th>
                       <th scope="col">End Time</th>
                       <th scope="col">Price</th>
@@ -93,41 +101,41 @@ class Timeslots extends React.Component {
                           <td colSpan="7"> No Time slots Available. </td>
                       </tr> : 
                       this.state.timeslots.map((timeslot) => (
-                          <tr> {/*key={service.serviceId}*/}
-                              <td>{timeslot.serviceName}</td> {/* DATE */}
-                              <td>{timeslot.serviceName}</td> {/* START TIME */}
-                              <td>{timeslot.serviceName}</td> {/* FINISH TIME */}
-                              <td>{timeslot.serviceName}</td> {/*  PRICE */}
-                              <td>{timeslot.serviceName}</td> {/* WORKER NAME */}
-                              <td> {/* PENDING STATUS */}
-                                <Badge color="" className="badge-dot mr-4">
-                                    <i className="bg-warning" />
-                                    pending
-                                </Badge>
-                                </td>
-                                <td className="text-right">
-                                <UncontrolledDropdown> {/* OPTION TO BOOK */}
-                                    <DropdownToggle
-                                    className="btn-icon-only text-light"
-                                    href="#pablo"
-                                    role="button"
-                                    size="sm"
-                                    color=""
-                                    onClick={e => e.preventDefault()}
-                                    >
-                                    <i className="fas fa-ellipsis-v" />
-                                    </DropdownToggle>
-                                    <DropdownMenu className="dropdown-menu-arrow" right>
-                                    <DropdownItem
-                                        href="#pablo"
-                                        onClick={e => e.preventDefault()}
-                                    >
-                                        Book
-                                    </DropdownItem>
-                                    </DropdownMenu>
-                                </UncontrolledDropdown>
+                        <tr key={timeslot.timeslotId}> {/**/}
+                            <td>{timeslot.date}</td> {/* DATE */}
+                            <td>{timeslot.startTime}</td> {/* START TIME */}
+                            <td>{timeslot.endTime}</td> {/* FINISH TIME */}
+                            <td>{/*timeslot.price*/} PRICE </td> {/*  PRICE */}
+                            <td>{/*timeslot.serviceName*/} WORKER NAME</td> {/* WORKER NAME */}
+                            <td> {/* PENDING STATUS */}
+                              <Badge color="" className="badge-dot mr-4">
+                                  <i className="bg-warning" />
+                                  pending
+                              </Badge>
                               </td>
-                          </tr>
+                              <td className="text-right">
+                              <UncontrolledDropdown> {/* OPTION TO BOOK */}
+                                  <DropdownToggle
+                                  className="btn-icon-only text-light"
+                                  href="#pablo"
+                                  role="button"
+                                  size="sm"
+                                  color=""
+                                  onClick={e => e.preventDefault()}
+                                  >
+                                  <i className="fas fa-ellipsis-v" />
+                                  </DropdownToggle>
+                                  <DropdownMenu className="dropdown-menu-arrow" right>
+                                  <DropdownItem
+                                      href="#pablo"
+                                      onClick={e => e.preventDefault()}
+                                  >
+                                      Book
+                                  </DropdownItem>
+                                  </DropdownMenu>
+                              </UncontrolledDropdown>
+                            </td>
+                        </tr>
                       ))
                     }
                   </tbody>
