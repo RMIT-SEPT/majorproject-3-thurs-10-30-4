@@ -105,6 +105,6 @@ class Account_Controller_LoginTest {
                         "    \"password\": \"IAmRonSwanson\",\n" +
                         "    \"email\": \"ron@pawnee.gov\"\n" +
                         "}"))
-                .andExpect(status().is4xxClientError()A);
+                .andExpect(status().is4xxClientError());
     }
 }
