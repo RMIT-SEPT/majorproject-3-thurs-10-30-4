@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class TimeslotService {
@@ -45,6 +46,17 @@ public class TimeslotService {
             return timeslots;
         // If no timeslots then don't return timeslots
         // TODO change to error so error message in controller can be more specific
+        } else {
+            return null;
+        }
+    }
+
+    public Timeslot getTimeslotById(Long timeslotId){
+        // Find timeslot by id
+        Optional<Timeslot> timeslot = timeslotRepository.findById(timeslotId);
+        // If timeslot is present then return it else false
+        if (timeslot.isPresent()){
+            return timeslot.get();
         } else {
             return null;
         }

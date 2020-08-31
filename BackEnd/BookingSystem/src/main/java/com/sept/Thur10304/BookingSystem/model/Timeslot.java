@@ -15,6 +15,7 @@ public class Timeslot {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "serviceId", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Service_ service;
 
     //TODO

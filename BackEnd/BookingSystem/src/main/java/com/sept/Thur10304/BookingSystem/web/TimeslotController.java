@@ -44,13 +44,26 @@ public class TimeslotController {
 
     // Gets all timeslots for a service
     @GetMapping("/getbyservice/{serviceId}")
-    public ResponseEntity<?> createNewTimeslot(@Valid @PathVariable Long serviceId){
+    public ResponseEntity<?> getTimeslotByService(@Valid @PathVariable Long serviceId){
         Iterable<Timeslot> timeslots = timeslotService.getAllTimeslotsForService(serviceId);
         if (timeslots != null){
             return new ResponseEntity<Iterable<Timeslot>>(timeslots, HttpStatus.FOUND);
         } else {
             // TODO make error message more clear as to what is wrong
             return new ResponseEntity<String>("Invalid Service Id", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // Gets timeslot by its id
+    @GetMapping("/getbyid/{timeslotId}")
+    public ResponseEntity<?> getTimeslotById(@Valid @PathVariable Long timeslotId){
+        // Retrieves timeslot through service
+        Timeslot timeslot = timeslotService.getTimeslotById(timeslotId);
+        // If timeslot is found, return it else error
+        if (timeslot != null){
+            return new ResponseEntity<Timeslot>(timeslot, HttpStatus.FOUND);
+        } else {
+            return new ResponseEntity<String>("Invalid Timeslot Id", HttpStatus.BAD_REQUEST);
         }
     }
 }
