@@ -17,6 +17,7 @@
 */
 import React from "react";
 import axios from 'axios';
+import { Link } from "react-router-dom";
 
 // reactstrap components
 import { 
@@ -29,6 +30,8 @@ import {
     Table
 } from "reactstrap";
 
+import ServiceChosen from '../ServiceChosen.js';
+
 class ServicesHeader extends React.Component {
   
     constructor(props) {
@@ -38,6 +41,7 @@ class ServicesHeader extends React.Component {
             services : []
         };
     }
+
 
     componentDidMount() {
         this.getServices();
@@ -55,6 +59,12 @@ class ServicesHeader extends React.Component {
             {/* BIT OF A HACK*/}
             this.setState({services: error.response.data});
         });
+    }
+
+    myFunction(text) {
+        
+        // Setting Service Chosen ID
+        ServiceChosen.id = text;
     }
   
     render() {
@@ -101,18 +111,16 @@ class ServicesHeader extends React.Component {
                                                 <td>{service.serviceName}</td>
                                                 <td>{service.serviceDescription}</td>
                                                 <td>
-                                                    <Button
-                                                        color="primary"
-                                                        href="#pablo"
-                                                        onClick={e => e.preventDefault()}
-                                                    >
-                                                    BOOK SERVICE
-                                                    </Button>
+                                                    <Link to="/admin/timeslots">
+                                                        <Button color="primary" type="button" value={service.serviceId} onClick={e => this.myFunction(e.target.value)}>
+                                                            BOOK SERVICE
+                                                        </Button>
+                                                    </Link>
                                                 </td>
                                             </tr>
                                         ))
 
-                                } 
+                                    } 
                                 </tbody>
                             </Table>
                         </CardBody>

@@ -106,7 +106,7 @@ class Register extends React.Component {
 
                 {/* Redirection button to dashboard after registration */}
                 <div className="text-center">  
-                  <Link to="/admin/services_dashbaord">
+                  <Link to="/admin/services_dashboard">
                     <Button className="my-4" color="primary" type="button">
                       Create Account
                     </Button>
