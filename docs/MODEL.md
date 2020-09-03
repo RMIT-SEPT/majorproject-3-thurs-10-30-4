@@ -24,7 +24,7 @@ workerId (not yet implemented)|Long|Foreign key|Key for the worker working this 
 date|Date|none|Date that the time slot is on|Date is at least one hour into the future
 startTime|Time|none|Time that the slot starts, in format hh:mm|Start time is before end time (not working)
 endTime|Time|none|Time that the slot ends, in format hh:mm|End time is after start time (not working)
-bookingId (not yet implemented)|Long|Foreign key|Id of the booking if it exists|Check if booking exists
+bookingId|Long|Foreign key|Id of the booking if it exists|Check if booking exists
 
 # Booking
 Field Name|Data Type|key-type|Description|Validation

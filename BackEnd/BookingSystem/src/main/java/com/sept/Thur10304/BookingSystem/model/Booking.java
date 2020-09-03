@@ -11,6 +11,7 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "booking")
     private Timeslot timeslot;
 
@@ -28,6 +29,24 @@ public class Booking {
     public void setBookingId(Long bookingId) {
         this.bookingId = bookingId;
     }
+
+
+    public Timeslot getTimeslot() {
+        return this.timeslot;
+    }
+
+    public void setTimeslot(Timeslot timeslot) {
+        this.timeslot = timeslot;
+    }
+
+    public Date getDateCreated() {
+        return this.dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
 
     @PrePersist
     protected void onCreate()
