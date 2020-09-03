@@ -33,6 +33,10 @@ public class Timeslot {
     @JsonFormat(pattern = "hh:mm")
     private Date endTime;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "booking_id", referencedColumnName = "bookingId")
+    private Booking booking;
+
     public Long getTimeslotId() {
         return this.timeslotId;
     }
