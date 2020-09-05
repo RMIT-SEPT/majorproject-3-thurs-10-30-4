@@ -36,7 +36,8 @@ public class Account {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateCreated;
 
-
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Booking> bookings;
 

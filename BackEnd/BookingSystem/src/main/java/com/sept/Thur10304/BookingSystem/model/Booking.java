@@ -16,7 +16,6 @@ public class Booking {
     private Timeslot timeslot;
 
     // TODO change to customer
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customerId", nullable = false)
     private Account customer;
