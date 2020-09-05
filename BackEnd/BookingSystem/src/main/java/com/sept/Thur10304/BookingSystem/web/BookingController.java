@@ -29,32 +29,6 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
-    public class BookingForm{
-
-        private Long timeslotId;
-
-        private Long customerId;
-
-        public BookingForm(){}
-
-        public Long getTimeslotId(){
-            return timeslotId;
-        }
-
-        public void setTimeslotId(Long timeslotId){
-            this.timeslotId = timeslotId;
-        }
-
-        public Long getCustomertId(){
-            return customerId;
-        }
-
-        public void setCustomerId(Long customerId){
-            this.customerId = customerId;
-        }
-    }
-
     @PostMapping("/save")
     public ResponseEntity<?> createNewBooking(@Valid @RequestBody Map<String, Long> jsonInput, BindingResult result) {
         // TODO customer stuff
