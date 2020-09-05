@@ -15,7 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+
 import Index from "./views/Index.js";
+import ServicesDashboard from "./views/ServicesDashboard.js";
 import Profile from "./views/examples/Profile.js";
 import Maps from "./views/examples/Maps.js";
 import Register from "./views/examples/Register.js";
@@ -26,24 +28,10 @@ import About from "./views/About.js";
 
 var routes = [
   {
-    path: "/index",
-    name: "Dashboard",
+    path: "/services_dashboard",
+    name: "Services Dashboard",
     icon: "ni ni-tv-2 text-primary",
-    component: Index,
-    layout: "/admin"
-  },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "ni ni-planet text-blue",
-    component: Icons,
-    layout: "/admin"
-  },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "ni ni-pin-3 text-orange",
-    component: Maps,
+    component: ServicesDashboard,
     layout: "/admin"
   },
   {
@@ -51,13 +39,6 @@ var routes = [
     name: "User Profile",
     icon: "ni ni-single-02 text-yellow",
     component: Profile,
-    layout: "/admin"
-  },
-  {
-    path: "/tables",
-    name: "Tables",
-    icon: "ni ni-bullet-list-67 text-red",
-    component: Tables,
     layout: "/admin"
   },
   {
