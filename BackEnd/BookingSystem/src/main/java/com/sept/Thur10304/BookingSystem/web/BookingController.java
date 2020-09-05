@@ -74,5 +74,24 @@ public class BookingController {
         }
 
     }
-    
+
+    @GetMapping("/getbyid/{bookingId}")
+    public ResponseEntity<?> getTimeslotByBookingId(@Valid @PathVariable Long bookingId){
+        try{
+            Timeslot timeslot = bookingService.getTimeslotByBookingId(bookingId);
+            return new ResponseEntity<Timeslot>(timeslot, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/delete/{bookingId}")
+    public ResponseEntity<?> deleteBooking(@Valid @PathVariable Long bookingId) {
+        try{
+            boolean bookingDeleted = bookingService.deleteBooking(bookingId);
+            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

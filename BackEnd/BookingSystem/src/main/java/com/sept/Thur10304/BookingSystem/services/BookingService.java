@@ -2,6 +2,7 @@ package com.sept.Thur10304.BookingSystem.services;
 
 import com.sept.Thur10304.BookingSystem.repositories.BookingRepository;
 
+import java.sql.Time;
 import java.util.Optional;
 
 import javax.swing.text.html.Option;
@@ -51,5 +52,35 @@ public class BookingService {
         } else {
             throw new Exception("Timeslot not found");
         }
+    }
+
+    public Timeslot getTimeslotByBookingId(Long bookingId) throws Exception{
+        Optional<Booking> findBooking = bookingRepository.findById(bookingId);
+
+        if (!findBooking.isPresent()){
+            throw new Exception("Booking not found");
+        }
+
+        Booking booking = findBooking.get();
+
+        Timeslot timeslot = booking.getTimeslot();
+
+        if (timeslot == null){
+            throw new Exception("Error with service");
+        }
+
+        return timeslot;
+    }
+
+    public boolean deleteBooking(Long bookingId) throws Exception{
+        Optional<Booking> findBooking = bookingRepository.findById(bookingId);
+
+        if (!findBooking.isPresent()){
+            throw new Exception("Booking not found");
+        }
+
+        bookingRepository.delete(findBooking.get());
+        return true;
+
     }
 }
