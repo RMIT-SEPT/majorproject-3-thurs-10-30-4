@@ -16,7 +16,7 @@
 
 */
 import React from "react";
-import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 // reactstrap components
 import {
@@ -35,24 +35,31 @@ class Register extends React.Component {
   constructor(props){
     super(props);
 
-    this.state= {
-      firstName: "",
-      lastName: "",
-      password: "",
-      email: ""
-    }; 
-
+    this.state= this.initialState;
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
 
   }
 
-  onChange(e){
+  initialState = {
+    firstName: "", lastName: "", password: "", email: "", retypedPassword: ""
+  }
+
+  onChange = e => {
     this.setState({[e.target.name]: e.target.value});
   }
 
-  onSubmit(e){  
+  checkPasswords() {
+    if (this.state.password === this.state.retypedPassword) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  onSubmit = e => {  
     e.preventDefault();
+
     const newPerson = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
@@ -60,12 +67,28 @@ class Register extends React.Component {
       email:this.state.email
     }
 
-    console.log(newPerson);
+    if (this.checkPasswords()) {
+    axios.post("http://localhost:8080/api/Account", newPerson)
+      .then(response => {
+        if (response.data != null) { 
+          this.setState(this.initialState);
+          window.location.href = "http://localhost:3000/admin/services_dashboard";
+          // alert("New Person Saved"); 
+        }
+      })
+      .catch(err => {
+        alert("Email Already registered");
+      });
+    } else {
+      alert("Passwords are not the same");
+    }
   }
 
   component
 
   render() {
+    const {firstName, lastName, email, password, retypedPassword} = this.state;
+
     return (
       <>
         <Col lg="6" md="8">
@@ -84,11 +107,11 @@ class Register extends React.Component {
                         <i className="ni ni-hat-3" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input required
+                    <Input required autoComplete="off"
                       type="text" 
                       placeholder="First Name" 
                       name="firstName"
-                      value= {this.state.firstName}
+                      value= {firstName}
                       onChange = {this.onChange}
                     />
                   </InputGroup>
@@ -102,11 +125,11 @@ class Register extends React.Component {
                         <i className="ni ni-hat-3" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input required
+                    <Input required autoComplete="off"
                       type="text" 
                       placeholder="Last Name" 
                       name="lastName"
-                      value= {this.state.lastName}
+                      value= {lastName}
                       onChange = {this.onChange}
                     />
                   </InputGroup>
@@ -120,12 +143,11 @@ class Register extends React.Component {
                         <i className="ni ni-email-83" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input required
-                      type="email" 
-                      autoComplete="new-email"
+                    <Input required autoComplete="off"
+                      type="email"
                       placeholder="Email" 
                       name="email"
-                      value= {this.state.email}
+                      value= {email}
                       onChange = {this.onChange}
                     />
                   </InputGroup>
@@ -139,17 +161,16 @@ class Register extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input required
-                      type="password" 
-                      autoComplete="new-password"
+                    <Input required autoComplete="off"
+                      type="password"
                       placeholder="Password" 
                       name="password"
-                      value= {this.state.password}
+                      value= {password}
                       onChange = {this.onChange}
                     />
                   </InputGroup>
                 </FormGroup>
-
+                
                 {/* RE-INPUT PASSWORD INPUT */}
                 <FormGroup>
                   <InputGroup className="input-group-alternative">
@@ -161,7 +182,9 @@ class Register extends React.Component {
                     <Input required
                       placeholder="Re-Type Password" 
                       type="password" 
-                      autoComplete="new-password"
+                      name="retypedPassword"
+                      value= {retypedPassword}
+                      onChange = {this.onChange}
                     />
                   </InputGroup>
                 </FormGroup>
