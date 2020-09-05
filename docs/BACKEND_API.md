@@ -11,4 +11,4 @@ url|method|Input|Output|description
 /api/timeslot/delete/{timeslotId}|DELETE|id of timeslot as path variable|Confirmation that timeslot was found and deleted, or error|Deletes timeslot from backend
 /api/booking/save|POST|id of timeslot as timeslotId, id of customer as customerId, in json)|Timeslot including booking or error message|Creates a booking for a timeslot
 /api/booking/getbyid/{bookingId}|GET|id of booking as path variable|Timeslot that booking belongs to or error message|Gets the timeslot for a booking (including the booking)
-/api/booking/delete/{bookingId} (not working)|DELETE|id of booking as path variable|True if deleted, or error message if not|Deletes a booking
+/api/booking/delete/{bookingId}|DELETE|id of booking as path variable|True if deleted, or error message if not|Deletes a booking

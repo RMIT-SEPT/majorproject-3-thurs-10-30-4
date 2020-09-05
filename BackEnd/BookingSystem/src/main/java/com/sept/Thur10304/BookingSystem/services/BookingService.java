@@ -65,6 +65,7 @@ public class BookingService {
 
         Timeslot timeslot = booking.getTimeslot();
 
+        // CHeck that timeslot is set, probably a redundant check
         if (timeslot == null){
             throw new Exception("Error with service");
         }
@@ -79,6 +80,13 @@ public class BookingService {
             throw new Exception("Booking not found");
         }
 
+        Booking booking = findBooking.get();
+
+        // De-associate timeslot and booking
+        booking.getTimeslot().setBooking(null);
+        booking.setTimeslot(null);
+
+        // Delete booking
         bookingRepository.delete(findBooking.get());
         return true;
 
