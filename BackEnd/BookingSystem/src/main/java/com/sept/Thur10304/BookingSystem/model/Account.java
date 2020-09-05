@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.*;
 import ch.qos.logback.core.joran.conditional.ElseAction;
 
 import java.util.Date; // for registration date
+import java.util.Set;
+
 import javax.validation.constraints.Pattern; // regex validation
 
 @Entity
@@ -33,6 +35,10 @@ public class Account {
     private String email;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateCreated;
+
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Booking> bookings;
 
 
     public Long getId() {
@@ -84,6 +90,14 @@ public class Account {
     public void setDateCreated(Date dateCreated)
     {
         this.dateCreated = dateCreated;
+    }
+
+    public Set<Booking> getBookings() {
+        return this.bookings;
+    }
+
+    public void setBookings(Set<Booking> bookings) {
+        this.bookings = bookings;
     }
 
     @PrePersist

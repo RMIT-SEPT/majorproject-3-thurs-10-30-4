@@ -16,8 +16,10 @@ public class Booking {
     private Timeslot timeslot;
 
     // TODO change to customer
-    // @OneToOne(targetEntity = Account.class, cascade = CascadeType.ALL)
-    // private Account customer;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "customerId", nullable = false)
+    private Account customer;
 
     @JsonFormat(pattern = "yyyy-MM-dd|hh:mm")
     private Date dateCreated;
@@ -45,6 +47,14 @@ public class Booking {
 
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
+    }
+
+    public Account getCustomer() {
+        return this.customer;
+    }
+
+    public void setCustomer(Account customer) {
+        this.customer = customer;
     }
 
 
