@@ -38,8 +38,9 @@ public class Account {
     @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
     private ZonedDateTime activityTimestamp;
     // Login authentication code (normally should use encryption but should be fine for scope of project)
-    // Should be regenerated for each login (will have side-effect of only allowing login on 1 device at a time)
-    private String loginAuthenticationCode;
+    // We will just generate a unique authtoken which doesn't change so that we don't have to worry
+    // about multiple devices being logged into the same account.
+    private String loginAuth;
 
     public Long getId() {
         return this.id;
@@ -96,6 +97,8 @@ public class Account {
     protected void onCreate()
     {
         this.dateCreated = new Date();
+        // generate auth token, which will be a 12 digit alphanumeric string.
+        loginAuth="TEST";
     }
 
 }

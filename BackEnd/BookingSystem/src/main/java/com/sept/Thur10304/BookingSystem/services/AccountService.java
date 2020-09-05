@@ -42,6 +42,28 @@ public class AccountService {
         return false;
     }
 
+    // same as above but return an authentication token which frontend can use
+    // note, authentication token may generate duplicates, therefore it is important
+    // for frontend to also track the account id or email.
+    public String authoriseAccount(String email, String password)
+    {
+        List <Account> lAccount = findAll();
+        for (int i=0; i<lAccount.size();++i)
+        {
+            if (lAccount.get(i).getEmail().equals(email))
+            {
+                if (lAccount.get(i).getPassword().equals(password))
+                {
+                    // return/generate auth token for this account
+                    return "AUTH";
+                }
+                // assume no duplicate emails in system
+                return "FAIL";
+            }
+        }
+        return "FAIL";
+    }
+
 
     public Account saveOrUpdateAccount(Account Account) {
 
