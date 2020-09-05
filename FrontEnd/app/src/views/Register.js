@@ -72,8 +72,8 @@ class Register extends React.Component {
       .then(response => {
         if (response.data != null) { 
           this.setState(this.initialState);
-          window.location.href = "http://localhost:3000/admin/services_dashboard";
-          // alert("New Person Saved"); 
+          alert("New Person Saved, you may now login."); 
+          window.location.href = "http://localhost:3000/auth/login";
         }
       })
       .catch(err => {
