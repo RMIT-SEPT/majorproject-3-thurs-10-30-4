@@ -25,9 +25,9 @@ import Chart from "chart.js";
 import {
   chartOptions,
   parseOptions,
-} from "variables/charts.js";
+} from "../variables/charts.js";
 
-import ServicesHeader from "components/Headers/ServicesHeader.js";
+import ServicesHeader from "../components/Headers/ServicesHeader.js";
 
 class ServicesDashboard extends React.Component {
   constructor(props){

@@ -15,13 +15,17 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import ServicesDashboard from "views/ServicesDashboard.js";
-import Profile from "views/Profile.js";
-import Login from "views/Login.js";
-import About from "views/About.js";
-import Timeslots from "views/Timeslots.js";
-import Register from "views/Register.js";
 
+import Timeslots from "./views/Timeslots.js";
+import Index from "./views/Index.js";
+import ServicesDashboard from "./views/ServicesDashboard.js";
+import Profile from "./views/examples/Profile.js";
+import Maps from "./views/examples/Maps.js";
+import Register from "./views/examples/Register.js";
+import Login from "./views/examples/Login.js";
+import Tables from "./views/examples/Tables.js";
+import Icons from "./views/examples/Icons.js";
+import About from "./views/About.js";
 
 var routes = [
   {
