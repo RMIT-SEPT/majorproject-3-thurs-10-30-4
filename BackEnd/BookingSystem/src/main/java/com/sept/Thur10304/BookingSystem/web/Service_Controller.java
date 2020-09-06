@@ -6,13 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import javax.validation.Valid;
 
 /**
@@ -21,6 +23,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/service")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class Service_Controller {
     
     @Autowired
@@ -60,6 +63,18 @@ public class Service_Controller {
         // If no service was found then return an error message
         } else {
             return new ResponseEntity<String>("Service not found", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/delete/{serviceId}")
+    public ResponseEntity<?> deleteService(@Valid @PathVariable Long serviceId) {
+        // Run service to delete service and its timeslots from databse
+        boolean serviceDeleted = serviceService.deleteService(serviceId);
+        // If service found and deleted then return true, else false
+        if (serviceDeleted){
+            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
     }
 }
