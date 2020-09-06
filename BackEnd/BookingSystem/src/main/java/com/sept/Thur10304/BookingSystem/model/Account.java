@@ -10,6 +10,7 @@ import ch.qos.logback.core.joran.conditional.ElseAction;
 
 import java.util.Date; // for registration date
 import javax.validation.constraints.Pattern; // regex validation
+import java.time.ZonedDateTime; // activity timestamp
 
 @Entity
 public class Account {
@@ -33,7 +34,13 @@ public class Account {
     private String email;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateCreated;
-
+    // Timestamp of last activity (to make login expire and require new login)
+    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
+    private ZonedDateTime activityTimestamp;
+    // Login authentication code (normally should use encryption but should be fine for scope of project)
+    // We will just generate a unique authtoken which doesn't change so that we don't have to worry
+    // about multiple devices being logged into the same account.
+    private String loginAuth;
 
     public Long getId() {
         return this.id;
@@ -90,6 +97,8 @@ public class Account {
     protected void onCreate()
     {
         this.dateCreated = new Date();
+        // generate auth token, which will be a 12 digit alphanumeric string.
+        loginAuth="TEST";
     }
 
 }
