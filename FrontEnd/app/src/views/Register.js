@@ -88,7 +88,6 @@ class Register extends React.Component {
 
   render() {
     const {firstName, lastName, email, password, retypedPassword} = this.state;
-
     return (
       <>
         <Col lg="6" md="8">
