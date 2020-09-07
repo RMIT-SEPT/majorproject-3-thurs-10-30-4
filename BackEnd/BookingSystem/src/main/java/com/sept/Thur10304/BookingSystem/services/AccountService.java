@@ -60,6 +60,15 @@ public class AccountService {
         return null;
     }
 
+    // When a user session needs to be terminated, jwt should be removed from repo
+    // return true if this is successful, return false if jwt doesn't authorise
+    // for now we can't delete the token because it is not generated.
+    public Boolean deauthoriseJWT(JWT jwt)
+    {
+        // deauthorisation code
+        return false;
+    }
+
 
     public Account saveOrUpdateAccount(Account Account) {
 

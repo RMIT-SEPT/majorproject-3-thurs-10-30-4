@@ -80,6 +80,8 @@ public class AccountController {
     @PostMapping("Login")
     public ResponseEntity<?> loginAccount(@Valid @RequestBody Account account, BindingResult result) {
         if (result.hasErrors()){
+            // Todo: return cleaner error codes using tutorial
+            // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
             //Map <String, String> errorMap = new HashMap<>();
 
             //for (FieldError error : result.getFieldErrors()){
@@ -109,6 +111,8 @@ public class AccountController {
     @PostMapping("Profile")
     public ResponseEntity<?> authoriseJWT(@Valid @RequestBody JWT jwt, BindingResult result) {
         if (result.hasErrors()){
+            // Todo: return cleaner error codes using tutorial
+            // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
             //Map <String, String> errorMap = new HashMap<>();
 
             //for (FieldError error : result.getFieldErrors()){
@@ -130,5 +134,34 @@ public class AccountController {
         }
         // 200 OK and return matching account
         return new ResponseEntity<Account>(authorisedAccount, HttpStatus.OK);
+    }
+
+    // Frontend POSTs JWT to logout. Backend will delete the token, requiring user to login again.
+    @PostMapping("Logout")
+    public ResponseEntity<?> deauthoriseJWT(@Valid @RequestBody JWT jwt, BindingResult result) {
+        if (result.hasErrors()){
+            // Todo: return cleaner error codes using tutorial
+            // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
+            //Map <String, String> errorMap = new HashMap<>();
+
+            //for (FieldError error : result.getFieldErrors()){
+                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            //}
+
+            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
+        }
+
+        // pass the jwt token to deauthorise
+        // if the token doesn't exist or is wrong, function will return false
+        if (accountService.deauthoriseJWT(jwt))
+        {
+            // 200 OK, jwt deauthorised
+            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        }
+        // jwt deauthorisation failed
+        // there is probably nothing we can do about this except ignore it
+        FieldError fe = new FieldError("", "", null, false, null, null, "jwt deauthorisation failed");
+        // 417 expectatoin failed (expected valid jwt to deauthorise)
+        return new ResponseEntity <FieldError>(fe, HttpStatus.EXPECTATION_FAILED);
     }
 }
