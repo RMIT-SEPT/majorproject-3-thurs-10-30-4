@@ -1,6 +1,7 @@
 package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
+import com.sept.Thur10304.BookingSystem.model.JWT;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -103,4 +104,31 @@ public class AccountController {
         return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
     }
 
+
+    // Frontend POSTs their JWT. Backend returns the user Account.
+    @PostMapping("Profile")
+    public ResponseEntity<?> authoriseJWT(@Valid @RequestBody JWT jwt, BindingResult result) {
+        if (result.hasErrors()){
+            //Map <String, String> errorMap = new HashMap<>();
+
+            //for (FieldError error : result.getFieldErrors()){
+                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            //}
+
+            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
+        }
+        // for now this simply returns the first account in the repo, for testing
+        // it returns null if repo is empty
+        Account authorisedAccount = accountService.authoriseJWT(jwt);
+
+        if (authorisedAccount!=null)
+        {
+            //jwt authorisation failed
+            FieldError fe = new FieldError("", "", null, false, null, null, "jwt authorisation failed");
+            // 401 Unauthorized
+            return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+        }
+        // 200 OK and return matching account
+        return new ResponseEntity<Account>(authorisedAccount, HttpStatus.OK);
+    }
 }

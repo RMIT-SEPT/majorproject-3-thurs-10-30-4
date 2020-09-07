@@ -2,6 +2,8 @@ package com.sept.Thur10304.BookingSystem.services;
 
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
 import com.sept.Thur10304.BookingSystem.model.Account;
+import com.sept.Thur10304.BookingSystem.model.JWT;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,23 +47,17 @@ public class AccountService {
     // same as above but return an authentication token which frontend can use
     // note, authentication token may generate duplicates, therefore it is important
     // for frontend to also track the account id or email.
-    public String authoriseAccount(String email, String password)
+    public Account authoriseJWT(JWT jwt)
     {
         List <Account> lAccount = findAll();
-        for (int i=0; i<lAccount.size();++i)
+
+        if (lAccount.size()>0)
         {
-            if (lAccount.get(i).getEmail().equals(email))
-            {
-                if (lAccount.get(i).getPassword().equals(password))
-                {
-                    // return/generate auth token for this account
-                    return "AUTH";
-                }
-                // assume no duplicate emails in system
-                return "FAIL";
-            }
+            // for now just return the first account in the list, no verification needed.
+            return lAccount.get(0);
         }
-        return "FAIL";
+        // there is no account
+        return null;
     }
 
 
