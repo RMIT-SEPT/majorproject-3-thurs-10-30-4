@@ -37,10 +37,10 @@ public class Account {
     // Timestamp of last activity (to make login expire and require new login)
     @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
     private ZonedDateTime activityTimestamp;
-    // Login authentication code (normally should use encryption but should be fine for scope of project)
-    // We will just generate a unique authtoken which doesn't change so that we don't have to worry
-    // about multiple devices being logged into the same account.
-    private String loginAuth;
+
+    // type : customer, employee/worker, admin (hardcoded in datbase)
+    // "customer", "employee", "admin"
+    private String type;
 
     public Long getId() {
         return this.id;
@@ -84,6 +84,16 @@ public class Account {
         this.email=email;
     }
 
+    public String getType()
+    {
+        return this.type;
+    }
+
+    public void setType(String type)
+    {
+        this.type=type;
+    }
+
     public Date getDateCreated()
     {
         return this.dateCreated;
@@ -97,8 +107,8 @@ public class Account {
     protected void onCreate()
     {
         this.dateCreated = new Date();
-        // generate auth token, which will be a 12 digit alphanumeric string.
-        loginAuth="TEST";
+        // account type is customer by default
+        this.type = "customer";
     }
 
 }
