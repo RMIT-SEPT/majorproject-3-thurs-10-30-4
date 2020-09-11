@@ -29,7 +29,7 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("")
+    @PostMapping("Register")
     public ResponseEntity<?> createNewAccount(@Valid @RequestBody Account account, BindingResult result) {
         if (result.hasErrors()){
             //Map <String, String> errorMap = new HashMap<>();
@@ -49,7 +49,7 @@ public class AccountController {
         }
 
         Account account1 = accountService.saveOrUpdateAccount(account);
-        return new ResponseEntity<Account>(account, HttpStatus.CREATED);
+        return new ResponseEntity<Account>(account1, HttpStatus.CREATED);
     }
 
 
