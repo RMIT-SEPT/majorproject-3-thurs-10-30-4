@@ -4,11 +4,11 @@ package com.sept.Thur10304.BookingSystem.model;
 // Should be passed to authorise user actions.
 // This will most likely be some kind of key as a string
 
-public class JWT
+public class AuthorizationToken
 {
     private String loginAuth;
     
-    JWT()
+    AuthorizationToken()
     {
         loginAuth="TEST";
     }

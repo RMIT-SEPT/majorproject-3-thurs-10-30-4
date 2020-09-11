@@ -2,7 +2,7 @@ package com.sept.Thur10304.BookingSystem.services;
 
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
 import com.sept.Thur10304.BookingSystem.model.Account;
-import com.sept.Thur10304.BookingSystem.model.JWT;
+import com.sept.Thur10304.BookingSystem.model.AuthorizationToken;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +47,7 @@ public class AccountService {
     // same as above but return an authentication token which frontend can use
     // note, authentication token may generate duplicates, therefore it is important
     // for frontend to also track the account id or email.
-    public Account authoriseJWT(JWT jwt)
+    public Account authoriseJWT(AuthorizationToken jwt)
     {
         List <Account> lAccount = findAll();
 
@@ -63,7 +63,7 @@ public class AccountService {
     // When a user session needs to be terminated, jwt should be removed from repo
     // return true if this is successful, return false if jwt doesn't authorise
     // for now we can't delete the token because it is not generated.
-    public Boolean deauthoriseJWT(JWT jwt)
+    public Boolean deauthoriseJWT(AuthorizationToken jwt)
     {
         // deauthorisation code
         return false;

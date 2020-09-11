@@ -1,7 +1,7 @@
 package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
-import com.sept.Thur10304.BookingSystem.model.JWT;
+import com.sept.Thur10304.BookingSystem.model.AuthorizationToken;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -109,7 +109,7 @@ public class AccountController {
 
     // Frontend POSTs their JWT. Backend returns the user Account.
     @PostMapping("Profile")
-    public ResponseEntity<?> authoriseJWT(@Valid @RequestBody JWT jwt, BindingResult result) {
+    public ResponseEntity<?> authoriseJWT(@Valid @RequestBody AuthorizationToken jwt, BindingResult result) {
         if (result.hasErrors()){
             // Todo: return cleaner error codes using tutorial
             // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
@@ -138,7 +138,7 @@ public class AccountController {
 
     // Frontend POSTs JWT to logout. Backend will delete the token, requiring user to login again.
     @PostMapping("Logout")
-    public ResponseEntity<?> deauthoriseJWT(@Valid @RequestBody JWT jwt, BindingResult result) {
+    public ResponseEntity<?> deauthoriseJWT(@Valid @RequestBody AuthorizationToken jwt, BindingResult result) {
         if (result.hasErrors()){
             // Todo: return cleaner error codes using tutorial
             // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
