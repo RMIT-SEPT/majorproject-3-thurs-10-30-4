@@ -14,7 +14,6 @@ import java.util.List;
 public class AccountService {
     @Autowired
     private AccountRepository AccountRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     public List<Account> findAll() {

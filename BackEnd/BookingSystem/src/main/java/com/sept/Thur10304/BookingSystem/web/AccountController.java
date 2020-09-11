@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.validation.FieldError; // validation errors
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // user details encryption
 
 import javax.validation.Valid; // field validation
 import java.util.List;
@@ -29,9 +28,8 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @PostMapping("Register")
+    @PostMapping("")
     public ResponseEntity<?> createNewAccount(@Valid @RequestBody Account account, BindingResult result) {
         if (result.hasErrors()){
             //Map <String, String> errorMap = new HashMap<>();
@@ -50,11 +48,8 @@ public class AccountController {
             return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
         }
 
-        // encrypt the user password and store in database
-        //user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-
         Account account1 = accountService.saveOrUpdateAccount(account);
-        return new ResponseEntity<Account>(account1, HttpStatus.CREATED);
+        return new ResponseEntity<Account>(account, HttpStatus.CREATED);
     }
 
 
