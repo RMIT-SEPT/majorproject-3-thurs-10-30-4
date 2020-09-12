@@ -26,23 +26,6 @@ import AuthFooter from "../components/Footers/AuthFooter.js";
 
 import routes from "../routes.js";
 
-//session imports
-import { createStore } from 'redux';
-import { sessionService } from 'redux-react-session';
-import { combineReducers } from 'redux';
-import { sessionReducer } from 'redux-react-session';
-
-// initialise session reducers
-const reducers = {
-  // ... your other reducers here ...
-  session: sessionReducer
-};
-const reducer = combineReducers(reducers);
-
-//initialize session
-const store = createStore(reducer)
-sessionService.initSessionService(store);
-
 class Auth extends React.Component {
   componentDidMount() {
     document.body.classList.add("bg-white");
