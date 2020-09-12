@@ -29,25 +29,34 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @PostMapping("Register")
+    @PostMapping("")
     public ResponseEntity<?> createNewAccount(@Valid @RequestBody Account account, BindingResult result) {
         if (result.hasErrors()){
+
+            System.out.println("Create new account.");
+
+            // for now return the first error. No need to handle multiple errors at once.
+            for (FieldError error : result.getFieldErrors()){
+                System.out.println("ERR1, returning error: " + error.toString());
+                //FieldError fe = new FieldError("", "", null, false, null, null, error.toString());
+                return new ResponseEntity <FieldError>(error, HttpStatus.BAD_REQUEST);
+            }
+
             //Map <String, String> errorMap = new HashMap<>();
-
             //for (FieldError error : result.getFieldErrors()){
-                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+                //return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
             //}
-
             //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
         }
 
         if ( allEmails().contains(account.getEmail()))
         {
+            System.out.println("ERR2, returning error: " + error.toString());
             // return duplicate email error message
-            FieldError fe = new FieldError("", "", null, false, null, null, "Email already registered");
+            FieldError fe = new FieldError("", "", null, false, null, null, "Errr Email already registered: "+account.getEmail());
             return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
         }
-
+        System.out.println("Account created successfully.");
         Account account1 = accountService.saveOrUpdateAccount(account);
         return new ResponseEntity<Account>(account1, HttpStatus.CREATED);
     }
@@ -109,7 +118,7 @@ public class AccountController {
 
     // Frontend POSTs their JWT. Backend returns the user Account.
     @PostMapping("Profile")
-    public ResponseEntity<?> authoriseJWT(@Valid @RequestBody AuthorizationToken jwt, BindingResult result) {
+    public ResponseEntity<?> authoriseToken(@Valid @RequestBody AuthorizationToken token, BindingResult result) {
         if (result.hasErrors()){
             // Todo: return cleaner error codes using tutorial
             // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
@@ -123,7 +132,7 @@ public class AccountController {
         }
         // for now this simply returns the first account in the repo, for testing
         // it returns null if repo is empty
-        Account authorisedAccount = accountService.authoriseJWT(jwt);
+        Account authorisedAccount = accountService.authoriseJWT(token);
 
         if (authorisedAccount!=null)
         {
@@ -138,7 +147,7 @@ public class AccountController {
 
     // Frontend POSTs JWT to logout. Backend will delete the token, requiring user to login again.
     @PostMapping("Logout")
-    public ResponseEntity<?> deauthoriseJWT(@Valid @RequestBody AuthorizationToken jwt, BindingResult result) {
+    public ResponseEntity<?> deauthoriseToken(@Valid @RequestBody AuthorizationToken token, BindingResult result) {
         if (result.hasErrors()){
             // Todo: return cleaner error codes using tutorial
             // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
@@ -153,7 +162,7 @@ public class AccountController {
 
         // pass the jwt token to deauthorise
         // if the token doesn't exist or is wrong, function will return false
-        if (accountService.deauthoriseJWT(jwt))
+        if (accountService.deauthoriseJWT(token))
         {
             // 200 OK, jwt deauthorised
             return new ResponseEntity<Boolean>(true, HttpStatus.OK);

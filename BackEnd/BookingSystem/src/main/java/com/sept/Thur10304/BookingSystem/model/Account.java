@@ -40,7 +40,7 @@ public class Account {
     // Login authentication code (normally should use encryption but should be fine for scope of project)
     // We will just generate a unique authtoken which doesn't change so that we don't have to worry
     // about multiple devices being logged into the same account.
-    private String loginAuth;
+    private String userToken;
 
     public Long getId() {
         return this.id;
@@ -93,12 +93,36 @@ public class Account {
         this.dateCreated = dateCreated;
     }
 
+    public String generateToken()
+    {
+        // valid token characters
+        String tokenChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                    + "0123456789"
+                                    + "abcdefghijklmnopqrstuvxyz"; 
+  
+        // create StringBuffer size of AlphaNumericString 
+        StringBuilder sb = new StringBuilder(16); 
+  
+        for (int i = 0; i < 16; i++)
+        { 
+            // generate a random number between 
+            // 0 to AlphaNumericString variable length 
+            int index = (int)(tokenChars.length() * Math.random()); 
+  
+            // add Character one by one in end of sb 
+            sb.append(tokenChars.charAt(index)); 
+        } 
+  
+        return sb.toString(); 
+    }
+
     @PrePersist
     protected void onCreate()
     {
         this.dateCreated = new Date();
         // generate auth token, which will be a 12 digit alphanumeric string.
-        loginAuth="TEST";
+        // Todo: Prevent duplicate tokens
+        userToken=generateToken();
     }
 
 }
