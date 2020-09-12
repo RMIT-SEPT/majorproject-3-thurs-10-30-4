@@ -18,6 +18,8 @@
 import React from "react";
 import axios from 'axios';
 
+import UserProfile from '../session/UserProfile';
+
 // reactstrap components
 import {
   Card,
@@ -66,6 +68,8 @@ class Register extends React.Component {
       password: this.state.password,
       email:this.state.email
     }
+	 
+	 UserProfile.setName("REGISTERED USER: "+newPerson.firstName+" "+newPerson.lastName);
 
     if (this.checkPasswords()) {
     axios.post("http://localhost:8080/api/Account", newPerson)
@@ -87,6 +91,8 @@ class Register extends React.Component {
   component
 
   render() {
+	console.log("User stored name: "+UserProfile.getName());
+	  
     const {firstName, lastName, email, password, retypedPassword} = this.state;
     return (
       <>

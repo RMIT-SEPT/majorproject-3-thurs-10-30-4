@@ -26,6 +26,10 @@ import AuthFooter from "../components/Footers/AuthFooter.js";
 
 import routes from "../routes.js";
 
+import UserProfile from '../session/UserProfile';
+
+//UserProfile.setName("MR TEST");
+
 class Auth extends React.Component {
   componentDidMount() {
     document.body.classList.add("bg-white");
@@ -49,6 +53,10 @@ class Auth extends React.Component {
     });
   };
   render() {
+	  
+	  console.log("User stored name: "+UserProfile.getName());
+	  
+	  
     return (
       <>
         <div className="main-content">
