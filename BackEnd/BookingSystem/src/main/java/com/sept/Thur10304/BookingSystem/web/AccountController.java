@@ -51,9 +51,9 @@ public class AccountController {
 
         if ( allEmails().contains(account.getEmail()))
         {
-            System.out.println("ERR2, returning error: " + error.toString());
             // return duplicate email error message
             FieldError fe = new FieldError("", "", null, false, null, null, "Errr Email already registered: "+account.getEmail());
+            System.out.println("ERR2, returning error: " + fe.toString());
             return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
         }
         System.out.println("Account created successfully.");
