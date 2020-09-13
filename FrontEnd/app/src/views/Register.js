@@ -35,14 +35,14 @@ class Register extends React.Component {
   constructor(props){
     super(props);
 
-    this.state= this.initialState;
+    this.state = this.initialState;
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
 
   }
 
   initialState = {
-    firstName: "", lastName: "", password: "", email: "", retypedPassword: ""
+    firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errorResponse: []
   }
 
   onChange = e => {
@@ -77,7 +77,14 @@ class Register extends React.Component {
         }
       })
       .catch(err => {
-        alert("Email Already registered");
+
+        // returns error message corresponding to issue
+        if (typeof err.response.data.defaultMessage != 'undefined') {
+          alert(err.response.data.defaultMessage);
+        } else {
+          alert(err.response.data[0].defaultMessage);
+        }
+
       });
     } else {
       alert("Passwords are not the same");
