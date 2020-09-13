@@ -21,4 +21,33 @@ public class AdminWorkerLink {
     private Account adminAccount;
 
     private Account workerAccount;
+
+
+    public AdminWorkerLink() {
+    }
+
+    public Long getAdminWorkerId() {
+        return this.adminWorkerId;
+    }
+
+    public void setAdminWorkerId(Long adminWorkerId) {
+        this.adminWorkerId = adminWorkerId;
+    }
+
+    public Account getAdminAccount() {
+        return this.adminAccount;
+    }
+
+    public void setAdminAccount(Account adminAccount) {
+        this.adminAccount = adminAccount;
+    }
+
+    public Account getWorkerAccount() {
+        return this.workerAccount;
+    }
+
+    public void setWorkerAccount(Account workerAccount) {
+        this.workerAccount = workerAccount;
+    }
+
 }
