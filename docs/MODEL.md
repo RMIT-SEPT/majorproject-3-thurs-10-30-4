@@ -34,5 +34,13 @@ timeslotId|Long|Foreign key|Key for the timeslot that was booked|check that time
 customerId|Long|Foreign key|Key for the customer that made the booking|check that customer exists
 dateBooked|Date/Time|None|Date and time that the customer made the booking|Date is before start date of time slot
 
+# AdminWorkerLink (not yet complete)
+Field Name|Data Type|key-type|Description|Validation
+---|---|---|---|---
+adminWorkerId|Long|Primary key|auto-generated id for worker admin relationship|auto-generated
+adminId|Long|Primary key|Id for admin|Account exists, account is admin
+workerId|Long|Primary key|Id for worker|Account exists, account is worker
+
+
 
 
