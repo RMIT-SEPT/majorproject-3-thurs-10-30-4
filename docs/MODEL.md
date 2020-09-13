@@ -37,19 +37,20 @@ dateBooked|Date/Time|None|Date and time that the customer made the booking|Date 
 # Admin (not yet complete)
 Field Name|Data Type|key-type|Description|Validation
 ---|---|---|---|---
-id|Long|Foreign key|Key taken from host account|account exists
+adminId|Long|Foreign key|auto-generated key for the admin|auto-generated
 accountType|Enum|None|Enum representing the type of account|type is valid
 
 # Worker (not yet complete)
 Field Name|Data Type|key-type|Description|Validation
 ---|---|---|---|---
-id|Long|Foreign key|Key taken from host account|account exists
+workerId|Long|Primary key|auto-generated key for the worker|auto-generated
 accountType|Enum|None|Enum representing the type of account|type is valid
+adminId|Long|Foreign key|Key that belongs to admin that manages worker|admin exists
 
 # Customer (not yet complete)
 Field Name|Data Type|key-type|Description|Validation
 ---|---|---|---|---
-id|Long|Foreign key|Key taken from host account|account exists
+customerId|Long|Foreign key|auto-generated key for the customer|auto-generated
 accountType|Enum|None|Enum representing the type of account|type is valid
 
 

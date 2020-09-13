@@ -12,9 +12,17 @@ import java.util.Date; // for registration date
 import javax.validation.constraints.Pattern; // regex validation
 import java.time.ZonedDateTime; // activity timestamp
 
+import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
+
 @Entity
 public class Worker extends AccountTypeExtension {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long workerId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "adminId", nullable = false)
     private Admin admin;
 
     @PrePersist

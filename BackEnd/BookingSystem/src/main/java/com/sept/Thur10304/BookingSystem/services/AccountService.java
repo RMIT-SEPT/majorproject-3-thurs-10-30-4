@@ -2,7 +2,6 @@ package com.sept.Thur10304.BookingSystem.services;
 
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
 import com.sept.Thur10304.BookingSystem.model.Account;
-import com.sept.Thur10304.BookingSystem.model.AdminWorkerLink;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,9 +14,6 @@ import java.util.Optional;
 public class AccountService {
     @Autowired
     private AccountRepository AccountRepository;
-
-    @Autowired
-    private AdminWorkerLinkRepository adminWorkerLinkRepository;
 
 
     public List<Account> findAll() {
@@ -74,24 +70,24 @@ public class AccountService {
     public Account saveOrUpdateAccount(Account account) {
 
         //logic
-        return AccountRepository.save(Account);
+        return AccountRepository.save(account);
     }
 
-    public Account saveOrUpdateWorker(Account worker, Long adminId) throws Exception{
+    // public Account saveOrUpdateWorker(Account worker, Long adminId) throws Exception{
 
-        Optional<Account> admin = AccountRepository.findById(adminId);
-        if (!admin.isPresent()){
-            throw new Exception("Admin not found");
-        } else if (!admin.get().getType().equals("admin")){
-            throw new Exception("Account is not admin");
-        }
-        AdminWorkerLink adminWorkerLink = new AdminWorkerLink();
-        adminWorkerLink.setAdminAccount(admin.get());
-        adminWorkerLink.setWorkerAccount(worker);
-        adminWorkerLinkRepository.save(adminWorkerLink);
-        worker.setType("worker");
-        AccountRepository.save(worker);
-    }
+    //     Optional<Account> admin = AccountRepository.findById(adminId);
+    //     if (!admin.isPresent()){
+    //         throw new Exception("Admin not found");
+    //     } else if (!admin.get().getType().equals("admin")){
+    //         throw new Exception("Account is not admin");
+    //     }
+    //     AdminWorkerLink adminWorkerLink = new AdminWorkerLink();
+    //     adminWorkerLink.setAdminAccount(admin.get());
+    //     adminWorkerLink.setWorkerAccount(worker);
+    //     adminWorkerLinkRepository.save(adminWorkerLink);
+    //     worker.setType("worker");
+    //     AccountRepository.save(worker);
+    // }
 
     public String test() {
         return "THIS IS A TEST OF BACKEND OUTPUT.<br/><br/><marquee>AYYY</marquee>";

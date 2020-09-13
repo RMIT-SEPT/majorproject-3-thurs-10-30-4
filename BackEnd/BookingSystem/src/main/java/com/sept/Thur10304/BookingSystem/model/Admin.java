@@ -9,14 +9,22 @@ import com.fasterxml.jackson.annotation.*;
 import ch.qos.logback.core.joran.conditional.ElseAction;
 
 import java.util.Date; // for registration date
+import java.util.List;
+
 import javax.validation.constraints.Pattern; // regex validation
 import java.time.ZonedDateTime; // activity timestamp
+
+import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 
 @Entity
 public class Admin extends AccountTypeExtension {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long adminId;
 
-    private Iterable<Worker> workers;
+    @OneToMany(mappedBy = "admin", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Worker> workers;
 
     @PrePersist
     protected void onCreate()
