@@ -30,6 +30,8 @@ import UserProfile from '../session/UserProfile';
 
 //UserProfile.setName("MR TEST");
 
+var userName = localStorage.getItem('username');
+
 class Auth extends React.Component {
   componentDidMount() {
     document.body.classList.add("bg-white");
@@ -54,7 +56,7 @@ class Auth extends React.Component {
   };
   render() {
 	  
-	  console.log("User stored name: "+UserProfile.getName());
+	  console.log("Session username: "+userName);
 	  
 	  
     return (

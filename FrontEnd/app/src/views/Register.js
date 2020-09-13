@@ -59,34 +59,51 @@ class Register extends React.Component {
     }
   }
 
-  onSubmit = e => {  
-    e.preventDefault();
+	onSubmit = e =>
+	{  
+		e.preventDefault();
 
-    const newPerson = {
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      password: this.state.password,
-      email:this.state.email
-    }
-	 
-	 UserProfile.setName("REGISTERED USER: "+newPerson.firstName+" "+newPerson.lastName);
+		const newPerson =
+		{
+			firstName: this.state.firstName,
+			lastName: this.state.lastName,
+			password: this.state.password,
+			email:this.state.email
+		}
 
-    if (this.checkPasswords()) {
-    axios.post("http://localhost:8080/api/Account", newPerson)
-      .then(response => {
-        if (response.data != null) { 
-          this.setState(this.initialState);
-          alert("New Person Saved, you may now login."); 
-          window.location.href = "http://localhost:3000/auth/login";
-        }
-      })
-      .catch(err => {
-        alert("Email Already registered");
-      });
-    } else {
-      alert("Passwords are not the same");
-    }
-  }
+		//UserProfile.setName("REGISTERED USER: "+newPerson.firstName+" "+newPerson.lastName);
+
+		if (this.checkPasswords())
+		{
+			axios.post("http://localhost:8080/api/Account", newPerson)
+			.then(response =>
+			{
+				if (response.data != null)
+				{ 
+					this.setState(this.initialState);
+					localStorage.setItem('username', newPerson.firstName);
+					alert("New Person Saved, you may now login."); 
+					window.location.href = "http://localhost:3000/auth/login";
+				}
+			})
+			.catch(err =>
+			{
+				console.log("Error");
+				if (typeof err.response.data.defaultMessage != 'undefined')
+				{
+					alert(err.response.data.defaultMessage);
+				}
+				else
+				{
+					alert(err.response.data[0].defaultMessage);
+				}
+			});
+		}
+		else
+		{
+			alert("Passwords are not the same");
+		}
+	}
 
   component
 
