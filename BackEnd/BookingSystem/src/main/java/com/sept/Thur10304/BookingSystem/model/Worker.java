@@ -16,4 +16,10 @@ import java.time.ZonedDateTime; // activity timestamp
 public class Worker extends AccountTypeExtension {
 
     private Admin admin;
+
+    @PrePersist
+    protected void onCreate()
+    {
+        this.accountType = AccountType.WORKER;
+    }
 }

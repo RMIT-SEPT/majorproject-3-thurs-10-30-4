@@ -18,5 +18,9 @@ public class Admin extends AccountTypeExtension {
 
     private Iterable<Worker> workers;
 
-    
+    @PrePersist
+    protected void onCreate()
+    {
+        this.accountType = AccountType.ADMIN;
+    }
 }

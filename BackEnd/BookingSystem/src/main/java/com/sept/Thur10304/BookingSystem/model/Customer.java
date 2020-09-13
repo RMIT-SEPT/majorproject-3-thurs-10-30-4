@@ -16,4 +16,10 @@ import java.time.ZonedDateTime; // activity timestamp
 public class Customer extends AccountTypeExtension {
 
     // have bookings
+
+    @PrePersist
+    protected void onCreate()
+    {
+        this.accountType = AccountType.CUSTOMER;
+    }
 }
