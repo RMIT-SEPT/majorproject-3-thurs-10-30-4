@@ -40,7 +40,10 @@ public class Account {
 
     // type : customer, employee/worker, admin (hardcoded in datbase)
     // "customer", "employee", "admin"
-    private String type;
+    // private String type;
+
+    @OneToOne(mappedBy = "Account", cascade = CascadeType.ALL)
+    private AccountTypeExtension accountTypeExtension;
 
     public Long getId() {
         return this.id;
