@@ -14,12 +14,18 @@ import java.time.ZonedDateTime; // activity timestamp
 
 import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 
+@MappedSuperclass
 public abstract class AccountTypeExtension {
 
-    protected AccountType accountType;
+    @Id
+    private Long hostId;
 
-    @OneToOne
-    protected Account hostAccount;
+    @OneToOne()
+    @MapsId
+    @JoinColumn(name = "host_id")
+    private Account hostAccount;
+
+    protected AccountType accountType;
 
     public String getAccountTypeName(){
         return this.accountType.toString().toLowerCase();

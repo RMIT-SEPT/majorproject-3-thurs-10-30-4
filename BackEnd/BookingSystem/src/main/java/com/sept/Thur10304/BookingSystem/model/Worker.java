@@ -17,9 +17,7 @@ import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 @Entity
 public class Worker extends AccountTypeExtension {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long workerId;
+
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "adminId", nullable = false)
@@ -28,6 +26,6 @@ public class Worker extends AccountTypeExtension {
     @PrePersist
     protected void onCreate()
     {
-        this.accountType = AccountType.WORKER;
+        this.setAccountType(AccountType.WORKER);
     }
 }

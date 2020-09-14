@@ -12,6 +12,8 @@ import java.util.Date; // for registration date
 import javax.validation.constraints.Pattern; // regex validation
 import java.time.ZonedDateTime; // activity timestamp
 
+import com.sept.Thur10304.BookingSystem.model.AccountTypeExtension;
+
 @Entity
 public class Account {
 
@@ -42,8 +44,8 @@ public class Account {
     // "customer", "employee", "admin"
     // private String type;
 
-    @OneToOne(mappedBy = "Account", cascade = CascadeType.ALL)
-    private AccountTypeExtension accountTypeExtension;
+    // @OneToOne(mappedBy = "Account", cascade = CascadeType.ALL)
+    // private AccountTypeExtension accountTypeExtension;
 
     public Long getId() {
         return this.id;

@@ -19,9 +19,9 @@ import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 @Entity
 public class Admin extends AccountTypeExtension {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long adminId;
+    
+
+    
 
     @OneToMany(mappedBy = "admin", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Worker> workers;
@@ -29,6 +29,6 @@ public class Admin extends AccountTypeExtension {
     @PrePersist
     protected void onCreate()
     {
-        this.accountType = AccountType.ADMIN;
+        this.setAccountType(AccountType.ADMIN);
     }
 }

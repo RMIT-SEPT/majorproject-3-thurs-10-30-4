@@ -17,15 +17,12 @@ import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 @Entity
 public class Customer extends AccountTypeExtension {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerId;
 
     // have bookings
 
     @PrePersist
     protected void onCreate()
     {
-        this.accountType = AccountType.CUSTOMER;
+        this.setAccountType(AccountType.CUSTOMER);
     }
 }
