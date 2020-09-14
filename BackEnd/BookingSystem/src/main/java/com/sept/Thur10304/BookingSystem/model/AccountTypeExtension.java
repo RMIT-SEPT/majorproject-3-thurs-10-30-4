@@ -18,12 +18,12 @@ import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 public abstract class AccountTypeExtension {
 
     @Id
-    private Long hostId;
+    private Long accountId;
 
     @OneToOne()
     @MapsId
-    @JoinColumn(name = "host_id")
-    private Account hostAccount;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     protected AccountType accountType;
 
@@ -40,12 +40,14 @@ public abstract class AccountTypeExtension {
     }
 
 
-    public Account getHostAccount() {
-        return this.hostAccount;
+
+    public Account getAccount() {
+        return this.account;
     }
 
-    public void setHostAccount(Account hostAccount) {
-        this.hostAccount = hostAccount;
+    public void setAccount(Account account) {
+        this.account = account;
     }
+    
     
 }

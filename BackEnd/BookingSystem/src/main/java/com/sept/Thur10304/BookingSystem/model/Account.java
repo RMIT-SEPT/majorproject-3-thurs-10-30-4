@@ -44,8 +44,9 @@ public class Account {
     // "customer", "employee", "admin"
     // private String type;
 
-    // @OneToOne(mappedBy = "Account", cascade = CascadeType.ALL)
-    // private AccountTypeExtension accountTypeExtension;
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    @Transient private AccountTypeExtension accountTypeExtension;
 
     public Long getId() {
         return this.id;

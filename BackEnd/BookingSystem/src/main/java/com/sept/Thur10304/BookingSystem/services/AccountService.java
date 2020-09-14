@@ -82,8 +82,8 @@ public class AccountService {
 
         AccountRepository.save(account);
         Customer customer = new Customer();
-        customer.setHostAccount(account);
-        System.out.println(customerRepository.save(customer));
+        customer.setAccount(account);
+        customerRepository.save(customer);
         return account;
     }
 

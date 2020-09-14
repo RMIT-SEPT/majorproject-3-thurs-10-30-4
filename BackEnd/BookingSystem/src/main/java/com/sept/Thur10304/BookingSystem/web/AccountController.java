@@ -47,7 +47,7 @@ public class AccountController {
             return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
         }
 
-        Account account1 = accountService.saveOrUpdateAccount(account);
+        Account account1 = accountService.saveOrUpdateCustomer(account);
         return new ResponseEntity<Account>(account, HttpStatus.CREATED);
     }
 
