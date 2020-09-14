@@ -1,6 +1,7 @@
 package com.sept.Thur10304.BookingSystem.services;
 
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
+import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
 import com.sept.Thur10304.BookingSystem.model.Account;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.sept.Thur10304.BookingSystem.model.Customer;
+
 @Service
 public class AccountService {
     @Autowired
     private AccountRepository AccountRepository;
 
+    @Autowired
+    private CustomerRepository customerRepository;
 
     public List<Account> findAll() {
 
@@ -71,6 +76,15 @@ public class AccountService {
 
         //logic
         return AccountRepository.save(account);
+    }
+
+    public Account saveOrUpdateCustomer(Account account){
+
+        AccountRepository.save(account);
+        Customer customer = new Customer();
+        customer.setHostAccount(account);
+        System.out.println(customerRepository.save(customer));
+        return account;
     }
 
     // public Account saveOrUpdateWorker(Account worker, Long adminId) throws Exception{
