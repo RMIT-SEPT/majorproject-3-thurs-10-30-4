@@ -3,7 +3,9 @@ package com.sept.Thur10304.BookingSystem.services;
 import com.sept.Thur10304.BookingSystem.repositories.BookingRepository;
 
 import java.sql.Time;
+import java.util.Iterator;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.swing.text.html.Option;
 
@@ -14,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
 import com.sept.Thur10304.BookingSystem.model.Account;
+
+import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class BookingService {
@@ -71,6 +76,26 @@ public class BookingService {
         }
 
         return timeslot;
+    }
+
+    public Iterable<Timeslot> getTimeslotByCustomerId(Long customerId) throws Exception{
+        // Check if customer exists
+        Optional<Account> customer = accountRepository.findById(customerId);
+        if (!customer.isPresent()){
+            throw new Exception("Customer not found");
+        }
+        Set<Booking> bookings = customer.get().getBookings();
+
+        Iterator<Booking> bookingIterator = bookings.iterator();
+
+        List<Timeslot> timeslots = new ArrayList(bookings.size());
+
+        while(bookingIterator.hasNext()){
+            Booking booking = bookingIterator.next();
+            timeslots.add(booking.getTimeslot());
+        }
+
+        return timeslots;
     }
 
     public boolean deleteBooking(Long bookingId) throws Exception{
