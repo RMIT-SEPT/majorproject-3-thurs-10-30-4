@@ -1,11 +1,12 @@
 
 
-# ACCOUNT
+# ACCOUNT (needs to be updated)
 Field Name|Data Type|key-type|Description|Validation
 ---|---|---|---|---
 id|Long|Primary key|Auto-generated id for the account|Auto-generated
 username|String|none|username for the account|currently none
 password|String|none|password for the account|currently none
+accountType|Enum|None|Enum representing the type of account|type is valid
 
 # Service
 Field Name|Data Type|key-type|Description|Validation
@@ -37,21 +38,19 @@ dateBooked|Date/Time|None|Date and time that the customer made the booking|Date 
 # Admin (not yet complete)
 Field Name|Data Type|key-type|Description|Validation
 ---|---|---|---|---
-hostId|Long|Foreign key|auto-generated key for the admin|auto-generated
-accountType|Enum|None|Enum representing the type of account|type is valid
+hostId|Long|Foreign key|key used by base account|account exists
+serviceId|Long|Foreign key|key used by service that admin manages|service exists
 
 # Worker (not yet complete)
 Field Name|Data Type|key-type|Description|Validation
 ---|---|---|---|---
-hostId|Long|Primary key|auto-generated key for the worker|auto-generated
-accountType|Enum|None|Enum representing the type of account|type is valid
+hostId|Long|Foreign key|key used by base account|account exists
 adminId|Long|Foreign key|Key that belongs to admin that manages worker|admin exists
 
 # Customer (not yet complete)
 Field Name|Data Type|key-type|Description|Validation
 ---|---|---|---|---
-hostId|Long|Foreign key|auto-generated key for the customer|auto-generated
-accountType|Enum|None|Enum representing the type of account|type is valid
+hostId|Long|Foreign key|key used by base account|account exists
 
 
 

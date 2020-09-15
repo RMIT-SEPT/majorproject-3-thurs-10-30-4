@@ -29,6 +29,6 @@ public class Admin extends AccountTypeExtension {
     @PrePersist
     protected void onCreate()
     {
-        this.setAccountType(AccountType.ADMIN);
+        getAccount().setAccountType(AccountType.ADMIN);
     }
 }

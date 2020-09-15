@@ -26,6 +26,6 @@ public class Worker extends AccountTypeExtension {
     @PrePersist
     protected void onCreate()
     {
-        this.setAccountType(AccountType.WORKER);
+        getAccount().setAccountType(AccountType.WORKER);
     }
 }

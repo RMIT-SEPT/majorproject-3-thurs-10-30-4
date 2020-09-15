@@ -54,7 +54,6 @@ public class AccountController {
 
     @GetMapping("")
     public List<Account> allUsers() {
-
         return accountService.findAll();
     }
 

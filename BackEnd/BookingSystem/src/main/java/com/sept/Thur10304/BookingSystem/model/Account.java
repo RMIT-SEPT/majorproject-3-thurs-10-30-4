@@ -14,6 +14,8 @@ import java.time.ZonedDateTime; // activity timestamp
 
 import com.sept.Thur10304.BookingSystem.model.AccountTypeExtension;
 
+import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
+
 @Entity
 public class Account {
 
@@ -44,9 +46,12 @@ public class Account {
     // "customer", "employee", "admin"
     // private String type;
 
+    // Not sure if this is needed
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @Transient private AccountTypeExtension accountTypeExtension;
+
+    private AccountType accountType;
 
     public Long getId() {
         return this.id;
@@ -99,6 +104,15 @@ public class Account {
     {
         this.dateCreated = dateCreated;
     }
+
+    public AccountType getAccountType(){
+        return this.accountType;
+    }
+    
+    public void setAccountType(AccountType accountType){
+        this.accountType = accountType;
+    }
+
 
     @PrePersist
     protected void onCreate()

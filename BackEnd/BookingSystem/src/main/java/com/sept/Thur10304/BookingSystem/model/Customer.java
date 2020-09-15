@@ -23,6 +23,6 @@ public class Customer extends AccountTypeExtension {
     @PrePersist
     protected void onCreate()
     {
-        this.setAccountType(AccountType.CUSTOMER);
+        getAccount().setAccountType(AccountType.CUSTOMER);
     }
 }

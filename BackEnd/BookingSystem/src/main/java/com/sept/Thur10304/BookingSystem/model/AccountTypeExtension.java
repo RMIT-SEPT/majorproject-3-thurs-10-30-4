@@ -25,22 +25,6 @@ public abstract class AccountTypeExtension {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    protected AccountType accountType;
-
-    public String getAccountTypeName(){
-        return this.accountType.toString().toLowerCase();
-    }
-
-    public AccountType getAccountType(){
-        return this.accountType;
-    }
-    
-    public void setAccountType(AccountType accountType){
-        this.accountType = accountType;
-    }
-
-
-
     public Account getAccount() {
         return this.account;
     }
