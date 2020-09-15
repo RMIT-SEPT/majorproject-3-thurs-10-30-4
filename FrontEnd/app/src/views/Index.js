@@ -44,9 +44,9 @@ import {
   parseOptions,
   chartExample1,
   chartExample2
-} from "variables/charts.js";
+} from "../variables/charts.js";
 
-import Header from "components/Headers/Header.js";
+//import Header from "../components/Headers/Header.js";
 
 class Index extends React.Component {
   constructor(props){
@@ -70,7 +70,7 @@ class Index extends React.Component {
   render() {
     return (
       <>
-        <Header />
+        {/* <Header /> */}
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>

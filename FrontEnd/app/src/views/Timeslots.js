@@ -32,7 +32,7 @@ import {
   UncontrolledDropdown,
 } from "reactstrap";
 // core components
-import TimeslotHeader from "components/Headers/TimeslotHeader.js";
+import TimeslotHeader from "../components/Headers/TimeslotHeader.js";
 import ServiceChosen from "../components/ServiceChosen.js";
 
 class Timeslots extends React.Component {
