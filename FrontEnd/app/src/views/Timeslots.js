@@ -33,7 +33,6 @@ import {
 } from "reactstrap";
 // core components
 import TimeslotHeader from "../components/Headers/TimeslotHeader.js";
-import ServiceChosen from "../components/ServiceChosen.js";
 
 class Timeslots extends React.Component {
   constructor(props) {
@@ -49,7 +48,7 @@ class Timeslots extends React.Component {
   }
 
   getServiceChosenID() {
-      return ServiceChosen.id;
+      return localStorage.getItem('serviceId');
   }   
 
   getTimeslots() {
