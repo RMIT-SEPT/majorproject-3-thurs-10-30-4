@@ -33,6 +33,12 @@ public class Timeslot {
     @JsonFormat(pattern = "hh:mm")
     private Date endTime;
 
+    @JsonManagedReference
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", referencedColumnName = "bookingId")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Booking booking;
+
     public Long getTimeslotId() {
         return this.timeslotId;
     }
@@ -72,5 +78,15 @@ public class Timeslot {
     public void setService(Service_ service) {
         this.service = service;
     }
+
+
+    public Booking getBooking() {
+        return this.booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
 }
     

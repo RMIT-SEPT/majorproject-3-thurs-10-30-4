@@ -24,14 +24,13 @@ workerId (not yet implemented)|Long|Foreign key|Key for the worker working this 
 date|Date|none|Date that the time slot is on|Date is at least one hour into the future
 startTime|Time|none|Time that the slot starts, in format hh:mm|Start time is before end time (not working)
 endTime|Time|none|Time that the slot ends, in format hh:mm|End time is after start time (not working)
-bookingId (not yet implemented)|Long|Foreign key|Id of the booking if it exists|Check if booking exists
+bookingId|Long|Foreign key|Id of the booking if it exists|Check if booking exists
 
-# Booking (not yet complete)
+# Booking
 Field Name|Data Type|key-type|Description|Validation
 ---|---|---|---|---
 bookingId|Long|Primary key|auto-generated key for the booking|auto-generated
-timeslotId|Long|Foreign key|Key for the timeslot that was booked|check that time slot exists
-customerId|Long|Foreign key|Key for the customer that made the booking|check that customer exists
+customerId (not yet implemented)|Long|Foreign key|Key for the customer that made the booking|check that customer exists
 dateBooked|Date/Time|None|Date and time that the customer made the booking|Date is before start date of time slot
 
 
