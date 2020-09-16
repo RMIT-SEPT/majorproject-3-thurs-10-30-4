@@ -30,16 +30,16 @@ public class Service_Controller {
     private Service_Service serviceService;
 
     // Saves a service to the database
-    @PostMapping("/save")
-    public ResponseEntity<?> createNewService(@Valid @RequestBody Service_ service, BindingResult result) {
+    @PostMapping("/save/{adminId}")
+    public ResponseEntity<?> createNewService(@Valid @RequestBody Service_ service, @PathVariable Long adminId, BindingResult result) {
         if (result.hasErrors()){
             return new ResponseEntity<String>("Invalid Service Object", HttpStatus.BAD_REQUEST);
         }
-        Service_ service1 = serviceService.saveOrUpdateService(service);
-        if (service1 != null){
+        try {
+            Service_ service1 = serviceService.saveOrUpdateService(service, adminId);
             return new ResponseEntity<Service_>(service1, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<String>("Service name already exists", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
