@@ -59,6 +59,16 @@ public class BookingController {
         }
     }
 
+    @GetMapping("/getbycustomer/{customerId}")
+    public ResponseEntity<?> getTimeslotByCustomerId(@Valid @PathVariable Long customerId){
+        try{
+            Iterable<Timeslot> timeslots = bookingService.getTimeslotByCustomerId(customerId);
+            return new ResponseEntity<Iterable<Timeslot>>(timeslots, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @DeleteMapping("/delete/{bookingId}")
     public ResponseEntity<?> deleteBooking(@Valid @PathVariable Long bookingId) {
         try{

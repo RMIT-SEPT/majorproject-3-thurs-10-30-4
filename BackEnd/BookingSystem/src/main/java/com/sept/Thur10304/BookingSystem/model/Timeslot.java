@@ -29,7 +29,7 @@ public class Timeslot {
     @JsonFormat(pattern = "hh:mm")
     private Date startTime;
 
-    // @NotBlank(message = "First name is required.")
+    // @NotBlank(message = "End time is required.")
     @JsonFormat(pattern = "hh:mm")
     private Date endTime;
 

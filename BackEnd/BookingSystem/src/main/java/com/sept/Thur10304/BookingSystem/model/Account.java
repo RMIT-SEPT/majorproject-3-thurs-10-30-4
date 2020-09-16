@@ -12,6 +12,7 @@ import java.util.Date; // for registration date
 import java.util.Set;
 
 import javax.validation.constraints.Pattern; // regex validation
+import java.time.ZonedDateTime; // activity timestamp
 
 @Entity
 public class Account {
@@ -35,12 +36,13 @@ public class Account {
     private String email;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateCreated;
+    // Timestamp of last activity (to make login expire and require new login)
+    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
+    private ZonedDateTime activityTimestamp;
 
-    
     @JsonIgnore
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Booking> bookings;
-
 
     public Long getId() {
         return this.id;
@@ -84,6 +86,16 @@ public class Account {
         this.email=email;
     }
 
+    public String getType()
+    {
+        return this.type;
+    }
+
+    public void setType(String type)
+    {
+        this.type=type;
+    }
+
     public Date getDateCreated()
     {
         return this.dateCreated;
@@ -105,6 +117,8 @@ public class Account {
     protected void onCreate()
     {
         this.dateCreated = new Date();
+        // account type is customer by default
+        this.type = "customer";
     }
 
 }
