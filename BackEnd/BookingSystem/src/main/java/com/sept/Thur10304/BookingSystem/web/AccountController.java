@@ -102,11 +102,12 @@ public class AccountController {
 
         if (accountService.verifyAccount(account.getEmail(), account.getPassword()))
         {
+            Account loginAccount = accountService.getAccount(account.getEmail(), account.getPassword());
             // login authorised
             // presumably we send an authentication token or do a redirect
             //Account account1 = accountService.saveOrUpdateAccount(account);
             // HTTP Status for successful login should be 200 OK
-            return new ResponseEntity<Account>(account, HttpStatus.OK);
+            return new ResponseEntity<Account>(loginAccount, HttpStatus.OK);
         }
         // login not authorised
         // return failed login message
