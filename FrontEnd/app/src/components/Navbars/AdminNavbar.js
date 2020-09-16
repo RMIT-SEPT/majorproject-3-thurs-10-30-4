@@ -34,13 +34,18 @@ class AdminNavbar extends React.Component {
     super(props);
 
     this.state = {
-        email : localStorage.getItem('email')
+        firstName : localStorage.getItem('firstName').charAt(0).toUpperCase()
+                    + localStorage.getItem('firstName').slice(1),
+        lastName : localStorage.getItem('lastName').charAt(0).toUpperCase()
+                    + localStorage.getItem('lastName').slice(1)
     };
 
   }
 
   logout() {
-    localStorage.removeItem('email');
+    localStorage.removeItem('id');
+    localStorage.removeItem('firstName');
+    localStorage.removeItem('lastName');
     window.location.href = "http://localhost:3000/";
   }
   render() {
@@ -62,7 +67,7 @@ class AdminNavbar extends React.Component {
                     </span>
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        {this.state.email}
+                        {this.state.firstName} {this.state.lastName}
                       </span>
                     </Media>
                   </Media>

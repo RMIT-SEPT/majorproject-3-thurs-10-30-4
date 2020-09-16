@@ -76,7 +76,9 @@ class Login extends React.Component {
 				if (response.data != null)
 				{ 
 					this.setState(this.initialState);
-					localStorage.setItem('email', newPerson.email);
+          localStorage.setItem('id', response.data.id);
+          localStorage.setItem('firstName', response.data.firstName);
+          localStorage.setItem('lastName', response.data.lastName);
 					window.location.href = "http://localhost:3000/Admin/services_dashboard";
 				}
 			})
