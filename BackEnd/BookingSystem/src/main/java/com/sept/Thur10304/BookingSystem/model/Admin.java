@@ -21,11 +21,11 @@ public class Admin extends AccountTypeExtension {
 
     @OneToMany(mappedBy = "admin", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Worker> workers;
-
+/*
     // TODO when admins are being implemented
-    @OneToOne(mappedBy = "booking")
+    @OneToOne(mappedBy = "admin")
     private Service_ service;
-
+*/
     public List<Worker> getWorkers() {
         return this.workers;
     }
