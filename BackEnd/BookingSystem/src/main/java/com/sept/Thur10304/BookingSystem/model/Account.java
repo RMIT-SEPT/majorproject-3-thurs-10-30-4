@@ -86,16 +86,6 @@ public class Account {
         this.email=email;
     }
 
-    public String getType()
-    {
-        return this.type;
-    }
-
-    public void setType(String type)
-    {
-        this.type=type;
-    }
-
     public Date getDateCreated()
     {
         return this.dateCreated;
@@ -117,8 +107,6 @@ public class Account {
     protected void onCreate()
     {
         this.dateCreated = new Date();
-        // account type is customer by default
-        this.type = "customer";
     }
 
 }
