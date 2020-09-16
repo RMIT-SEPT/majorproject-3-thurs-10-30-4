@@ -26,6 +26,8 @@ import Sidebar from "../components/Sidebar/Sidebar.js";
 
 import routes from "../routes.js";
 
+var email = localStorage.getItem('email');
+
 class Admin extends React.Component {
   componentDidUpdate(e) {
     document.documentElement.scrollTop = 0;
@@ -59,7 +61,15 @@ class Admin extends React.Component {
     }
     return "Brand";
   };
+
+  checkLogin() {
+    if(email == null) {
+      window.location.href = "http://localhost:3000/";
+    }
+  };
+
   render() {
+    this.checkLogin();
     return (
       <>
         <Sidebar

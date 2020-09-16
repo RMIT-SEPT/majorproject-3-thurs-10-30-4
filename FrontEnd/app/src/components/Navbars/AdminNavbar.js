@@ -30,6 +30,19 @@ import {
 } from "reactstrap";
 
 class AdminNavbar extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+        email : localStorage.getItem('email')
+    };
+
+  }
+
+  logout() {
+    localStorage.removeItem('email');
+    window.location.href = "http://localhost:3000/";
+  }
   render() {
     return (
       <>
@@ -49,7 +62,7 @@ class AdminNavbar extends React.Component {
                     </span>
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        Jessica Jones
+                        {this.state.email}
                       </span>
                     </Media>
                   </Media>
@@ -67,7 +80,7 @@ class AdminNavbar extends React.Component {
                     <span>My Bookings</span>
                   </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                  <DropdownItem href="#pablo" onClick={this.logout}>
                     <i className="ni ni-user-run" />
                     <span>Logout</span>
                   </DropdownItem>

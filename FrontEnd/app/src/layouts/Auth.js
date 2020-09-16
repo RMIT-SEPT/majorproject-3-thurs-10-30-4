@@ -30,7 +30,7 @@ import UserProfile from '../session/UserProfile';
 
 //UserProfile.setName("MR TEST");
 
-var userName = localStorage.getItem('username');
+var email = localStorage.getItem('email');
 
 class Auth extends React.Component {
   componentDidMount() {
@@ -54,9 +54,17 @@ class Auth extends React.Component {
       }
     });
   };
+
+  checkLogin() {
+    if(email != null) {
+      window.location.href = "http://localhost:3000/Admin/services_dashboard";
+    }
+  };
+
   render() {
-	  
-	  console.log("Session username: "+userName);
+    
+    this.checkLogin();
+	  console.log("Session email: "+ email);
 	  
 	  
     return (

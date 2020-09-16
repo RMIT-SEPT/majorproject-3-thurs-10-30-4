@@ -16,6 +16,7 @@
 
 */
 import React from "react";
+import axios from 'axios';
 
 // reactstrap components
 import {
@@ -37,7 +38,64 @@ import {
 } from "react-router-dom";
 
 class Login extends React.Component {
+  constructor(props){
+    super(props);
+
+    this.state= this.initialState;
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+
+  }
+
+  initialState = {
+    email: "",
+    password: ""
+  }
+
+  onChange = e => {
+    this.setState({[e.target.name]: e.target.value});
+  }
+
+  onSubmit = e =>
+	{  
+		e.preventDefault();
+
+		const newPerson =
+		{
+			password: this.state.password,
+      email: this.state.email,
+      firstName: "abcdef",
+			lastName: "abcdef"
+		}
+
+    console.log("Email " + this.state.email + " Password " + this.state.password);
+
+		axios.post("http://localhost:8080/api/Account/Login", newPerson)
+			.then(response =>
+			{
+				if (response.data != null)
+				{ 
+					this.setState(this.initialState);
+					localStorage.setItem('email', newPerson.email);
+					window.location.href = "http://localhost:3000/Admin/services_dashboard";
+				}
+			})
+			.catch(err =>
+			{
+				console.log("Error");
+				if (typeof err.response.data.defaultMessage != 'undefined')
+				{
+					alert(err.response.data.defaultMessage);
+				}
+				else
+				{
+					alert(err.response.data[0].defaultMessage);
+				}
+			});
+		}
+
   render() {
+    const {email, password} = this.state;
     return (
       <>
         <Col lg="5" md="7">
@@ -46,7 +104,7 @@ class Login extends React.Component {
               <div className="text-center text-muted mb-4">
                 <small>Sign in with credentials</small>
               </div>
-              <Form role="form">
+              <Form onSubmit={this.onSubmit} role="form">
                 <FormGroup className="mb-3">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
@@ -54,7 +112,14 @@ class Login extends React.Component {
                         <i className="ni ni-email-83" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Email" type="email" autoComplete="new-email"/>
+                    <Input required
+                      placeholder="Email"
+                      type="email"
+                      autoComplete="off"
+                      name="email"
+                      value={email}
+                      onChange = {this.onChange}
+                    />
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -64,15 +129,18 @@ class Login extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Password" type="password" autoComplete="new-password"/>
+                    <Input required
+                      placeholder="Password"
+                      type="password"
+                      autoComplete="off"
+                      name="password"
+                      value={password}
+                      onChange = {this.onChange}
+                    />
                   </InputGroup>
                 </FormGroup>
                 <div className="text-center">
-                  <Link to="/admin/services_dashboard">
-                    <Button className="my-4" color="primary" type="button">
-                      Sign in
-                    </Button>
-                  </Link>
+                  <Input type="submit" className="btn btn-primary my-4" value="Login"/>
                 </div>
               </Form>
             </CardBody>

@@ -81,7 +81,7 @@ class Register extends React.Component {
 				if (response.data != null)
 				{ 
 					this.setState(this.initialState);
-					localStorage.setItem('username', newPerson.firstName);
+					//localStorage.setItem('username', newPerson.firstName);
 					alert("New Person Saved, you may now login."); 
 					window.location.href = "http://localhost:3000/auth/login";
 				}
