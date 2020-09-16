@@ -1,8 +1,11 @@
 package com.sept.Thur10304.BookingSystem.services;
 
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
+import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
 import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
+import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
 import com.sept.Thur10304.BookingSystem.model.Account;
+import com.sept.Thur10304.BookingSystem.model.Admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sept.Thur10304.BookingSystem.model.Customer;
+import com.sept.Thur10304.BookingSystem.model.Worker;
+import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 
 @Service
 public class AccountService {
@@ -20,6 +25,12 @@ public class AccountService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private WorkerRepository workerRepository;
+
+    @Autowired
+    private AdminRepository adminRepository;
 
     public List<Account> findAll() {
 
@@ -71,19 +82,43 @@ public class AccountService {
         return "FAIL";
     }
 
+// original account creation, now uses account creation for account type
+    // public Account saveOrUpdateAccount(Account account) {
 
-    public Account saveOrUpdateAccount(Account account) {
+    //     //logic
+    //     return AccountRepository.save(account);
+    // }
 
-        //logic
-        return AccountRepository.save(account);
-    }
-
-    public Account saveOrUpdateCustomer(Account account){
+    public Account saveCustomer(Account account){
 
         AccountRepository.save(account);
         Customer customer = new Customer();
         customer.setAccount(account);
         customerRepository.save(customer);
+        return account;
+    }
+
+    public Account saveWorker(Account account, Long adminId) throws Exception{
+        Optional<Admin> findAdmin = adminRepository.findById(adminId);
+        if (!findAdmin.isPresent()){
+            throw new Exception("Admin not found");
+        }
+        Admin admin = findAdmin.get();
+        AccountRepository.save(account);
+        Worker worker = new Worker();
+        worker.setAccount(account);
+        worker.setAdmin(admin);
+        workerRepository.save(worker);
+        return account;
+    }
+
+    public Account saveAdmin(Account account){
+        // TODO add connection to service
+
+        AccountRepository.save(account);
+        Admin admin = new Admin();
+        admin.setAccount(account);
+        adminRepository.save(admin);
         return account;
     }
 

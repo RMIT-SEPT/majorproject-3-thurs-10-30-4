@@ -23,6 +23,16 @@ public class Worker extends AccountTypeExtension {
     @JoinColumn(name = "adminId", nullable = false)
     private Admin admin;
 
+
+    public Admin getAdmin() {
+        return this.admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
+
     @PrePersist
     protected void onCreate()
     {

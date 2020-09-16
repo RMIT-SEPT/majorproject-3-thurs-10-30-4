@@ -26,6 +26,14 @@ public class Admin extends AccountTypeExtension {
     @OneToMany(mappedBy = "admin", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Worker> workers;
 
+    public List<Worker> getWorkers() {
+        return this.workers;
+    }
+
+    public void setWorkers(List<Worker> workers) {
+        this.workers = workers;
+    }
+
     @PrePersist
     protected void onCreate()
     {
