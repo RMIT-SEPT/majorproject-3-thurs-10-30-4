@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.validation.FieldError; // validation errors
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +50,63 @@ public class AccountController {
 
         Account account1 = accountService.saveCustomer(account);
         return new ResponseEntity<Account>(account, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/saveworker/{adminId}")
+    public ResponseEntity<?> createNewWorker(@Valid @RequestBody Account account, @PathVariable Long adminId, BindingResult result) {
+        if (result.hasErrors()){
+            //Map <String, String> errorMap = new HashMap<>();
+
+            //for (FieldError error : result.getFieldErrors()){
+                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            //}
+
+            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
+        }
+
+        if ( allEmails().contains(account.getEmail()))
+        {
+            // return duplicate email error message
+            FieldError fe = new FieldError("", "", null, false, null, null, "Email already registered");
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        }
+        try {
+            Account account1 = accountService.saveWorker(account, adminId);
+            return new ResponseEntity<Account>(account, HttpStatus.CREATED);
+        } catch (Exception e){
+            FieldError fe = new FieldError("", "", null, false, null, null, e.getMessage());
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+
+        }
+    }
+
+    // TODO remove this, used for testing
+    @PostMapping("/saveadmin")
+    public ResponseEntity<?> createNewAdmin(@Valid @RequestBody Account account, BindingResult result) {
+        if (result.hasErrors()){
+            //Map <String, String> errorMap = new HashMap<>();
+
+            //for (FieldError error : result.getFieldErrors()){
+                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            //}
+
+            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
+        }
+
+        if ( allEmails().contains(account.getEmail()))
+        {
+            // return duplicate email error message
+            FieldError fe = new FieldError("", "", null, false, null, null, "Email already registered");
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        }
+        try {
+            Account account1 = accountService.saveAdmin(account);
+            return new ResponseEntity<Account>(account, HttpStatus.CREATED);
+        } catch (Exception e){
+            FieldError fe = new FieldError("", "", null, false, null, null, e.getMessage());
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+
+        }
     }
 
 
