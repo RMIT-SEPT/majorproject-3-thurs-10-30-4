@@ -61,6 +61,7 @@ class ServicesHeader extends React.Component {
 
     myFunction(text) {
         localStorage.setItem('serviceId', text);
+        localStorage.setItem('serviceName', this.state.services[parseInt(text) - 1].serviceName);
     }
   
     render() {

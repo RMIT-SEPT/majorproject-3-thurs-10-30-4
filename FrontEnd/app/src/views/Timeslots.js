@@ -51,6 +51,10 @@ class Timeslots extends React.Component {
       return localStorage.getItem('serviceId');
   }   
 
+  getServiceName() {
+    return localStorage.getItem('serviceName');
+  }
+
   getTimeslots() {
     console.log()
     axios.get("http://localhost:8080/api/timeslot/getbyservice/" + this.getServiceChosenID())
@@ -65,8 +69,6 @@ class Timeslots extends React.Component {
         this.setState({timeslots: error.response.data});
     });
   }
-
-  
   
   render() {
     return (
@@ -79,7 +81,7 @@ class Timeslots extends React.Component {
             <div className="col">
               <Card className="shadow">
                 <CardHeader className="border-0">
-                  <h3 className="mb-0">Time slots</h3>
+                  <h3 className="mb-0"> {this.getServiceName()} Time slots</h3>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
@@ -104,7 +106,7 @@ class Timeslots extends React.Component {
                             <td>{timeslot.date}</td> {/* DATE */}
                             <td>{timeslot.startTime}</td> {/* START TIME */}
                             <td>{timeslot.endTime}</td> {/* FINISH TIME */}
-                            <td>{/*timeslot.price*/} PRICE </td> {/*  PRICE */}
+                            <td>${timeslot.price} </td> {/*  PRICE */}
                             <td>{/*timeslot.serviceName*/} WORKER NAME</td> {/* WORKER NAME */}
                             <td> {/* PENDING STATUS */}
                               <Badge color="" className="badge-dot mr-4">
