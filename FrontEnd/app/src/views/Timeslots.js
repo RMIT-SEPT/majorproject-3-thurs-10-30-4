@@ -81,6 +81,7 @@ class Timeslots extends React.Component {
     axios.post("http://localhost:8080/api/booking/save", newBooking)
       .then(response => {
         alert("Booked"); 
+        window.location.reload(false);
       })
       .catch(err => {
 
@@ -93,6 +94,32 @@ class Timeslots extends React.Component {
 
       });
 
+  }
+
+  getStatus(timeslot) {
+    if(timeslot.booking == null) {
+      return (
+      <Badge color="" className="badge-dot mr-4">
+        <i className="bg-success"/>
+        Available
+      </Badge>
+      );
+    } else {
+      return (
+        <Badge color="" className="badge-dot mr-4">
+        <i className="bg-danger"/>
+        Booked
+      </Badge>
+      );
+    }
+  }
+
+  getBooked(timeslot) {
+    if(timeslot.booking == null) {
+      return false;
+    } else {
+      return true;
+    }
   }
   
   render() {
@@ -134,13 +161,10 @@ class Timeslots extends React.Component {
                             <td>${timeslot.price} </td> {/*  PRICE */}
                             <td>{/*timeslot.serviceName*/} WORKER NAME</td> {/* WORKER NAME */}
                             <td> {/* PENDING STATUS */}
-                              <Badge color="" className="badge-dot mr-4">
-                                  <i className="bg-warning" />
-                                  pending
-                              </Badge>
-                              </td>
-                              <td className="text-right">
-                              <Button className="pr-5 pl-5" color="primary" type="button" onClick={e => this.book(timeslot)}>BOOK</Button>
+                                  {this.getStatus(timeslot)}
+                            </td>
+                            <td className="text-right">
+                              <Button className="pr-5 pl-5" color="primary" type="button" disabled={this.getBooked(timeslot)} onClick={e => this.book(timeslot)}>BOOK</Button>
                             </td>
                         </tr>
                       ))
