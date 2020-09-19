@@ -20,6 +20,7 @@ import axios from "axios";
 
 // reactstrap components
 import {
+  Button,
   Badge,
   Card,
   Container,
@@ -69,6 +70,30 @@ class Timeslots extends React.Component {
         this.setState({timeslots: error.response.data});
     });
   }
+
+  book(timeslot) {
+    
+    const newBooking = {
+      timeslotId: timeslot.timeslotId,
+      customerId: 1
+    }
+
+    axios.post("http://localhost:8080/api/booking/save", newBooking)
+      .then(response => {
+        alert("Booked"); 
+      })
+      .catch(err => {
+
+        // returns error message corresponding to issue
+        if (typeof err.response.data.defaultMessage != 'undefined') {
+          alert(err.response.data.defaultMessage);
+        } else {
+          alert(err.response.data[0].defaultMessage);
+        }
+
+      });
+
+  }
   
   render() {
     return (
@@ -115,26 +140,7 @@ class Timeslots extends React.Component {
                               </Badge>
                               </td>
                               <td className="text-right">
-                              <UncontrolledDropdown> {/* OPTION TO BOOK */}
-                                  <DropdownToggle
-                                  className="btn-icon-only text-light"
-                                  href="#pablo"
-                                  role="button"
-                                  size="sm"
-                                  color=""
-                                  onClick={e => e.preventDefault()}
-                                  >
-                                  <i className="fas fa-ellipsis-v" />
-                                  </DropdownToggle>
-                                  <DropdownMenu className="dropdown-menu-arrow" right>
-                                  <DropdownItem
-                                      href="#pablo"
-                                      onClick={e => e.preventDefault()}
-                                  >
-                                      Book
-                                  </DropdownItem>
-                                  </DropdownMenu>
-                              </UncontrolledDropdown>
+                              <Button className="pr-5 pl-5" color="primary" type="button" onClick={e => this.book(timeslot)}>BOOK</Button>
                             </td>
                         </tr>
                       ))
