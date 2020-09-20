@@ -140,7 +140,7 @@ public class AccountService {
         }
     }
 
-    public Customer findWorker(Long workerId) throws Exception{
+    public Worker findWorker(Long workerId) throws Exception{
         Optional<Worker> findWorker = workerRepository.findById(workerId);
         if (findWorker.isPresent()){
             return findWorker.get();

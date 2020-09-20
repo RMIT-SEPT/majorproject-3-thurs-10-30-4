@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.swing.text.html.Option;
 
 import com.sept.Thur10304.BookingSystem.model.Booking;
+import com.sept.Thur10304.BookingSystem.model.Customer;
 import com.sept.Thur10304.BookingSystem.services.TimeslotService;
 import com.sept.Thur10304.BookingSystem.model.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class BookingService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private AccountService accountService;
+
     public Booking saveOrUpdateBooking(Long timeslotId, Long customerId) throws Exception{
         // TODO customer stuff
         // Get timeslot (if exists)
@@ -42,16 +46,13 @@ public class BookingService {
             if (timeslot.getBooking() != null){
                 throw new Exception("Timeslot already booked");
             }
-            // Check if customer exists
-            Optional<Account> customer = accountRepository.findById(customerId);
-            if (!customer.isPresent()){
-                throw new Exception("Customer not found");
-            }
+            // Finds customer (throws exception if not found)
+            Customer customer = accountService.findCustomer(customerId);
             // Create booking
             Booking booking = new Booking();
             booking.setTimeslot(timeslot);
             timeslot.setBooking(booking);
-            booking.setCustomer(customer.get());
+            booking.setCustomer(customer);
             bookingRepository.save(booking);
             return booking;
         } else {
@@ -79,12 +80,11 @@ public class BookingService {
     }
 
     public Iterable<Timeslot> getTimeslotByCustomerId(Long customerId) throws Exception{
-        // Check if customer exists
-        Optional<Account> customer = accountRepository.findById(customerId);
-        if (!customer.isPresent()){
-            throw new Exception("Customer not found");
-        }
-        Set<Booking> bookings = customer.get().getBookings();
+
+        // Finds customer (throws exception if not found)
+        Customer customer = accountService.findCustomer(customerId);
+
+        Set<Booking> bookings = customer.getBookings();
 
         Iterator<Booking> bookingIterator = bookings.iterator();
 

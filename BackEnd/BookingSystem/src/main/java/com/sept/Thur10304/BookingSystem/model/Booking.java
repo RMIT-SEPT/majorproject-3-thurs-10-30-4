@@ -49,11 +49,11 @@ public class Booking {
         this.dateCreated = dateCreated;
     }
 
-    public Account getCustomer() {
+    public Customer getCustomer() {
         return this.customer;
     }
 
-    public void setCustomer(Account customer) {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 
