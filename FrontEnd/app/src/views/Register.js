@@ -37,14 +37,14 @@ class Register extends React.Component {
   constructor(props){
     super(props);
 
-    this.state= this.initialState;
+    this.state = this.initialState;
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
 
   }
 
   initialState = {
-    firstName: "", lastName: "", password: "", email: "", retypedPassword: ""
+    firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errorResponse: []
   }
 
   onChange = e => {
