@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.*;
 import ch.qos.logback.core.joran.conditional.ElseAction;
 
 import java.util.Date; // for registration date
+import java.util.Set;
+
 import javax.validation.constraints.Pattern; // regex validation
 import java.time.ZonedDateTime; // activity timestamp
 
@@ -38,9 +40,9 @@ public class Account {
     @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
     private ZonedDateTime activityTimestamp;
 
-    // type : customer, employee/worker, admin (hardcoded in datbase)
-    // "customer", "employee", "admin"
-    private String type;
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Booking> bookings;
 
     public Long getId() {
         return this.id;
@@ -84,16 +86,6 @@ public class Account {
         this.email=email;
     }
 
-    public String getType()
-    {
-        return this.type;
-    }
-
-    public void setType(String type)
-    {
-        this.type=type;
-    }
-
     public Date getDateCreated()
     {
         return this.dateCreated;
@@ -103,12 +95,18 @@ public class Account {
         this.dateCreated = dateCreated;
     }
 
+    public Set<Booking> getBookings() {
+        return this.bookings;
+    }
+
+    public void setBookings(Set<Booking> bookings) {
+        this.bookings = bookings;
+    }
+
     @PrePersist
     protected void onCreate()
     {
         this.dateCreated = new Date();
-        // account type is customer by default
-        this.type = "customer";
     }
 
 }

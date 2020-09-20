@@ -20,6 +20,7 @@ import axios from "axios";
 
 // reactstrap components
 import {
+  Button,
   Badge,
   Card,
   Container,
@@ -33,7 +34,6 @@ import {
 } from "reactstrap";
 // core components
 import TimeslotHeader from "../components/Headers/TimeslotHeader.js";
-import ServiceChosen from "../components/ServiceChosen.js";
 
 class Timeslots extends React.Component {
   constructor(props) {
@@ -49,8 +49,12 @@ class Timeslots extends React.Component {
   }
 
   getServiceChosenID() {
-      return ServiceChosen.id;
+      return localStorage.getItem('serviceId');
   }   
+
+  getServiceName() {
+    return localStorage.getItem('serviceName');
+  }
 
   getTimeslots() {
     console.log()
@@ -67,7 +71,56 @@ class Timeslots extends React.Component {
     });
   }
 
-  
+  book(timeslot) {
+    
+    const newBooking = {
+      timeslotId: timeslot.timeslotId,
+      customerId: 1
+    }
+
+    axios.post("http://localhost:8080/api/booking/save", newBooking)
+      .then(response => {
+        alert("Booked"); 
+        window.location.reload(false);
+      })
+      .catch(err => {
+
+        // returns error message corresponding to issue
+        if (typeof err.response.data.defaultMessage != 'undefined') {
+          alert(err.response.data.defaultMessage);
+        } else {
+          alert(err.response.data[0].defaultMessage);
+        }
+
+      });
+
+  }
+
+  getStatus(timeslot) {
+    if(timeslot.booking == null) {
+      return (
+      <Badge color="" className="badge-dot mr-4">
+        <i className="bg-success"/>
+        Available
+      </Badge>
+      );
+    } else {
+      return (
+        <Badge color="" className="badge-dot mr-4">
+        <i className="bg-danger"/>
+        Booked
+      </Badge>
+      );
+    }
+  }
+
+  getBooked(timeslot) {
+    if(timeslot.booking == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   
   render() {
     return (
@@ -80,7 +133,7 @@ class Timeslots extends React.Component {
             <div className="col">
               <Card className="shadow">
                 <CardHeader className="border-0">
-                  <h3 className="mb-0">Time slots</h3>
+                  <h3 className="mb-0"> {this.getServiceName()} Time slots</h3>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
@@ -105,35 +158,13 @@ class Timeslots extends React.Component {
                             <td>{timeslot.date}</td> {/* DATE */}
                             <td>{timeslot.startTime}</td> {/* START TIME */}
                             <td>{timeslot.endTime}</td> {/* FINISH TIME */}
-                            <td>{/*timeslot.price*/} PRICE </td> {/*  PRICE */}
+                            <td>${timeslot.price} </td> {/*  PRICE */}
                             <td>{/*timeslot.serviceName*/} WORKER NAME</td> {/* WORKER NAME */}
                             <td> {/* PENDING STATUS */}
-                              <Badge color="" className="badge-dot mr-4">
-                                  <i className="bg-warning" />
-                                  pending
-                              </Badge>
-                              </td>
-                              <td className="text-right">
-                              <UncontrolledDropdown> {/* OPTION TO BOOK */}
-                                  <DropdownToggle
-                                  className="btn-icon-only text-light"
-                                  href="#pablo"
-                                  role="button"
-                                  size="sm"
-                                  color=""
-                                  onClick={e => e.preventDefault()}
-                                  >
-                                  <i className="fas fa-ellipsis-v" />
-                                  </DropdownToggle>
-                                  <DropdownMenu className="dropdown-menu-arrow" right>
-                                  <DropdownItem
-                                      href="#pablo"
-                                      onClick={e => e.preventDefault()}
-                                  >
-                                      Book
-                                  </DropdownItem>
-                                  </DropdownMenu>
-                              </UncontrolledDropdown>
+                                  {this.getStatus(timeslot)}
+                            </td>
+                            <td className="text-right">
+                              <Button className="pr-5 pl-5" color="primary" type="button" disabled={this.getBooked(timeslot)} onClick={e => this.book(timeslot)}>BOOK</Button>
                             </td>
                         </tr>
                       ))

@@ -2,8 +2,9 @@ package com.sept.Thur10304.BookingSystem.model;
 
 import java.util.Date;
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.*;
+import java.math.BigDecimal;
 
 @Entity
 public class Timeslot {
@@ -17,6 +18,11 @@ public class Timeslot {
     @JoinColumn(name = "serviceId", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Service_ service;
+
+    @NotNull(message = "Price can not be null")
+    @Min(value = 1, message = "Price can not be less than $1")
+    @DecimalMax(value = "1000", inclusive = false, message = "Price can not be more than $1000")
+    private double price;
 
     //TODO
     // private Long workerId
@@ -33,12 +39,26 @@ public class Timeslot {
     @JsonFormat(pattern = "hh:mm")
     private Date endTime;
 
+    @JsonManagedReference
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", referencedColumnName = "bookingId")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Booking booking;
+
     public Long getTimeslotId() {
         return this.timeslotId;
     }
 
     public void setTimeslotId(Long timeslotId) {
         this.timeslotId = timeslotId;
+    }
+
+    public double getPrice() {
+        return this.price;
+    }
+
+    public void setPrice(double price) {
+        this.price = BigDecimal.valueOf(price).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     public Date getDate() {
@@ -72,5 +92,15 @@ public class Timeslot {
     public void setService(Service_ service) {
         this.service = service;
     }
+
+
+    public Booking getBooking() {
+        return this.booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
 }
     
