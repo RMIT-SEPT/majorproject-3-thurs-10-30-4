@@ -14,6 +14,10 @@ import java.util.Set;
 import javax.validation.constraints.Pattern; // regex validation
 import java.time.ZonedDateTime; // activity timestamp
 
+import com.sept.Thur10304.BookingSystem.model.AccountTypeExtension;
+
+import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
+
 @Entity
 public class Account {
 
@@ -39,7 +43,22 @@ public class Account {
     // Timestamp of last activity (to make login expire and require new login)
     @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
     private ZonedDateTime activityTimestamp;
+    // Login authentication code (normally should use encryption but should be fine for scope of project)
+    // We will just generate a unique authtoken which doesn't change so that we don't have to worry
+    // about multiple devices being logged into the same account.
+    private String userToken;
 
+
+    // type : customer, employee/worker, admin (hardcoded in datbase)
+    // "customer", "employee", "admin"
+    // private String type;
+
+    // Not sure if this is needed
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    @Transient private AccountTypeExtension accountTypeExtension;
+
+    private AccountType accountType;
     @JsonIgnore
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Booking> bookings;
@@ -94,6 +113,37 @@ public class Account {
     {
         this.dateCreated = dateCreated;
     }
+  
+    public String generateToken()
+    {
+        // valid token characters
+        String tokenChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                    + "0123456789"
+                                    + "abcdefghijklmnopqrstuvxyz"; 
+  
+        // create StringBuffer size of AlphaNumericString 
+        StringBuilder sb = new StringBuilder(16); 
+  
+        for (int i = 0; i < 16; i++)
+        { 
+            // generate a random number between 
+            // 0 to AlphaNumericString variable length 
+            int index = (int)(tokenChars.length() * Math.random()); 
+  
+            // add Character one by one in end of sb 
+            sb.append(tokenChars.charAt(index)); 
+        } 
+  
+        return sb.toString(); 
+    }
+  
+    public AccountType getAccountType(){
+        return this.accountType;
+    }
+    
+    public void setAccountType(AccountType accountType){
+        this.accountType = accountType;
+    }
 
     public Set<Booking> getBookings() {
         return this.bookings;
@@ -107,6 +157,9 @@ public class Account {
     protected void onCreate()
     {
         this.dateCreated = new Date();
+        // generate auth token, which will be a 12 digit alphanumeric string.
+        // Todo: Prevent duplicate tokens
+        userToken=generateToken();
     }
 
 }
