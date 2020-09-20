@@ -19,6 +19,7 @@ import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 @Entity
 public class Admin extends AccountTypeExtension {
 
+    @JsonIgnore
     @OneToMany(mappedBy = "admin", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Worker> workers;
 /*

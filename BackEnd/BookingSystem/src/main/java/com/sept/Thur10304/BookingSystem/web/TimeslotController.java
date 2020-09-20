@@ -29,17 +29,17 @@ public class TimeslotController {
     private TimeslotService timeslotService;
 
     // Saves a timeslot to the database
-    @PostMapping("/save/{serviceId}")
-    public ResponseEntity<?> createNewTimeslot(@Valid @RequestBody Timeslot timeslot, @PathVariable Long serviceId, BindingResult result) {
+    @PostMapping("/save/{serviceId}/{workerId}")
+    public ResponseEntity<?> createNewTimeslot(@Valid @RequestBody Timeslot timeslot, @PathVariable Long serviceId, @PathVariable Long workerId, BindingResult result) {
         if (result.hasErrors()){
             return new ResponseEntity<String>("Invalid Timeslot Object", HttpStatus.BAD_REQUEST);
         }
 
-        Timeslot timeslot1 = timeslotService.saveOrUpdateTimeslot(timeslot, serviceId);
-        if (timeslot1 != null){
+        try{
+            Timeslot timeslot1 = timeslotService.saveOrUpdateTimeslot(timeslot, serviceId, workerId);
             return new ResponseEntity<Timeslot>(timeslot1, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<String>("Invalid Timeslot Object", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

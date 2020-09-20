@@ -4,6 +4,9 @@ import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.*;
+
+import com.sept.Thur10304.BookingSystem.model.Worker;
+
 import java.math.BigDecimal;
 
 @Entity
@@ -24,8 +27,10 @@ public class Timeslot {
     @DecimalMax(value = "1000", inclusive = false, message = "Price can not be more than $1000")
     private double price;
 
-    //TODO
-    // private Long workerId
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "workerId", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Worker worker;
     
     // @NotBlank(message = "Date is required.")
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -59,6 +64,14 @@ public class Timeslot {
 
     public void setPrice(double price) {
         this.price = BigDecimal.valueOf(price).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
+    public Worker getWorker() {
+        return this.worker;
+    }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
     }
 
     public Date getDate() {

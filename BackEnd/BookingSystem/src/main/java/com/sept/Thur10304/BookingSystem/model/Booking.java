@@ -15,7 +15,6 @@ public class Booking {
     @OneToOne(mappedBy = "booking")
     private Timeslot timeslot;
 
-    // TODO change to customer
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customerId", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
