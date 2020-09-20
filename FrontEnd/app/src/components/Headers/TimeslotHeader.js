@@ -21,6 +21,11 @@ import React from "react";
 import { Container, Row, Col } from "reactstrap";
 
 class TimeslotHeader extends React.Component {
+  
+  getServiceName() {
+    return localStorage.getItem('serviceName');
+  }
+  
   render() {
     return (
       <>
@@ -31,7 +36,7 @@ class TimeslotHeader extends React.Component {
                 <div className="header-body text-center mb-7">
                     <Row className="justify-content-center">
                         <Col lg="5" md="6">
-                            <h1 className="text-white">Available Time slots</h1>
+                            <h1 className="text-white"> {this.getServiceName()} Time slots</h1>
                             <p className="text-lead text-light">
                                 Pick from the list of available times to make a booking.
                             </p>
