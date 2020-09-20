@@ -37,6 +37,7 @@ class UserHeader extends React.Component {
           {/* Mask */}
           <span className="mask bg-gradient-default opacity-8" />
           {/* Header container */}
+          {/* Replace placeholders with token information later */}
           <Container className="d-flex align-items-center" fluid>
             <Row>
               <Col lg="7" md="10">

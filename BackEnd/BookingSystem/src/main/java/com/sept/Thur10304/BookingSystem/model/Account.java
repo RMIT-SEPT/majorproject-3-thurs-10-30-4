@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.*;
 import ch.qos.logback.core.joran.conditional.ElseAction;
 
 import java.util.Date; // for registration date
+import java.util.Set;
+
 import javax.validation.constraints.Pattern; // regex validation
 import java.time.ZonedDateTime; // activity timestamp
 
@@ -52,6 +54,10 @@ public class Account {
     @Transient private AccountTypeExtension accountTypeExtension;
 
     private AccountType accountType;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Booking> bookings;
 
     public Long getId() {
         return this.id;
@@ -95,7 +101,6 @@ public class Account {
         this.email=email;
     }
 
-
     public Date getDateCreated()
     {
         return this.dateCreated;
@@ -113,13 +118,18 @@ public class Account {
         this.accountType = accountType;
     }
 
+    public Set<Booking> getBookings() {
+        return this.bookings;
+    }
+
+    public void setBookings(Set<Booking> bookings) {
+        this.bookings = bookings;
+    }
 
     @PrePersist
     protected void onCreate()
     {
         this.dateCreated = new Date();
-        // account type is customer by default
-        // this.type = "customer";
     }
 
 }
