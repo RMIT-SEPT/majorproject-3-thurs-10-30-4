@@ -78,6 +78,17 @@ public class AccountService {
         return null;
     }
 
+
+// original account creation, now uses account creation for account type
+    // public Account saveOrUpdateAccount(Account account) {
+
+    //     //logic
+    //     return AccountRepository.save(account);
+    // }
+
+    
+
+
     // same as above but return an authentication token which frontend can use
     // note, authentication token may generate duplicates, therefore it is important
     // for frontend to also track the account id or email.
@@ -110,13 +121,13 @@ public class AccountService {
     //     return AccountRepository.save(account);
     // }
 
-    public Account saveCustomer(Account account){
-
+  public Account saveCustomer(Account account){
         AccountRepository.save(account);
         Customer customer = new Customer();
         customer.setAccount(account);
         customerRepository.save(customer);
         return account;
+    
     }
 
     public Account saveWorker(Account account, Long adminId) throws Exception{
