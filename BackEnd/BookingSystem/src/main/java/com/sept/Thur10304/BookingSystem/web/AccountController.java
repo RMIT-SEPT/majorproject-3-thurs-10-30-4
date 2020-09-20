@@ -1,6 +1,7 @@
 package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
+import com.sept.Thur10304.BookingSystem.model.AuthorizationToken;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,38 @@ public class AccountController {
     @PostMapping("")
     public ResponseEntity<?> createNewAccount(@Valid @RequestBody Account account, BindingResult result) {
         if (result.hasErrors()){
+
+            System.out.println("Create new account.");
+
+            // for now return the first error. No need to handle multiple errors at once.
+            for (FieldError error : result.getFieldErrors()){
+                System.out.println("ERR1, returning error: " + error.toString());
+                //FieldError fe = new FieldError("", "", null, false, null, null, error.toString());
+                return new ResponseEntity <FieldError>(error, HttpStatus.BAD_REQUEST);
+            }
+
+            //Map <String, String> errorMap = new HashMap<>();
+            //for (FieldError error : result.getFieldErrors()){
+                //return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            //}
+            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
+        }
+
+        if ( allEmails().contains(account.getEmail()))
+        {
+            // return duplicate email error message
+            FieldError fe = new FieldError("", "", null, false, null, null, "Errr Email already registered: "+account.getEmail());
+            System.out.println("ERR2, returning error: " + fe.toString());
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        }
+        System.out.println("Account created successfully.");
+        Account account1 = accountService.saveCustomer(account);
+        return new ResponseEntity<Account>(account1, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/saveworker/{adminId}")
+    public ResponseEntity<?> createNewWorker(@Valid @RequestBody Account account, @PathVariable Long adminId, BindingResult result) {
+        if (result.hasErrors()){
             //Map <String, String> errorMap = new HashMap<>();
 
             //for (FieldError error : result.getFieldErrors()){
@@ -47,9 +80,42 @@ public class AccountController {
             FieldError fe = new FieldError("", "", null, false, null, null, "Email already registered");
             return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
         }
+        try {
+            Account account1 = accountService.saveWorker(account, adminId);
+            return new ResponseEntity<Account>(account, HttpStatus.CREATED);
+        } catch (Exception e){
+            FieldError fe = new FieldError("", "", null, false, null, null, e.getMessage());
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        }
+    }
 
-        Account account1 = accountService.saveCustomer(account);
-        return new ResponseEntity<Account>(account, HttpStatus.CREATED);
+    // TODO remove this, used for testing
+    @PostMapping("/saveadmin")
+    public ResponseEntity<?> createNewAdmin(@Valid @RequestBody Account account, BindingResult result) {
+        if (result.hasErrors()){
+            //Map <String, String> errorMap = new HashMap<>();
+
+            //for (FieldError error : result.getFieldErrors()){
+                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            //}
+
+            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
+        }
+
+        if ( allEmails().contains(account.getEmail()))
+        {
+            // return duplicate email error message
+            FieldError fe = new FieldError("", "", null, false, null, null, "Email already registered");
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        }
+        try {
+            Account account1 = accountService.saveAdmin(account);
+            return new ResponseEntity<Account>(account, HttpStatus.CREATED);
+        } catch (Exception e){
+            FieldError fe = new FieldError("", "", null, false, null, null, e.getMessage());
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+
+        }
     }
 
     @PostMapping("/saveworker/{adminId}")
@@ -136,6 +202,8 @@ public class AccountController {
     @PostMapping("Login")
     public ResponseEntity<?> loginAccount(@Valid @RequestBody Account account, BindingResult result) {
         if (result.hasErrors()){
+            // Todo: return cleaner error codes using tutorial
+            // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
             //Map <String, String> errorMap = new HashMap<>();
 
             //for (FieldError error : result.getFieldErrors()){
@@ -147,11 +215,12 @@ public class AccountController {
 
         if (accountService.verifyAccount(account.getEmail(), account.getPassword()))
         {
+            Account loginAccount = accountService.getAccount(account.getEmail(), account.getPassword());
             // login authorised
             // presumably we send an authentication token or do a redirect
             //Account account1 = accountService.saveOrUpdateAccount(account);
             // HTTP Status for successful login should be 200 OK
-            return new ResponseEntity<Account>(account, HttpStatus.OK);
+            return new ResponseEntity<Account>(loginAccount, HttpStatus.OK);
         }
         // login not authorised
         // return failed login message
@@ -160,4 +229,62 @@ public class AccountController {
         return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
     }
 
+
+    // Frontend POSTs their JWT. Backend returns the user Account.
+    @PostMapping("Profile")
+    public ResponseEntity<?> authoriseToken(@Valid @RequestBody AuthorizationToken token, BindingResult result) {
+        if (result.hasErrors()){
+            // Todo: return cleaner error codes using tutorial
+            // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
+            //Map <String, String> errorMap = new HashMap<>();
+
+            //for (FieldError error : result.getFieldErrors()){
+                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            //}
+
+            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
+        }
+        // for now this simply returns the first account in the repo, for testing
+        // it returns null if repo is empty
+        Account authorisedAccount = accountService.authoriseJWT(token);
+
+        if (authorisedAccount!=null)
+        {
+            //jwt authorisation failed
+            FieldError fe = new FieldError("", "", null, false, null, null, "jwt authorisation failed");
+            // 401 Unauthorized
+            return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+        }
+        // 200 OK and return matching account
+        return new ResponseEntity<Account>(authorisedAccount, HttpStatus.OK);
+    }
+
+    // Frontend POSTs JWT to logout. Backend will delete the token, requiring user to login again.
+    @PostMapping("Logout")
+    public ResponseEntity<?> deauthoriseToken(@Valid @RequestBody AuthorizationToken token, BindingResult result) {
+        if (result.hasErrors()){
+            // Todo: return cleaner error codes using tutorial
+            // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
+            //Map <String, String> errorMap = new HashMap<>();
+
+            //for (FieldError error : result.getFieldErrors()){
+                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            //}
+
+            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
+        }
+
+        // pass the jwt token to deauthorise
+        // if the token doesn't exist or is wrong, function will return false
+        if (accountService.deauthoriseJWT(token))
+        {
+            // 200 OK, jwt deauthorised
+            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        }
+        // jwt deauthorisation failed
+        // there is probably nothing we can do about this except ignore it
+        FieldError fe = new FieldError("", "", null, false, null, null, "jwt deauthorisation failed");
+        // 417 expectatoin failed (expected valid jwt to deauthorise)
+        return new ResponseEntity <FieldError>(fe, HttpStatus.EXPECTATION_FAILED);
+    }
 }

@@ -18,6 +18,8 @@
 import React from "react";
 import axios from 'axios';
 
+import UserProfile from '../session/UserProfile';
+
 // reactstrap components
 import {
   Card,
@@ -57,43 +59,57 @@ class Register extends React.Component {
     }
   }
 
-  onSubmit = e => {  
-    e.preventDefault();
+	onSubmit = e =>
+	{  
+		e.preventDefault();
 
-    const newPerson = {
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      password: this.state.password,
-      email:this.state.email
-    }
+		const newPerson =
+		{
+			firstName: this.state.firstName,
+			lastName: this.state.lastName,
+			password: this.state.password,
+			email:this.state.email
+		}
 
-    if (this.checkPasswords()) {
-    axios.post("http://localhost:8080/api/Account", newPerson)
-      .then(response => {
-        if (response.data != null) { 
-          this.setState(this.initialState);
-          alert("New Person Saved, you may now login."); 
-          window.location.href = "http://localhost:3000/auth/login";
-        }
-      })
-      .catch(err => {
+		//UserProfile.setName("REGISTERED USER: "+newPerson.firstName+" "+newPerson.lastName);
 
-        // returns error message corresponding to issue
-        if (typeof err.response.data.defaultMessage != 'undefined') {
-          alert(err.response.data.defaultMessage);
-        } else {
-          alert(err.response.data[0].defaultMessage);
-        }
-
-      });
-    } else {
-      alert("Passwords are not the same");
-    }
-  }
+		if (this.checkPasswords())
+		{
+			axios.post("http://localhost:8080/api/Account", newPerson)
+			.then(response =>
+			{
+				if (response.data != null)
+				{ 
+					this.setState(this.initialState);
+					//localStorage.setItem('username', newPerson.firstName);
+					alert("New Person Saved, you may now login."); 
+					window.location.href = "http://localhost:3000/auth/login";
+				}
+			})
+			.catch(err =>
+			{
+				console.log("Error");
+				if (typeof err.response.data.defaultMessage != 'undefined')
+				{
+					alert(err.response.data.defaultMessage);
+				}
+				else
+				{
+					alert(err.response.data[0].defaultMessage);
+				}
+			});
+		}
+		else
+		{
+			alert("Passwords are not the same");
+		}
+	}
 
   component
 
   render() {
+	console.log("User stored name: "+UserProfile.getName());
+	  
     const {firstName, lastName, email, password, retypedPassword} = this.state;
     return (
       <>

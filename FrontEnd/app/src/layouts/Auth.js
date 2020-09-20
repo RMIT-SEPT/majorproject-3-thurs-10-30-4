@@ -26,6 +26,12 @@ import AuthFooter from "../components/Footers/AuthFooter.js";
 
 import routes from "../routes.js";
 
+import UserProfile from '../session/UserProfile';
+
+//UserProfile.setName("MR TEST");
+
+var id = localStorage.getItem('id');
+
 class Auth extends React.Component {
   componentDidMount() {
     document.body.classList.add("bg-white");
@@ -48,7 +54,17 @@ class Auth extends React.Component {
       }
     });
   };
+
+  checkLogin() {
+    if(id != null) {
+      window.location.href = "http://localhost:3000/Admin/services_dashboard";
+    }
+  };
+
   render() {
+    
+    this.checkLogin();
+	  
     return (
       <>
         <div className="main-content">
