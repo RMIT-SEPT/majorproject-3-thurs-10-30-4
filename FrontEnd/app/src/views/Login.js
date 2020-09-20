@@ -68,18 +68,24 @@ class Login extends React.Component {
 			lastName: "abcdef"
 		}
 
-    console.log("Email " + this.state.email + " Password " + this.state.password);
-
 		axios.post("http://localhost:8080/api/Account/Login", newPerson)
 			.then(response =>
 			{
 				if (response.data != null)
 				{ 
-					this.setState(this.initialState);
+          this.setState(this.initialState);
           localStorage.setItem('id', response.data.id);
           localStorage.setItem('firstName', response.data.firstName);
           localStorage.setItem('lastName', response.data.lastName);
-					window.location.href = "http://localhost:3000/Admin/services_dashboard";
+          localStorage.setItem('type', response.data.accountType);
+
+          if(response.data.accountType == "CUSTOMER") {
+            window.location.href = "http://localhost:3000/admin/services_dashboard";
+          } else if (response.data.accountType == "ADMIN") {
+            window.location.href = "http://localhost:3000/admin/admin";
+          } else if (response.data.accountType == "WORKER") {
+            window.location.href = "http://localhost:3000/admin/worker";
+          }
 				}
 			})
 			.catch(err =>
