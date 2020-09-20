@@ -19,7 +19,7 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customerId", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Account customer;
+    private Customer customer;
 
     @JsonFormat(pattern = "yyyy-MM-dd|hh:mm")
     private Date dateCreated;
