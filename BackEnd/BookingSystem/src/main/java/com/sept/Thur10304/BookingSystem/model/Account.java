@@ -12,6 +12,10 @@ import java.util.Date; // for registration date
 import javax.validation.constraints.Pattern; // regex validation
 import java.time.ZonedDateTime; // activity timestamp
 
+import com.sept.Thur10304.BookingSystem.model.AccountTypeExtension;
+
+import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
+
 @Entity
 public class Account {
 
@@ -41,6 +45,17 @@ public class Account {
     // We will just generate a unique authtoken which doesn't change so that we don't have to worry
     // about multiple devices being logged into the same account.
     private String userToken;
+
+    // type : customer, employee/worker, admin (hardcoded in datbase)
+    // "customer", "employee", "admin"
+    // private String type;
+
+    // Not sure if this is needed
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    @Transient private AccountTypeExtension accountTypeExtension;
+
+    private AccountType accountType;
 
     public Long getId() {
         return this.id;
@@ -84,6 +99,7 @@ public class Account {
         this.email=email;
     }
 
+
     public Date getDateCreated()
     {
         return this.dateCreated;
@@ -92,7 +108,7 @@ public class Account {
     {
         this.dateCreated = dateCreated;
     }
-
+  
     public String generateToken()
     {
         // valid token characters
@@ -114,6 +130,14 @@ public class Account {
         } 
   
         return sb.toString(); 
+    }
+  
+    public AccountType getAccountType(){
+        return this.accountType;
+    }
+    
+    public void setAccountType(AccountType accountType){
+        this.accountType = accountType;
     }
 
     @PrePersist

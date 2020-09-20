@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.*;
 
 /**
  * Entity for storing information about services offered on the site
@@ -12,14 +13,17 @@ import javax.validation.constraints.Size;
  */
 @Entity
 public class Service_ {
-    //TODO validation
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long serviceId;
-
+/*
     // TODO
-    // private Long adminId;
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id", referencedColumnName = "serviceId")
+    private Admin admin;
+*/
 
     @Size(min = 2,max = 20, message = "Service name must be between 2 and 20 characters in length")
     @NotBlank(message = "Service requires a name")
@@ -39,7 +43,15 @@ public class Service_ {
     public void setServiceId(Long serviceId) {
         this.serviceId = serviceId;
     }
+/*
+    public Admin getAdmin() {
+        return this.admin;
+    }
 
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+*/
     public String getServiceName() {
         return this.serviceName;
     }
