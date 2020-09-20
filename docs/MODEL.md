@@ -12,7 +12,7 @@ accountType|Enum|None|Enum representing the type of account|type is valid
 Field Name|Data Type|key-type|Description|Validation
 ---|---|---|---|---
 serviceId|Long|Primary key|Auto-generated id for the service|Auto-generated
-adminId (not yet implemented)|Long|Foreign key|Id for the admin that owns this service|admin exists
+adminId|Long|Foreign key|Id for the admin that owns this service|admin exists, admin doesn't already have a service
 serviceName|String|none|Name for the service|Name isn't already in use by another service (case-insensitive), not blank/empty, between 2-20 characters in length
 serviceDescription|String|none|Description of the service|Not blank/empty, between 10-100 characters in length
 

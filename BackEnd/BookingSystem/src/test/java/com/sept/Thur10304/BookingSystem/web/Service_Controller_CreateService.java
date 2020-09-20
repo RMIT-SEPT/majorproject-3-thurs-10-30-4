@@ -44,7 +44,7 @@ class Service_Controller_CreateService {
         service1.setServiceName("Sweetums");
         service1.setServiceDescription("If you can't beat 'em, Sweetums.");
 
-        given(service.saveOrUpdateService(any(Service_.class))).willReturn(serviceRepository.save(service1));
+        // given(service.saveOrUpdateService(any(Service_.class))).willReturn(serviceRepository.save(service1)); needs updating
 
         // When
         mvc.perform(post("/api/service/save")
