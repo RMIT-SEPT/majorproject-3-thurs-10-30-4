@@ -98,7 +98,7 @@ class Booking_Controller_GetTimeslotByBookingIdTest {
         booking1.setBookingId((long) 1);
         booking1.setCustomer(account1);
         booking1.setTimeslot(timeslot1);
-        // timeslot1.setBooking(booking1);
+        timeslot1.setBooking(booking1);
         bookingRepository.save(booking1);
 
     }
