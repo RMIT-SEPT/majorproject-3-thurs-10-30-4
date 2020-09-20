@@ -57,17 +57,9 @@ public class Account {
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     @Transient private AccountTypeExtension accountTypeExtension;
-
-    // type : customer, employee/worker, admin (hardcoded in datbase)
-    // "customer", "employee", "admin"
-    // private String type;
-
-    // Not sure if this is needed
-    @OneToOne(cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    @Transient private AccountTypeExtension accountTypeExtension;
   
     private AccountType accountType;
+
     @JsonIgnore
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Booking> bookings;
@@ -146,14 +138,6 @@ public class Account {
         return sb.toString(); 
     }
   
-    public AccountType getAccountType(){
-        return this.accountType;
-    }
-    
-    public void setAccountType(AccountType accountType){
-        this.accountType = accountType;
-    }
-
     public AccountType getAccountType(){
         return this.accountType;
     }
