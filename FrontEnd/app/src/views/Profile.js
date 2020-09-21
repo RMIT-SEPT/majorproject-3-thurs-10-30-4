@@ -176,7 +176,7 @@ class Profile extends React.Component {
                       </Row>
                     </div>
                     <hr className="my-4" />
-                    
+
                     {/* Upcoming Bookings */}
                     <h6 className="heading-small text-muted mb-4">Upcoming Bookings</h6>
                     <div className="pl-lg-4">

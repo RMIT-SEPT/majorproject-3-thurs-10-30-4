@@ -35,7 +35,6 @@ class Icons extends React.Component {
   state = {};
   render() {
     return (
-      <>
         {/* <Header /> */}
         {/* Page content */}
         <Container className=" mt--7" fluid>

@@ -192,7 +192,7 @@ class Register extends React.Component {
                     />
                   </InputGroup>
                 </FormGroup>
-                
+      
                 {/* RE-INPUT PASSWORD INPUT */}
                 <FormGroup>
                   <InputGroup className="input-group-alternative">
