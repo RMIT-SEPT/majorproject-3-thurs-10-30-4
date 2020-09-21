@@ -15,12 +15,19 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import ServicesDashboard from "views/ServicesDashboard.js";
-import Profile from "views/Profile.js";
-import Login from "views/Login.js";
-import About from "views/About.js";
-import Register from "views/Register.js";
 
+import Timeslots from "./views/Timeslots.js";
+import Index from "./views/Index.js";
+import ServicesDashboard from "./views/ServicesDashboard.js";
+import Profile from "./views/Profile.js";
+import Maps from "./views/Maps.js";
+import Register from "./views/Register.js";
+import Login from "./views/Login.js";
+import Tables from "./views/Tables.js";
+import Icons from "./views/Icons.js";
+import About from "./views/About.js";
+import Admin from "./views/Admin.js";
+import Worker from "./views/Worker.js";
 
 var routes = [
   {
@@ -56,6 +63,23 @@ var routes = [
     name: "About Us",
     icon: "ni ni-circle-08 text-pink",
     component: About
+  },
+  {
+    path: "/timeslots",
+    component: Timeslots,
+    layout: "/admin"
+  },
+  {
+    path: "/admin",
+    name: "Admin Page",
+    component: Admin,
+    layout: "/admin"
+  },
+  {
+    path: "/worker",
+    name: "Worker Page",
+    component: Worker,
+    layout: "/admin"
   }
 ];
 export default routes;

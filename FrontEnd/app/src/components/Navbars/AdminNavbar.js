@@ -30,6 +30,24 @@ import {
 } from "reactstrap";
 
 class AdminNavbar extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+        firstName : localStorage.getItem('firstName').charAt(0).toUpperCase()
+                    + localStorage.getItem('firstName').slice(1),
+        lastName : localStorage.getItem('lastName').charAt(0).toUpperCase()
+                    + localStorage.getItem('lastName').slice(1)
+    };
+
+  }
+
+  logout() {
+    localStorage.removeItem('id');
+    localStorage.removeItem('firstName');
+    localStorage.removeItem('lastName');
+    window.location.href = "http://localhost:3000/";
+  }
   render() {
     return (
       <>
@@ -46,14 +64,10 @@ class AdminNavbar extends React.Component {
                 <DropdownToggle className="pr-0" nav>
                   <Media className="align-items-center">
                     <span className="avatar avatar-sm rounded-circle">
-                      <img
-                        alt="..."
-                        src={require("assets/img/theme/team-4-800x800.jpg")}
-                      />
                     </span>
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        Jessica Jones
+                        {this.state.firstName} {this.state.lastName}
                       </span>
                     </Media>
                   </Media>
@@ -71,7 +85,7 @@ class AdminNavbar extends React.Component {
                     <span>My Bookings</span>
                   </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                  <DropdownItem href="#pablo" onClick={this.logout}>
                     <i className="ni ni-user-run" />
                     <span>Logout</span>
                   </DropdownItem>

@@ -6,13 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import javax.validation.Valid;
 
 /**
@@ -21,22 +23,23 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/service")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class Service_Controller {
     
     @Autowired
     private Service_Service serviceService;
 
     // Saves a service to the database
-    @PostMapping("/save")
-    public ResponseEntity<?> createNewService(@Valid @RequestBody Service_ service, BindingResult result) {
+    @PostMapping("/save" /*/{adminId}*/)
+    public ResponseEntity<?> createNewService(@Valid @RequestBody Service_ service/*, @PathVariable Long adminId*/, BindingResult result) {
         if (result.hasErrors()){
             return new ResponseEntity<String>("Invalid Service Object", HttpStatus.BAD_REQUEST);
         }
-        Service_ service1 = serviceService.saveOrUpdateService(service);
-        if (service1 != null){
+        try {
+            Service_ service1 = serviceService.saveOrUpdateService(service/*, adminId*/);
             return new ResponseEntity<Service_>(service1, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<String>("Service name already exists", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -60,6 +63,18 @@ public class Service_Controller {
         // If no service was found then return an error message
         } else {
             return new ResponseEntity<String>("Service not found", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/delete/{serviceId}")
+    public ResponseEntity<?> deleteService(@Valid @PathVariable Long serviceId) {
+        // Run service to delete service and its timeslots from databse
+        boolean serviceDeleted = serviceService.deleteService(serviceId);
+        // If service found and deleted then return true, else false
+        if (serviceDeleted){
+            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
     }
 }

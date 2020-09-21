@@ -20,11 +20,13 @@ import { Route, Switch, Redirect } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
 // core components
-import AdminNavbar from "components/Navbars/AdminNavbar.js";
-import AdminFooter from "components/Footers/AdminFooter.js";
-import Sidebar from "components/Sidebar/Sidebar.js";
+import AdminNavbar from "../components/Navbars/AdminNavbar.js";
+import AdminFooter from "../components/Footers/AdminFooter.js";
+import Sidebar from "../components/Sidebar/Sidebar.js";
 
-import routes from "routes.js";
+import routes from "../routes.js";
+
+var id = localStorage.getItem('id');
 
 class Admin extends React.Component {
   componentDidUpdate(e) {
@@ -59,7 +61,15 @@ class Admin extends React.Component {
     }
     return "Brand";
   };
+
+  checkLogin() {
+    if(id == null) {
+      window.location.href = "http://localhost:3000/";
+    }
+  };
+
   render() {
+    this.checkLogin();
     return (
       <>
         <Sidebar
@@ -67,7 +77,7 @@ class Admin extends React.Component {
           routes={routes}
           logo={{
             innerLink: "/admin/index",
-            imgSrc: require("assets/img/brand/argon-react.png"),
+            imgSrc: require("../assets/img/brand/argon-react.png"),
             imgAlt: "..."
           }}
         />

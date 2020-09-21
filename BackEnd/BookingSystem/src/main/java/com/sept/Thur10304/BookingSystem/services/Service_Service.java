@@ -4,6 +4,8 @@ import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.sept.Thur10304.BookingSystem.model.Admin;
+import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
 
 import java.util.Iterator;
 import java.util.List;
@@ -15,10 +17,14 @@ import java.util.Optional;
  */
 @Service
 public class Service_Service {
+
     @Autowired
     private Service_Repository serviceRepository;
 
-    public Service_ saveOrUpdateService(Service_ service) {
+    @Autowired
+    private AdminRepository adminRepository;
+
+    public Service_ saveOrUpdateService(Service_ service/*, Long adminId*/) throws Exception {
 
         // TODO add way for same service to be updated, currently would return error for attempt to update with same service name
 
@@ -32,10 +38,18 @@ public class Service_Service {
             // (Would later add check to see if service is being updated here)
             Service_ currService = servicesIterator.next();
             if (service.getServiceName().toUpperCase().equals(currService.getServiceName().toUpperCase())){
-                return null;
+                throw new Exception("Service name already exists");
             }
         }
-
+/*
+        // Check that admin exists
+        Optional<Admin> findAdmin = adminRepository.findById(adminId);
+        if (!findAdmin.isPresent()){
+            throw new Exception("Admin not found");
+        }
+        
+        service.setAdmin(findAdmin.get());
+*/
         // Save into repo
         return serviceRepository.save(service);
     }
@@ -62,6 +76,20 @@ public class Service_Service {
         // If there was an error parsing the long, return null
         } catch (NumberFormatException e) {
             return null;
+        }
+    }
+
+    public boolean deleteService(Long serviceId){
+        // Finds the service by its id
+        Optional<Service_> service = serviceRepository.findById(serviceId);
+
+        // If service is found, then delete it and return true, else return false
+        if (service.isPresent()){
+            // Note: also deletes all timeslots associated with service
+            serviceRepository.delete(service.get());
+            return true;
+        } else {
+            return false;
         }
     }
 }

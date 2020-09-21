@@ -16,39 +16,101 @@
 
 */
 import React from "react";
-import { Redirect } from 'react-router-dom';
+import axios from 'axios';
+
+import UserProfile from '../session/UserProfile';
 
 // reactstrap components
 import {
-  Button,
   Card,
   CardBody,
-  FormGroup,
   Form,
+  FormGroup,
   Input,
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Row,
   Col
 } from "reactstrap";
 
 class Register extends React.Component {
-  state = {
-    redirect: false
+  constructor(props){
+    super(props);
+
+    this.state = this.initialState;
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+
   }
-  setRedirect = () => {
-    this.setState({
-      redirect: true
-    })
+
+  initialState = {
+    firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errorResponse: []
   }
-  renderRedirect = () => {
-    if (this.state.redirect) {
-      return <Redirect to='/admin/index' />
+
+  onChange = e => {
+    this.setState({[e.target.name]: e.target.value});
+  }
+
+  checkPasswords() {
+    if (this.state.password === this.state.retypedPassword) {
+      return true;
+    } else {
+      return false;
     }
   }
-  
+
+	onSubmit = e =>
+	{  
+		e.preventDefault();
+
+		const newPerson =
+		{
+			firstName: this.state.firstName,
+			lastName: this.state.lastName,
+			password: this.state.password,
+			email:this.state.email
+		}
+
+		//UserProfile.setName("REGISTERED USER: "+newPerson.firstName+" "+newPerson.lastName);
+
+		if (this.checkPasswords())
+		{
+			axios.post("http://localhost:8080/api/Account", newPerson)
+			.then(response =>
+			{
+				if (response.data != null)
+				{ 
+					this.setState(this.initialState);
+					//localStorage.setItem('username', newPerson.firstName);
+					alert("New Person Saved, you may now login."); 
+					window.location.href = "http://localhost:3000/auth/login";
+				}
+			})
+			.catch(err =>
+			{
+				console.log("Error");
+				if (typeof err.response.data.defaultMessage != 'undefined')
+				{
+					alert(err.response.data.defaultMessage);
+				}
+				else
+				{
+					alert(err.response.data[0].defaultMessage);
+				}
+			});
+		}
+		else
+		{
+			alert("Passwords are not the same");
+		}
+	}
+
+  component
+
   render() {
+	console.log("User stored name: "+UserProfile.getName());
+	  
+    const {firstName, lastName, email, password, retypedPassword} = this.state;
     return (
       <>
         <Col lg="6" md="8">
@@ -57,7 +119,7 @@ class Register extends React.Component {
               <div className="text-center text-muted mb-4">
                 <small>Sign up with credentials</small>
               </div>
-              <Form role="form">
+              <Form onSubmit={this.onSubmit} id="registerFormId">
 
                 {/* FIRST NAME INPUT */}
                 <FormGroup>
@@ -67,7 +129,13 @@ class Register extends React.Component {
                         <i className="ni ni-hat-3" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="First Name" type="text" />
+                    <Input required autoComplete="off"
+                      type="text" 
+                      placeholder="First Name" 
+                      name="firstName"
+                      value= {firstName}
+                      onChange = {this.onChange}
+                    />
                   </InputGroup>
                 </FormGroup>
 
@@ -79,7 +147,13 @@ class Register extends React.Component {
                         <i className="ni ni-hat-3" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Last Name" type="text" />
+                    <Input required autoComplete="off"
+                      type="text" 
+                      placeholder="Last Name" 
+                      name="lastName"
+                      value= {lastName}
+                      onChange = {this.onChange}
+                    />
                   </InputGroup>
                 </FormGroup>
 
@@ -91,7 +165,13 @@ class Register extends React.Component {
                         <i className="ni ni-email-83" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Email" type="email" autoComplete="new-email"/>
+                    <Input required autoComplete="off"
+                      type="email"
+                      placeholder="Email" 
+                      name="email"
+                      value= {email}
+                      onChange = {this.onChange}
+                    />
                   </InputGroup>
                 </FormGroup>
 
@@ -103,10 +183,16 @@ class Register extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Password" type="password" autoComplete="new-password"/>
+                    <Input required autoComplete="off"
+                      type="password"
+                      placeholder="Password" 
+                      name="password"
+                      value= {password}
+                      onChange = {this.onChange}
+                    />
                   </InputGroup>
                 </FormGroup>
-
+      
                 {/* RE-INPUT PASSWORD INPUT */}
                 <FormGroup>
                   <InputGroup className="input-group-alternative">
@@ -115,16 +201,21 @@ class Register extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Re-Type Password" type="password" autoComplete="new-password"/>
+                    <Input required
+                      placeholder="Re-Type Password" 
+                      type="password" 
+                      name="retypedPassword"
+                      value= {retypedPassword}
+                      onChange = {this.onChange}
+                    />
                   </InputGroup>
                 </FormGroup>
 
                 {/* Redirection button to dashboard after registration */}
-                <div className="text-center">  
-                  {this.renderRedirect()}
-                  <Button className="mt-4" color="primary" type="button" onClick={this.setRedirect}>
-                    Create account
-                  </Button>
+                <div className="text-center">
+                  {/*<Link to="/admin/services_dashboard">*/}
+                    <input type="submit" className="btn btn-primary btn-block mt-4" value="Create Account"/>
+                  {/*</Link>*/}
                 </div>
               </Form>
             </CardBody>
