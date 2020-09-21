@@ -13,35 +13,23 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-#       - run:
-#           name: Setup common environment variables
-#           command: |
-#             echo 'export ECR_REPOSITORY_NAME="${AWS_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
-#             echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_REPOSITORY_NAME}:latest"' >> $BASH_ENV
-
 
       - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
-            # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
+          key: bookingsystem-{{ checksum "BackEnd/BookingSystem/pom.xml" }}
 
       - run: mvn dependency:go-offline # gets the project dependencies
 
       - save_cache: # saves the project dependencies
           paths:
               - ~/.m2
-          key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
-
-      - run: mvn package # run the actual tests
-
-      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard.
-            # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-            path: target/surefire-reports
-
-      - store_artifacts: # store the uberjar as an artifact
-            # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-            path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
-        # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
-
+          key: bookingsystem-{{ checksum "BackEnd/BookingSystem/pom.xml" }}
+          
+      - run:
+          name: Build Maven
+          command: |
+            cd BackEnd/BookingSystem
+            mvn package
+         
       - run:
           name: Install dependencies for AWS
           command: |
@@ -49,13 +37,37 @@ jobs:
             sudo apt-get -y -qq install awscli
             sudo apt-get install python3-pip
             sudo pip3 install --upgrade awscli
+            
       - run:
           name: Build image
           command: |
+            cd BackEnd/BookingSystem
             docker build -t $FULL_IMAGE_NAME .
       - run:
           name: Push image
           command: |
+            #make credentials
+            #mkdir ~/.aws/
+            #echo $AWS_CREDENTIALS > ~/.aws/credentials
+            #cd ~/.aws/
+            #dir
+            #echo $AWS_CREDENTIALS
+            
+          
+          
+            cd ~/project/BackEnd/BookingSystem/
+            dir
+            
+            
+            #aws configure
+            #aws configure set aws_access_key_id ASIA4PKM7HMJLYUOKC6Q
+            #aws configure set aws_secret_access_key xgeF/d7t5LSG6gLuXb6bEHdkg2NOSp4Wl+i6+efi
+            #aws configure set default.region us-east-1
+            #aws configure set default.output json
+            
+            #aws ecr get-login-password --region us-east-1
+
+            
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 857544276754.dkr.ecr.us-east-1.amazonaws.com
             docker push $FULL_IMAGE_NAME
 workflows:
@@ -64,4 +76,5 @@ workflows:
       - build_and_deploy:
           filters:
             branches:
-              only: circleci-project-setup
+              only: master
+
