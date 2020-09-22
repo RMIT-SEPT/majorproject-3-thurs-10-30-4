@@ -30,8 +30,6 @@ import {
     Table
 } from "reactstrap";
 
-import ServiceChosen from '../ServiceChosen.js';
-
 class ServicesHeader extends React.Component {
   
     constructor(props) {
@@ -62,9 +60,8 @@ class ServicesHeader extends React.Component {
     }
 
     myFunction(text) {
-        
-        // Setting Service Chosen ID
-        ServiceChosen.id = text;
+        localStorage.setItem('serviceId', text);
+        localStorage.setItem('serviceName', this.state.services[parseInt(text) - 1].serviceName);
     }
   
     render() {

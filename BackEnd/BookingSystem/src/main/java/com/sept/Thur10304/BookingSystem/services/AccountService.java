@@ -5,6 +5,7 @@ import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
 import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
 import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
 import com.sept.Thur10304.BookingSystem.model.Account;
+import com.sept.Thur10304.BookingSystem.model.AuthorizationToken;
 import com.sept.Thur10304.BookingSystem.model.Admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,11 +60,7 @@ public class AccountService {
         }
         return false;
     }
-
-    // same as above but return an authentication token which frontend can use
-    // note, authentication token may generate duplicates, therefore it is important
-    // for frontend to also track the account id or email.
-    public String authoriseAccount(String email, String password)
+    public Account getAccount(String email, String password)
     {
         List <Account> lAccount = findAll();
         for (int i=0; i<lAccount.size();++i)
@@ -72,14 +69,49 @@ public class AccountService {
             {
                 if (lAccount.get(i).getPassword().equals(password))
                 {
-                    // return/generate auth token for this account
-                    return "AUTH";
+                    return lAccount.get(i);
                 }
                 // assume no duplicate emails in system
-                return "FAIL";
+                return null;
             }
         }
-        return "FAIL";
+        return null;
+    }
+
+
+// original account creation, now uses account creation for account type
+    // public Account saveOrUpdateAccount(Account account) {
+
+    //     //logic
+    //     return AccountRepository.save(account);
+    // }
+
+    
+
+
+    // same as above but return an authentication token which frontend can use
+    // note, authentication token may generate duplicates, therefore it is important
+    // for frontend to also track the account id or email.
+    public Account authoriseJWT(AuthorizationToken jwt)
+    {
+        List <Account> lAccount = findAll();
+
+        if (lAccount.size()>0)
+        {
+            // for now just return the first account in the list, no verification needed.
+            return lAccount.get(0);
+        }
+        // there is no account
+        return null;
+    }
+
+    // When a user session needs to be terminated, jwt should be removed from repo
+    // return true if this is successful, return false if jwt doesn't authorise
+    // for now we can't delete the token because it is not generated.
+    public Boolean deauthoriseJWT(AuthorizationToken jwt)
+    {
+        // deauthorisation code
+        return false;
     }
 
 // original account creation, now uses account creation for account type
@@ -89,13 +121,13 @@ public class AccountService {
     //     return AccountRepository.save(account);
     // }
 
-    public Account saveCustomer(Account account){
-
+  public Account saveCustomer(Account account){
         AccountRepository.save(account);
         Customer customer = new Customer();
         customer.setAccount(account);
         customerRepository.save(customer);
         return account;
+    
     }
 
     public Account saveWorker(Account account, Long adminId) throws Exception{
