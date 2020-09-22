@@ -81,6 +81,7 @@ class Booking_Controller_CreateBookingTest {
         timeslot1.setTimeslotId((long) 1);
         timeslot1.setStartTime(start);
         timeslot1.setEndTime(end);
+        timeslot1.setPrice(10.00);
         timeslotRepository.save(timeslot1);
 
         account1 = new Account();

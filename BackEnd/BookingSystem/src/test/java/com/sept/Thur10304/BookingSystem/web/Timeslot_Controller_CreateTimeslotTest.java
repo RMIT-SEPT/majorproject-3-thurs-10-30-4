@@ -68,6 +68,7 @@ class Timeslot_Controller_CreateTimeslotTest {
         timeslot_duplicate.setTimeslotId((long) 2);
         timeslot_duplicate.setStartTime(start);
         timeslot_duplicate.setEndTime(end);
+        timeslot_duplicate.setPrice(10.00);
         timeslotRepository.save(timeslot_duplicate);
     }
 
