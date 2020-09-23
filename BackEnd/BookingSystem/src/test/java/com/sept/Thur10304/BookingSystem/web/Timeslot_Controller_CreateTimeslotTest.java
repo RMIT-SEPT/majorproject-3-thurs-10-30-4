@@ -68,6 +68,7 @@ class Timeslot_Controller_CreateTimeslotTest {
         timeslot_duplicate.setTimeslotId((long) 2);
         timeslot_duplicate.setStartTime(start);
         timeslot_duplicate.setEndTime(end);
+        timeslot_duplicate.setPrice(10.00);
         timeslotRepository.save(timeslot_duplicate);
     }
 
@@ -77,8 +78,8 @@ class Timeslot_Controller_CreateTimeslotTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
-                        "    \"startTime\": \"09:00\",\n" +
-                        "    \"endTime\": \"11:00\"\n" +
+                        "    \"startTime\": \"01:00\",\n" +
+                        "    \"endTime\": \"02:00\"\n" +
                         "}"))
                 .andExpect(status().isCreated());
     }
