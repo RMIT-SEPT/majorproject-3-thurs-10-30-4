@@ -84,6 +84,7 @@ class Booking_Controller_GetTimeslotByBookingIdTest {
         timeslot1.setTimeslotId((long) 1);
         timeslot1.setStartTime(start);
         timeslot1.setEndTime(end);
+        timeslot1.setPrice(10.00);
         timeslotRepository.save(timeslot1);
 
         account1 = new Account();
@@ -105,15 +106,15 @@ class Booking_Controller_GetTimeslotByBookingIdTest {
 
     @Test
     void getTimeslotByBookingId_found() throws Exception {
-        mvc.perform(get("/api/booking/getbyid/1")
+        mvc.perform(get("/api/timeslot/getbyid/1")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isFound())
                 .andExpect(jsonPath("$.timeslotId").value(timeslot1.getTimeslotId()));
     }
 
     @Test
     void getTimeslotByBookingId_badId() throws Exception {
-        mvc.perform(get("/api/booking/getbyid/2")
+        mvc.perform(get("/api/timeslot/getbyid/2")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }

@@ -81,6 +81,7 @@ class Timeslot_Controller_GetTimeslotTest {
         Date end1 = tf.parse("08:00");
         timeslot1.setStartTime(start1);
         timeslot1.setEndTime(end1);
+        timeslot1.setPrice(10.00);
         timeslotRepository.save(timeslot1);
 
         timeslot2 = new Timeslot();
@@ -91,6 +92,7 @@ class Timeslot_Controller_GetTimeslotTest {
         Date end2 = tf.parse("11:00");
         timeslot2.setStartTime(start2);
         timeslot2.setEndTime(end2);
+        timeslot2.setPrice(10.00);
         timeslotRepository.save(timeslot2);
     }
 
