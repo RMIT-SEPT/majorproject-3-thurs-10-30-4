@@ -91,12 +91,10 @@ class Booking_Controller_DeleteBookingTest {
         account1.setPassword("YouJustGotJammed");
         accountRepository.save(account1);
 
-        mvc.perform(post("/api/booking/save")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "    \"timeslotId\": 1,\n" +
-                        "    \"customerId\": 1\n" +
-                        "}"));
+        booking1 = new Booking();
+        booking1.setTimeslot(timeslot1);
+        booking1.setCustomer(account1);
+        bookingRepository.save(booking1);
 
     }
 

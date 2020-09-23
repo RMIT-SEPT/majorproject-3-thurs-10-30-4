@@ -89,7 +89,7 @@ class Timeslot_Controller_DeleteTimeslotTest {
 
     @Test
     void deleteService_badTimeslot() throws Exception{
-        mvc.perform(delete("/api/timeslot/delete/2")
+        mvc.perform(delete("/api/timeslot/delete/7")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }

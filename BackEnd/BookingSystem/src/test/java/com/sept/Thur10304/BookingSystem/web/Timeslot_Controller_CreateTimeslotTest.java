@@ -78,8 +78,8 @@ class Timeslot_Controller_CreateTimeslotTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
-                        "    \"startTime\": \"09:00\",\n" +
-                        "    \"endTime\": \"11:00\"\n" +
+                        "    \"startTime\": \"01:00\",\n" +
+                        "    \"endTime\": \"02:00\"\n" +
                         "}"))
                 .andExpect(status().isCreated());
     }

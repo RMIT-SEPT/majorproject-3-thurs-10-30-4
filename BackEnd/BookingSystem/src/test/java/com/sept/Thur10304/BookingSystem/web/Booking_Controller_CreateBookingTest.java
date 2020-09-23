@@ -109,7 +109,7 @@ class Booking_Controller_CreateBookingTest {
         mvc.perform(post("/api/booking/save")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
-                        "    \"timeslotId\": 2,\n" +
+                        "    \"timeslotId\": 5,\n" +
                         "    \"customerId\": 1\n" +
                         "}"))
                 .andExpect(status().isBadRequest())

@@ -30,7 +30,7 @@ class AccountController_CreateAccount {
                         "    \"firstName\": \"Ron\",\n" +
                         "    \"lastName\": \"Swanson\",\n" +
                         "    \"password\": \"IAmDukeSilver\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
+                        "    \"email\": \"ronswan@pawnee.gov\",\n" +
                         "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
                 .andExpect(status().isCreated());
@@ -45,7 +45,7 @@ class AccountController_CreateAccount {
                         "    \"firstName\": \"\",\n" +
                         "    \"lastName\": \"Swanson\",\n" +
                         "    \"password\": \"IAmDukeSilver\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
+                        "    \"email\": \"ronswan@pawnee.gov\",\n" +
                         "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
                 .andExpect(status().isBadRequest());
@@ -60,7 +60,7 @@ class AccountController_CreateAccount {
                         "    \"firstName\": \"Ronald Duke Silver Tammy I and Tammy II\",\n" +
                         "    \"lastName\": \"Swanson\",\n" +
                         "    \"password\": \"IAmDukeSilver\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
+                        "    \"email\": \"ronswan@pawnee.gov\",\n" +
                         "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
                 .andExpect(status().isBadRequest());
@@ -74,7 +74,7 @@ class AccountController_CreateAccount {
                 .content("{\n" +
                         "    \"lastName\": \"Swanson\",\n" +
                         "    \"password\": \"IAmDukeSilver\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
+                        "    \"email\": \"ronswan@pawnee.gov\",\n" +
                         "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
                 .andExpect(status().isBadRequest());
@@ -89,7 +89,7 @@ class AccountController_CreateAccount {
                         "    \"firstName\": \"Ron\",\n" +
                         "    \"lastName\": \"\",\n" +
                         "    \"password\": \"IAmDukeSilver\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
+                        "    \"email\": \"ronswan@pawnee.gov\",\n" +
                         "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
                 .andExpect(status().isBadRequest());
@@ -104,7 +104,7 @@ class AccountController_CreateAccount {
                         "    \"firstName\": \"Ron\",\n" +
                         "    \"lastName\": \"Swanson, Pawnee's Resident Libertarian\",\n" +
                         "    \"password\": \"IAmDukeSilver\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
+                        "    \"email\": \"ronswan@pawnee.gov\",\n" +
                         "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
                 .andExpect(status().isBadRequest());
@@ -118,7 +118,7 @@ class AccountController_CreateAccount {
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
                         "    \"password\": \"IAmDukeSilver\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
+                        "    \"email\": \"ronswan@pawnee.gov\",\n" +
                         "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
                 .andExpect(status().isBadRequest());
@@ -133,7 +133,7 @@ class AccountController_CreateAccount {
                         "    \"firstName\": \"Ron\",\n" +
                         "    \"lastName\": \"Swanson\",\n" +
                         "    \"password\": \"Tammy\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
+                        "    \"email\": \"ronswan@pawnee.gov\",\n" +
                         "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
                 .andExpect(status().isBadRequest());
@@ -148,7 +148,7 @@ class AccountController_CreateAccount {
                         "    \"firstName\": \"Ron\",\n" +
                         "    \"lastName\": \"Swanson\",\n" +
                         "    \"password\": \"IAmDukeSilverandIWouldLikeAllYourEggsPlease\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
+                        "    \"email\": \"ronswan@pawnee.gov\",\n" +
                         "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
                 .andExpect(status().isBadRequest());
@@ -162,7 +162,7 @@ class AccountController_CreateAccount {
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
                         "    \"lastName\": \"Swanson\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
+                        "    \"email\": \"ronswan@pawnee.gov\",\n" +
                         "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
                 .andExpect(status().isBadRequest());
