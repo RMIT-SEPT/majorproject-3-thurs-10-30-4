@@ -26,11 +26,11 @@ public class Service_ {
     private Admin admin;
 
 
-    @Size(min = 2,max = 20, message = "Service name must be between 2 and 20 characters in length")
+    @Size(min = 2,max = 50, message = "Service name must be between 2 and 20 characters in length")
     @NotBlank(message = "Service requires a name")
     private String serviceName;
 
-    @Size(min = 10, max = 100, message = "Service description must be between 10 and 100 characters in length")
+    @Size(min = 10, max = 500, message = "Service description must be between 10 and 100 characters in length")
     @NotBlank(message = "Service requires a description")
     private String serviceDescription;
 
