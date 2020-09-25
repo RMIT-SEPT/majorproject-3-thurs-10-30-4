@@ -8,6 +8,7 @@ import com.sept.Thur10304.BookingSystem.model.Timeslot;
 import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
 import com.sept.Thur10304.BookingSystem.repositories.BookingRepository;
+import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
 import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
 import com.sept.Thur10304.BookingSystem.repositories.TimeslotRepository;
 import org.junit.jupiter.api.BeforeEach;
