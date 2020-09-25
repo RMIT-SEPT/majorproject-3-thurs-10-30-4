@@ -39,7 +39,6 @@ import {
 } from "reactstrap";
 // core components
 import UserHeader from "../components/Headers/UserHeader.js";
-// import ServiceChosen from "../components/ServiceChosen.js";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -54,9 +53,8 @@ class Profile extends React.Component {
     this.getUpcomingBookings();
   }
 
-  // Update Later to retreieve the local storage of customer ID and or Session Token
   getCustomerId() {
-      return 1;
+      return localStorage.getItem('id');
   }   
 
   getUpcomingBookings() {
