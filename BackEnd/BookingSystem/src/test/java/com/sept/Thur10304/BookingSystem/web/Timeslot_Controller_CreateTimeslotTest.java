@@ -1,9 +1,16 @@
 package com.sept.Thur10304.BookingSystem.web;
 
+import com.sept.Thur10304.BookingSystem.model.Account;
+import com.sept.Thur10304.BookingSystem.model.Admin;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 import com.sept.Thur10304.BookingSystem.model.Timeslot;
+import com.sept.Thur10304.BookingSystem.model.Worker;
+import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
+import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
 import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
 import com.sept.Thur10304.BookingSystem.repositories.TimeslotRepository;
+import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,16 +44,52 @@ class Timeslot_Controller_CreateTimeslotTest {
     @Resource
     private Service_Repository serviceRepository;
 
+    @Resource
+    private AccountRepository accountRepository;
+    
+    @Resource
+    private AdminRepository adminRepository;
+    
+    @Resource
+    private WorkerRepository workerRepository;
+
     Service_ service1;
+    Worker worker;
     Timeslot timeslot_duplicate;
     String str_tomorrow;
 
     @BeforeEach
     void setUp() throws ParseException {
+
+        Account account1 = new Account();
+        account1.setEmail("jeremy.jamm@pawnee.gov");
+        account1.setFirstName("Jeremy");
+        account1.setLastName("Jamm");
+        // account1.setId((long) 1);
+        account1.setPassword("YouJustGotJammed");
+        // accountRepository.save(account1);
+        Admin admin = new Admin();
+        admin.setAccount(account1);
+        adminRepository.save(admin);
+
+        Account account2 = new Account();
+        account2.setEmail("geremy.gamm@pawnee.gov");
+        account2.setFirstName("Geremy");
+        account2.setLastName("Gamm");
+        // account2.setId((long) 2);
+        account2.setPassword("YouJustGotGammed");
+        // accountRepository.save(account2);
+        worker = new Worker();
+        worker.setAccount(account2);
+        worker.setAdmin(admin);
+        workerRepository.save(worker);
+
+
         service1 = new Service_();
         service1.setServiceId((long) 1);
         service1.setServiceName("Paunch Burger");
         service1.setServiceDescription("Home of the Greasy Lard Bomb");
+        service1.setAdmin(admin);
         serviceRepository.save(service1);
 
         Date tomorrow = new Date();
@@ -69,12 +112,13 @@ class Timeslot_Controller_CreateTimeslotTest {
         timeslot_duplicate.setStartTime(start);
         timeslot_duplicate.setEndTime(end);
         timeslot_duplicate.setPrice(10.00);
+        timeslot_duplicate.setWorker(worker);
         timeslotRepository.save(timeslot_duplicate);
     }
 
     @Test
     void createNewTimeslot_accepted() throws Exception {
-        mvc.perform(post("/api/timeslot/save/1")
+        mvc.perform(post("/api/timeslot/save/1/2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
@@ -86,7 +130,7 @@ class Timeslot_Controller_CreateTimeslotTest {
 
     @Test
     void createNewTimeslot_badDateFormat() throws Exception {
-        mvc.perform(post("/api/timeslot/save/1")
+        mvc.perform(post("/api/timeslot/save/1/2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"06-09-2024\",\n" +
@@ -98,7 +142,7 @@ class Timeslot_Controller_CreateTimeslotTest {
 
     @Test
     void createNewTimeslot_badStartTime() throws Exception {
-        mvc.perform(post("/api/timeslot/save/1")
+        mvc.perform(post("/api/timeslot/save/1/2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
@@ -110,7 +154,7 @@ class Timeslot_Controller_CreateTimeslotTest {
 
     @Test
     void createNewTimeslot_badEndTime() throws Exception {
-        mvc.perform(post("/api/timeslot/save/1")
+        mvc.perform(post("/api/timeslot/save/1/2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
@@ -122,7 +166,7 @@ class Timeslot_Controller_CreateTimeslotTest {
 
     @Test
     void createNewTimeslot_endBeforeStart() throws Exception {
-        mvc.perform(post("/api/timeslot/save/1")
+        mvc.perform(post("/api/timeslot/save/1/2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
@@ -134,7 +178,7 @@ class Timeslot_Controller_CreateTimeslotTest {
 
     @Test
     void createNewTimeslot_badServiceId() throws Exception {
-        mvc.perform(post("/api/timeslot/save/2")
+        mvc.perform(post("/api/timeslot/save/2/2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
@@ -146,7 +190,7 @@ class Timeslot_Controller_CreateTimeslotTest {
 
     @Test
     void createNewTimeslot_notInFuture() throws Exception {
-        mvc.perform(post("/api/timeslot/save/1")
+        mvc.perform(post("/api/timeslot/save/1/2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"2020-09-04\",\n" +
@@ -158,7 +202,7 @@ class Timeslot_Controller_CreateTimeslotTest {
 
     @Test
     void createNewTimeslot_duplicate() throws Exception {
-        mvc.perform(post("/api/timeslot/save/1")
+        mvc.perform(post("/api/timeslot/save/1/2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
