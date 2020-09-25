@@ -68,7 +68,7 @@ class Admin extends React.Component {
 			email:this.state.email
 		}
 
-		if (/*this.checkPasswords()*/ true)
+		if (this.checkPasswords())
 		{
 			axios.post("http://localhost:8080/api/Account/saveworker/" + this.getAdminId(), newWorker)
 			.then(response =>
@@ -77,20 +77,20 @@ class Admin extends React.Component {
 				{ 
 					this.setState(this.initialState);
 					//localStorage.setItem('username', newWorker.firstName);
-					alert("New Worker Added"); 
-					// window.location.href = "http://localhost:3000/auth/login";
+					alert("New Worker Added");
 				}
 			})
 			.catch(err =>
 			{
-				console.log("Error");
-				if (typeof err.response.data.defaultMessage != 'undefined')
+        
+        console.log("Error");
+        if (typeof err.response.data.defaultMessage != 'undefined')
 				{
 					alert(err.response.data.defaultMessage);
 				}
 				else
 				{
-					alert(err.response.data[0].defaultMessage);
+					alert(err.response.data.errors[0].defaultMessage);
 				}
 			});
 		}
@@ -174,7 +174,7 @@ class Admin extends React.Component {
                           </Col>
                         </Row>
                         <Row>
-                          <Col lg="6">
+                          <Col lg="12">
 
                             {/* EMAIL INPUT */}
                             <FormGroup>
@@ -194,6 +194,8 @@ class Admin extends React.Component {
                               />
                             </FormGroup>
                           </Col>
+                        </Row>
+                        <Row>
                           <Col lg="6">
 
                             {/* PASSWORD INPUT */}
@@ -210,6 +212,27 @@ class Admin extends React.Component {
                                 placeholder="Password"
                                 type="password"
                                 value= {password}
+                                onChange = {this.onChange}
+                              />
+                            </FormGroup>
+                          </Col>
+
+                          <Col lg="6">
+
+                            {/* RETYPED PASSWORD INPUT */}
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-password"
+                              >
+                                Re-Type Password
+                              </label>
+                              <Input required autoComplete="off"
+                                className="form-control-alternative"
+                                name="retypedPassword"
+                                placeholder="Re-Type Password" 
+                                type="password"
+                                value= {retypedPassword}
                                 onChange = {this.onChange}
                               />
                             </FormGroup>
