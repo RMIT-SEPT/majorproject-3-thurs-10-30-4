@@ -1,6 +1,8 @@
 import React from "react";
 import axios from 'axios';
 
+// FIX ISSUES WITH ERROR HANDLING MESSAGES
+
 // reactstrap components
 import {
   Button,
@@ -21,50 +23,91 @@ import {
   Col
 } from "reactstrap";
 // core components
-import UserHeader from "../components/Headers/UserHeader.js";
+import AdminHeader from "../components/Headers/AdminHeader.js";
 
 class Admin extends React.Component {
-    constructor(props) {
-      super(props);
-  
-      this.state = {
-          upcomingBookings : []
-      };
+  constructor(props){
+    super(props);
+
+    this.state = this.initialState;
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+
+  }
+
+  initialState = {
+    firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errorResponse: []
+  }
+
+  onChange = e => {
+    this.setState({[e.target.name]: e.target.value});
+  }
+
+  checkPasswords() {
+    if (this.state.password === this.state.retypedPassword) {
+      return true;
+    } else {
+      return false;
     }
-  
-    componentDidMount() {
-      this.getUpcomingBookings();
-    }
-  
-    getCustomerId() {
-        return localStorage.getItem('id');
-    }   
-  
-    getUpcomingBookings() {
-      console.log()
-      axios.get("http://localhost:8080/api/booking/getbycustomer/" + this.getCustomerId())
-      .then(response => response.data)
-      .then((data) => {
-          this.setState({upcomingBookings: data});
-      })
-      .catch(error => { 
-          console.log(error.response.data)
-  
-          {/* BIT OF A HACK*/}
-          this.setState({upcomingBookings: error.response.data});
-      });
-    }
-    // Connect Axios
-  
-  
-    // GET Request
+  }
+
+  getAdminId() {
+    return localStorage.getItem('id');
+  }
+
+	onSubmit = e =>
+	{  
+		e.preventDefault();
+
+		const newWorker =
+		{
+      adminId: this.getAdminId(),
+      firstName: this.state.firstName,
+			lastName: this.state.lastName,
+			password: this.state.password,
+			email:this.state.email
+		}
+
+		if (/*this.checkPasswords()*/ true)
+		{
+			axios.post("http://localhost:8080/api/Account/saveworker/" + this.getAdminId(), newWorker)
+			.then(response =>
+			{
+				if (response.data != null)
+				{ 
+					this.setState(this.initialState);
+					//localStorage.setItem('username', newWorker.firstName);
+					alert("New Worker Added"); 
+					// window.location.href = "http://localhost:3000/auth/login";
+				}
+			})
+			.catch(err =>
+			{
+				console.log("Error");
+				if (typeof err.response.data.defaultMessage != 'undefined')
+				{
+					alert(err.response.data.defaultMessage);
+				}
+				else
+				{
+					alert(err.response.data[0].defaultMessage);
+				}
+			});
+		}
+		else
+		{
+			alert("Passwords are not the same");
+		}
+	}
   
     
     // Render
     render() {
+
+      const {firstName, lastName, email, password, retypedPassword} = this.state;
       return (
         <>
-          <UserHeader />
+          <AdminHeader />
           {/* Page content */}
           <Container className="mt--7" fluid>
             <Row>
@@ -73,18 +116,25 @@ class Admin extends React.Component {
                   <CardHeader className="bg-white border-0">
                     <Row className="align-items-center">
                       <Col xs="8">
-                        <h3 className="mb-0">My account</h3>
+                        <h3 className="mb-0">Add Worker</h3>
                       </Col>
                     </Row>
                   </CardHeader>
                   <CardBody>
-                    <Form>
-                      {/* User Information */}
-                      {/* Replace placeholders with token information later */}
-                      <h6 className="heading-small text-muted mb-4"> User information </h6>
+                    <Form onSubmit={this.onSubmit} id="addWorkerFormId">
+
+                      {/* SHOW AND DELETE WORKERS AREA*/}
+
+
+
+                      {/* ADD WORKERS AREA*/}
+
+                      <h6 className="heading-small text-muted mb-4"> Worker information </h6>
                       <div className="pl-lg-4">
                         <Row>
                           <Col lg="6">
+
+                            {/* FIRST NAME INPUT */}
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -92,16 +142,19 @@ class Admin extends React.Component {
                               >
                                 First Name
                               </label>
-                              <Input readOnly value={"First Name"}
+                              <Input required autoComplete="off"
                                 className="form-control-alternative"
-                                // defaultValue=""
-                                id="input-first-name"
+                                name="firstName"
                                 placeholder="First Name"
                                 type="text"
+                                value= {firstName}
+                                onChange = {this.onChange}
                               />
                             </FormGroup>
                           </Col>
                           <Col lg="6">
+
+                            {/* LAST NAME INPUT */}
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -109,18 +162,21 @@ class Admin extends React.Component {
                               >
                                 Last Name
                               </label>
-                              <Input readOnly value={"Last Name"}
+                              <Input required autoComplete="off"
                                 className="form-control-alternative"
-                                 // defaultValue=""
-                                id="input-last-name"
+                                name="lastName"
                                 placeholder="Last Name"
                                 type="text"
+                                value= {lastName}
+                                onChange = {this.onChange}
                               />
                             </FormGroup>
                           </Col>
                         </Row>
                         <Row>
                           <Col lg="6">
+
+                            {/* EMAIL INPUT */}
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -128,16 +184,19 @@ class Admin extends React.Component {
                               >
                                 Email Address
                               </label>
-                              <Input readOnly value={"Email Address"}
+                              <Input required autoComplete="off"
                                 className="form-control-alternative"
-                                // defaultValue=""
-                                id="input-email"
+                                name="email"
                                 placeholder="Email Address"
                                 type="email"
+                                value= {email}
+                                onChange = {this.onChange}
                               />
                             </FormGroup>
                           </Col>
                           <Col lg="6">
+
+                            {/* PASSWORD INPUT */}
                             <FormGroup>
                               <label
                                 className="form-control-label"
@@ -145,90 +204,33 @@ class Admin extends React.Component {
                               >
                                 Password
                               </label>
-                              <Input readOnly value={"Password"}
+                              <Input required autoComplete="off"
                                 className="form-control-alternative"
-                                // defaultValue=""
-                                id="input-password"
+                                name="password"
                                 placeholder="Password"
                                 type="password"
+                                value= {password}
+                                onChange = {this.onChange}
                               />
                             </FormGroup>
                           </Col>
                         </Row>
+
+                        {/* ADD WORKER SUBMISSION BUTTON */}
+                        <div className="text-center">
+                          {/*<Link to="/admin/services_dashboard">*/}
+                            <input type="submit" className="btn btn-primary btn-block mt-4" value="Add Worker"/>
+                          {/*</Link>*/}
+                        </div>
+
                       </div>
                       <hr className="my-4" />
-  
-                      {/* Upcoming Bookings */}
-                      <h6 className="heading-small text-muted mb-4">Upcoming Bookings</h6>
-                      <div className="pl-lg-4">
-                        {/* Table */}
-                        <Row>
-                          <div className="col">
-                            <Card className="shadow">
-                              <CardHeader className="border-0">
-                                <h3 className="mb-0">Upcoming Bookings</h3>
-                              </CardHeader>
-                              <Table className="align-items-center table-flush" responsive>
-                                <thead className="thead-light">
-                                  <tr>
-                                    <th scope="col"> Date</th>
-                                    <th scope="col">Start Time</th>
-                                    <th scope="col">End Time</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Worker Assigned</th>
-                                    <th scope="col" />
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {
-                                    this.state.upcomingBookings.length === 0 ? 
-                                    <tr align="center">
-                                        <td colSpan="7"> No Time slots Available. </td>
-                                    </tr> : 
-                                    this.state.upcomingBookings.map((upcomingBooking) => (
-                                      <tr key={upcomingBooking.timeslotId}> {/**/}
-                                          <td>{upcomingBooking.date}</td> {/* DATE */}
-                                          <td>{upcomingBooking.startTime}</td> {/* START TIME */}
-                                          <td>{upcomingBooking.endTime}</td> {/* FINISH TIME */}
-                                          <td>{/*timeslot.price*/} PRICE </td> {/*  PRICE */}
-                                          <td>{/*timeslot.serviceName*/} WORKER NAME</td> {/* WORKER NAME */}
-                                          <td className="text-right">
-                                            <UncontrolledDropdown> {/* OPTION TO BOOK */}
-                                                <DropdownToggle
-                                                className="btn-icon-only text-light"
-                                                href="#pablo"
-                                                role="button"
-                                                size="sm"
-                                                color=""
-                                                onClick={e => e.preventDefault()}
-                                                >
-                                                <i className="fas fa-ellipsis-v" />
-                                                </DropdownToggle>
-                                                <DropdownMenu className="dropdown-menu-arrow" right>
-                                                  <DropdownItem
-                                                      href="#pablo"
-                                                      onClick={e => e.preventDefault()}
-                                                  >
-                                                      Edit Booking
-                                                  </DropdownItem>
-                                                  <DropdownItem
-                                                      href="#pablo"
-                                                      onClick={e => e.preventDefault()}
-                                                  >
-                                                      Cancel Booking
-                                                  </DropdownItem>
-                                                </DropdownMenu>
-                                            </UncontrolledDropdown>
-                                          </td>
-                                      </tr>
-                                    ))
-                                  }
-                                </tbody>
-                              </Table>
-                            </Card>
-                          </div>
-                        </Row>
-                      </div>
+
+
+                      {/* ADD TIMESLOTS AREA*/}
+
+
+
                     </Form>
                   </CardBody>
                 </Card>
