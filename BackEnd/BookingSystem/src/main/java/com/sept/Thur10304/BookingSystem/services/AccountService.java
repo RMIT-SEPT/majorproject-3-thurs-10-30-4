@@ -154,6 +154,32 @@ public class AccountService {
         return account;
     }
 
+    public Customer findCustomer(Long customerId) throws Exception{
+        Optional<Customer> findCustomer = customerRepository.findById(customerId);
+        if (findCustomer.isPresent()){
+            return findCustomer.get();
+        } else {
+            throw new Exception("Customer not found");
+        }
+    }
+
+    public Admin findAdmin(Long adminId) throws Exception{
+        Optional<Admin> findAdmin = adminRepository.findById(adminId);
+        if (findAdmin.isPresent()){
+            return findAdmin.get();
+        } else {
+            throw new Exception("Admin not found");
+        }
+    }
+
+    public Worker findWorker(Long workerId) throws Exception{
+        Optional<Worker> findWorker = workerRepository.findById(workerId);
+        if (findWorker.isPresent()){
+            return findWorker.get();
+        } else {
+            throw new Exception("Worker not found");
+        }
+    }
     // public Account saveOrUpdateWorker(Account worker, Long adminId) throws Exception{
 
     //     Optional<Account> admin = AccountRepository.findById(adminId);

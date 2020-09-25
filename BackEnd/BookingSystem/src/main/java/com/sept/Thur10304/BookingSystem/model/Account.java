@@ -59,10 +59,8 @@ public class Account {
     @Transient private AccountTypeExtension accountTypeExtension;
   
     private AccountType accountType;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Booking> bookings;
+    
+    
 
     public Long getId() {
         return this.id;
@@ -144,14 +142,6 @@ public class Account {
     
     public void setAccountType(AccountType accountType){
         this.accountType = accountType;
-    }
-
-    public Set<Booking> getBookings() {
-        return this.bookings;
-    }
-
-    public void setBookings(Set<Booking> bookings) {
-        this.bookings = bookings;
     }
 
     @PrePersist

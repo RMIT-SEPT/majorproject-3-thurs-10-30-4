@@ -2,8 +2,10 @@ package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
 import com.sept.Thur10304.BookingSystem.model.Booking;
+import com.sept.Thur10304.BookingSystem.model.Customer;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 import com.sept.Thur10304.BookingSystem.model.Timeslot;
+import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
 import com.sept.Thur10304.BookingSystem.repositories.BookingRepository;
 import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
@@ -45,6 +47,9 @@ class Booking_Controller_DeleteBookingTest {
 
     @Resource
     private AccountRepository accountRepository;
+
+    @Resource
+    private CustomerRepository customerRepository;
 
     Service_ service1;
     Timeslot timeslot1;
@@ -89,11 +94,16 @@ class Booking_Controller_DeleteBookingTest {
         account1.setLastName("Jamm");
         account1.setId((long) 1);
         account1.setPassword("YouJustGotJammed");
+        account1.setAccountType(AccountType.CUSTOMER);
         accountRepository.save(account1);
+
+        Customer customer1 = new Customer();
+        customer1.setAccount(account1);
+        customerRepository.save(customer1);
 
         booking1 = new Booking();
         booking1.setTimeslot(timeslot1);
-        booking1.setCustomer(account1);
+        booking1.setCustomer(customer1);
         bookingRepository.save(booking1);
 
     }

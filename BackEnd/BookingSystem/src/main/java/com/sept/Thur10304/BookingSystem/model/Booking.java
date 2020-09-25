@@ -15,11 +15,10 @@ public class Booking {
     @OneToOne(mappedBy = "booking")
     private Timeslot timeslot;
 
-    // TODO change to customer
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customerId", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Account customer;
+    private Customer customer;
 
     @JsonFormat(pattern = "yyyy-MM-dd|hh:mm")
     private Date dateCreated;
@@ -49,11 +48,11 @@ public class Booking {
         this.dateCreated = dateCreated;
     }
 
-    public Account getCustomer() {
+    public Customer getCustomer() {
         return this.customer;
     }
 
-    public void setCustomer(Account customer) {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 

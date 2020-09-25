@@ -24,7 +24,7 @@ public class Service_Service {
     @Autowired
     private AdminRepository adminRepository;
 
-    public Service_ saveOrUpdateService(Service_ service/*, Long adminId*/) throws Exception {
+    public Service_ saveOrUpdateService(Service_ service, Long adminId) throws Exception {
 
         // TODO add way for same service to be updated, currently would return error for attempt to update with same service name
 
@@ -41,15 +41,17 @@ public class Service_Service {
                 throw new Exception("Service name already exists");
             }
         }
-/*
+
         // Check that admin exists
         Optional<Admin> findAdmin = adminRepository.findById(adminId);
         if (!findAdmin.isPresent()){
             throw new Exception("Admin not found");
+        } else if (findAdmin.get().getService() != null){
+            throw new Exception("Admin already has service");
         }
         
         service.setAdmin(findAdmin.get());
-*/
+
         // Save into repo
         return serviceRepository.save(service);
     }

@@ -19,13 +19,22 @@ import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 @Entity
 public class Admin extends AccountTypeExtension {
 
+    @JsonIgnore
     @OneToMany(mappedBy = "admin", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Worker> workers;
-/*
+
     // TODO when admins are being implemented
     @OneToOne(mappedBy = "admin")
     private Service_ service;
-*/
+
+    public Service_ getService() {
+        return this.service;
+    }
+
+    public void setService(Service_ service) {
+        this.service = service;
+    }
+
     public List<Worker> getWorkers() {
         return this.workers;
     }
