@@ -1,13 +1,20 @@
 package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
+import com.sept.Thur10304.BookingSystem.model.Admin;
 import com.sept.Thur10304.BookingSystem.model.Booking;
+import com.sept.Thur10304.BookingSystem.model.Customer;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 import com.sept.Thur10304.BookingSystem.model.Timeslot;
+import com.sept.Thur10304.BookingSystem.model.Worker;
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
+import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
 import com.sept.Thur10304.BookingSystem.repositories.BookingRepository;
+import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
 import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
 import com.sept.Thur10304.BookingSystem.repositories.TimeslotRepository;
+import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,19 +54,65 @@ class Booking_Controller_CreateBookingTest {
 
     @Resource
     private AccountRepository accountRepository;
+    
+    @Resource
+    private AdminRepository adminRepository;
+    
+    @Resource
+    private WorkerRepository workerRepository;
+
+    @Resource
+    private CustomerRepository customerRepository;
 
     Service_ service1;
     Timeslot timeslot1;
-    Account account1;
+    Account account3;
+    Customer customer;
 
     String str_tomorrow;
 
     @BeforeEach
     void setUp() throws ParseException {
+
+        account3 = new Account();
+        account3.setEmail("feremy.famm@pawnee.gov");
+        account3.setFirstName("Feremy");
+        account3.setLastName("Famm");
+        // account3.setId((long) 1);
+        account3.setPassword("YouJustGotFammed");
+        // accountRepository.save(account1);
+        customer = new Customer();
+        customer.setAccount(account3);
+        customerRepository.save(customer);
+
+        Account account1 = new Account();
+        account1.setEmail("jeremy.jamm@pawnee.gov");
+        account1.setFirstName("Jeremy");
+        account1.setLastName("Jamm");
+        // account1.setId((long) 1);
+        account1.setPassword("YouJustGotJammed");
+        Admin admin = new Admin();
+        admin.setAccount(account1);
+        // accountRepository.save(account1);
+        adminRepository.save(admin);
+
+        Account account2 = new Account();
+        account2.setEmail("geremy.gamm@pawnee.gov");
+        account2.setFirstName("Geremy");
+        account2.setLastName("Gamm");
+        // account2.setId((long) 2);
+        account2.setPassword("YouJustGotGammed");
+        Worker worker = new Worker();
+        worker.setAccount(account2);
+        worker.setAdmin(admin);
+        // accountRepository.save(account2);
+        workerRepository.save(worker);
+
         service1 = new Service_();
         service1.setServiceId((long) 1);
         service1.setServiceName("Paunch Burger");
         service1.setServiceDescription("Home of the Greasy Lard Bomb");
+        service1.setAdmin(admin);
         serviceRepository.save(service1);
 
         Date tomorrow = new Date();
@@ -82,15 +135,10 @@ class Booking_Controller_CreateBookingTest {
         timeslot1.setStartTime(start);
         timeslot1.setEndTime(end);
         timeslot1.setPrice(10.00);
+        timeslot1.setWorker(worker);
         timeslotRepository.save(timeslot1);
 
-        account1 = new Account();
-        account1.setEmail("jeremy.jamm@pawnee.gov");
-        account1.setFirstName("Jeremy");
-        account1.setLastName("Jamm");
-        account1.setId((long) 1);
-        account1.setPassword("YouJustGotJammed");
-        accountRepository.save(account1);
+        
     }
 
     @Test
@@ -143,15 +191,18 @@ class Booking_Controller_CreateBookingTest {
         account2.setEmail("leslie.knope@pawnee.gov");
         account2.setFirstName("Leslie");
         account2.setLastName("Knope");
-        account2.setId((long) 2);
+        // account2.setId((long) 2);
         account2.setPassword("RecallKnope?Don't!");
-        accountRepository.save(account2);
+        // accountRepository.save(account2);
+        Customer customer2 = new Customer();
+        customer2.setAccount(account2);
+        customerRepository.save(customer2);
 
         mvc.perform(post("/api/booking/save")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"timeslotId\": 1,\n" +
-                        "    \"customerId\": 2\n" +
+                        "    \"customerId\": 4\n" +
                         "}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Timeslot already booked"));
