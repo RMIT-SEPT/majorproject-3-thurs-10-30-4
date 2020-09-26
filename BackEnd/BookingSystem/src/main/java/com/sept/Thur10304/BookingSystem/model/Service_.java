@@ -17,19 +17,20 @@ public class Service_ {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long serviceId;
-/*
+
     // TODO
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id", referencedColumnName = "serviceId")
+    @JoinColumn(name = "admin_id", referencedColumnName = "account_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Admin admin;
-*/
 
-    @Size(min = 2,max = 20, message = "Service name must be between 2 and 20 characters in length")
+
+    @Size(min = 2,max = 50, message = "Service name must be between 2 and 20 characters in length")
     @NotBlank(message = "Service requires a name")
     private String serviceName;
 
-    @Size(min = 10, max = 100, message = "Service description must be between 10 and 100 characters in length")
+    @Size(min = 10, max = 500, message = "Service description must be between 10 and 100 characters in length")
     @NotBlank(message = "Service requires a description")
     private String serviceDescription;
 
@@ -43,7 +44,7 @@ public class Service_ {
     public void setServiceId(Long serviceId) {
         this.serviceId = serviceId;
     }
-/*
+
     public Admin getAdmin() {
         return this.admin;
     }
@@ -51,7 +52,7 @@ public class Service_ {
     public void setAdmin(Admin admin) {
         this.admin = admin;
     }
-*/
+
     public String getServiceName() {
         return this.serviceName;
     }
