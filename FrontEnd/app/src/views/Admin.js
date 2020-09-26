@@ -1,7 +1,7 @@
 import React from "react";
 import axios from 'axios';
 
-// FIX ISSUES WITH ERROR HANDLING MESSAGES
+// CREATE SEPARATE ADMIN PROFILE PAGE??
 
 // reactstrap components
 import {
@@ -24,20 +24,47 @@ import {
 } from "reactstrap";
 // core components
 import AdminHeader from "../components/Headers/AdminHeader.js";
+import DatePicker from "react-datepicker";
+
+
+import "react-datepicker/dist/react-datepicker.css";
 
 class Admin extends React.Component {
   constructor(props){
     super(props);
 
     this.state = this.initialState;
+    
     this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+    this.onSubmit = this.onSubmitWorker.bind(this);
+    this.onSubmit = this.onSubmitTimeslot.bind(this);
 
+    this.handleChange = this.handleChange.bind(this)
   }
 
   initialState = {
-    firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errorResponse: []
+    firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errorResponse: [], 
+    startTime: "", endTime: "", date: new Date(), worker: "", price: "", times: [1, 2, 3, 4, 5]
   }
+
+  priceList() {
+    
+    var list = new Array(50);
+
+    for(var i = 1; i <= 50; i++){
+      list[i] = i;
+    }
+    
+    return list
+  }
+
+  sizes = this.priceList;
+
+  handleChange = date => {
+    this.setState({
+      startDate: date
+    });
+  };
 
   onChange = e => {
     this.setState({[e.target.name]: e.target.value});
@@ -55,7 +82,7 @@ class Admin extends React.Component {
     return localStorage.getItem('id');
   }
 
-	onSubmit = e =>
+	onSubmitWorker = e =>
 	{  
 		e.preventDefault();
 
@@ -98,13 +125,64 @@ class Admin extends React.Component {
 		{
 			alert("Passwords are not the same");
 		}
-	}
+  }
   
+  getServiceId() {
+
+  }
+
+  getWorkerId() {
+
+  }
+
+  onSubmitTimeslot = e =>
+	{
+    e.preventDefault();
+
+		const newTimeslot =
+		{
+      date: this.state.date,
+      price: this.state.price,
+      startTime: this.state.startTime,
+      endTime: this.state.endTime
+		}
+
+		if (/*this.checkPasswords()*/ true)
+		{
+			axios.post("http://localhost:8080/api/timeslot/save/" + this.getServiceId() + "/" + this.getWorkerId(), newTimeslot)
+			.then(response =>
+			{
+				if (response.data != null)
+				{ 
+					this.setState(this.initialState);
+					//localStorage.setItem('username', newWorker.firstName);
+					alert("New Timeslot Added");
+				}
+			})
+			.catch(err =>
+			{
+        
+        console.log("Error");
+        if (typeof err.response.data.defaultMessage != 'undefined')
+				{
+					alert(err.response.data.defaultMessage);
+				}
+				else
+				{
+					alert(err.response.data.errors[0].defaultMessage);
+				}
+			});
+		}
+		// else
+		// {
+		// 	alert("Passwords are not the same");
+		// }
+  }
     
     // Render
     render() {
 
-      const {firstName, lastName, email, password, retypedPassword} = this.state;
+      const {firstName, lastName, email, password, retypedPassword, startTime, endTime, date, worker, price, times} = this.state;
       return (
         <>
           <AdminHeader />
@@ -113,6 +191,8 @@ class Admin extends React.Component {
             <Row>
               <Col>
                 <Card className="bg-secondary shadow">
+
+                  {/* ADD WORKERS AREA*/}
                   <CardHeader className="bg-white border-0">
                     <Row className="align-items-center">
                       <Col xs="8">
@@ -121,13 +201,7 @@ class Admin extends React.Component {
                     </Row>
                   </CardHeader>
                   <CardBody>
-                    <Form onSubmit={this.onSubmit} id="addWorkerFormId">
-
-                      {/* SHOW AND DELETE WORKERS AREA*/}
-
-
-
-                      {/* ADD WORKERS AREA*/}
+                    <Form onSubmit={this.onSubmitWorker} id="addWorkerFormId">
 
                       <h6 className="heading-small text-muted mb-4"> Worker information </h6>
                       <div className="pl-lg-4">
@@ -248,12 +322,140 @@ class Admin extends React.Component {
 
                       </div>
                       <hr className="my-4" />
+                    </Form>
+                  </CardBody>
 
+                  {/* ADD TIME SLOT */}
+                  <CardHeader className="bg-white border-0">
+                    <Row className="align-items-center">
+                      <Col xs="8">
+                        <h3 className="mb-0">Add Time Slot</h3>
+                      </Col>
+                    </Row>
+                  </CardHeader>
+                  <CardBody>
+                    <Form onSubmit={this.onSubmitTimeslot} id="addWorkerFormId">
 
-                      {/* ADD TIMESLOTS AREA*/}
+                      <h6 className="heading-small text-muted mb-4"> Time Slot information </h6>
+                      <div className="pl-lg-4">
+                        <Row>
+                          <Col lg="6">
 
+                            {/* START TIME INPUT */}
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-first-name"
+                              >
+                                Start Time
+                              </label>
+                              <Input required autoComplete="off"
+                                className="form-control-alternative"
+                                name="startTime"
+                                placeholder="Start Time"
+                                type="text"
+                                value= {startTime}
+                                onChange = {this.onChange}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col lg="6">
 
+                            {/* END TIME INPUT */}
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-last-name"
+                              >
+                                End Time
+                              </label>
+                              <Input required autoComplete="off"
+                                className="form-control-alternative"
+                                name="endTime"
+                                placeholder="End Time"
+                                type="text"
+                                value= {endTime}
+                                onChange = {this.onChange}
+                              />
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col lg="12">
 
+                            {/* DATE INPUT */}
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-email"
+                              >
+                                Date
+                              </label>
+                              <div>
+                                <DatePicker required
+                                  className="form-control-alternative"
+                                  selected={this.state.date}
+                                  onSelect={this.handleSelect} //when day is clicked
+                                  onChange={this.handleChange} //only when value has changed
+                                />
+                              </div>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col lg="6">
+
+                            {/* WORKER INPUT */}
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-password"
+                              >
+                                Worker
+                              </label>
+                              <Input required autoComplete="off"
+                                className="form-control-alternative"
+                                name="worker"
+                                placeholder="Worker"
+                                type="password"
+                                value= {worker}
+                                onChange = {this.onChange}
+                              />
+                            </FormGroup>
+                          </Col>
+
+                          <Col lg="6">
+
+                            {/* PRICE INPUT */}
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-password"
+                              >
+                                Price
+                              </label>
+                              <div>
+                                <select onChange={this.handleChange}>
+                                  {times.map(time => {
+                                    return (
+                                      <option value={time}> {time} </option>
+                                    )
+                                  })}
+                                </select>
+                              </div>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+
+                        {/* ADD WORKER SUBMISSION BUTTON */}
+                        <div className="text-center">
+                          {/*<Link to="/admin/services_dashboard">*/}
+                            <input type="submit" className="btn btn-primary btn-block mt-4" value="Add Timeslot"/>
+                          {/*</Link>*/}
+                        </div>
+
+                      </div>
+                      <hr className="my-4" />
                     </Form>
                   </CardBody>
                 </Card>
