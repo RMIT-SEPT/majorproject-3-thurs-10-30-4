@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Set;
+
 import javax.validation.Valid;
 
 /**
@@ -65,6 +69,17 @@ public class TimeslotController {
             return new ResponseEntity<Timeslot>(timeslot, HttpStatus.FOUND);
         } else {
             return new ResponseEntity<String>("Invalid Timeslot Id", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getbyworkerid/{workerId}")
+    public ResponseEntity<?> getTimeslotByWorkerId(@Valid @PathVariable Long workerId){
+        try{
+        // Retrieves timeslot through service
+            Set<Timeslot> timeslots = timeslotService.getTimeslotsByWorkerId(workerId); 
+            return new ResponseEntity<Set<Timeslot>>(timeslots, HttpStatus.FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
