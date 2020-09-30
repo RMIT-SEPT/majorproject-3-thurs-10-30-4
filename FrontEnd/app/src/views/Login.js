@@ -77,6 +77,7 @@ class Login extends React.Component {
           localStorage.setItem('id', response.data.id);
           localStorage.setItem('firstName', response.data.firstName);
           localStorage.setItem('lastName', response.data.lastName);
+          localStorage.setItem('email', response.data.email);
           localStorage.setItem('type', response.data.accountType);
 
           if(response.data.accountType == "CUSTOMER") {

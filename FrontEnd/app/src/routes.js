@@ -70,14 +70,14 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/admin",
+    path: "/admin-page",
     name: "Admin Page",
     component: Admin,
     layout: "/admin"
   },
   {
-    path: "/worker",
-    name: "Worker Page",
+    path: "/worker-profile",
+    name: "Worker Profile",
     component: Worker,
     layout: "/admin"
   }
