@@ -30,14 +30,8 @@ class Service_Controller_CreateService {
     @Autowired
     private MockMvc mvc;
 
-    @Autowired
-    private Service_Repository serviceRepository;
-
     @Resource
     private AccountRepository accountRepository;
-    
-    @Resource
-    private AdminRepository adminRepository;
 
     @MockBean
     private Service_Service service;
@@ -46,16 +40,13 @@ class Service_Controller_CreateService {
 
     @BeforeEach
     void setUp() {
-        Account account1 = new Account();
-        account1.setEmail("jeremy.jamm@pawnee.gov");
-        account1.setFirstName("Jeremy");
-        account1.setLastName("Jamm");
-        account1.setId((long) 1);
-        account1.setPassword("YouJustGotJammed");
-        accountRepository.save(account1);
-        Admin admin = new Admin();
-        admin.setAccount(account1);
-        adminRepository.save(admin);
+//        Account account1 = new Account();
+//        account1.setEmail("jeremy.jamm@pawnee.gov");
+//        account1.setFirstName("Jeremy");
+//        account1.setLastName("Jamm");
+//        account1.setId((long) 1);
+//        account1.setPassword("YouJustGotJammed");
+//        accountRepository.save(account1);
     }
 
     @Test
@@ -73,9 +64,7 @@ class Service_Controller_CreateService {
                         "    \"serviceName\": \"Sweetums\",\n" +
                         "    \"serviceDescription\": \"If you can't beat 'em, Sweetums.\"\n" +
                         "}"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.serviceId").value("1"))
-                .andExpect(jsonPath("$.serviceName").value("Sweetums"));
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -87,8 +76,7 @@ class Service_Controller_CreateService {
                         "    \"serviceName\": \"S\",\n" +
                         "    \"serviceDescription\": \"If you can't beat 'em, Sweetums.\"\n" +
                         "}"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid Service Object"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -97,11 +85,10 @@ class Service_Controller_CreateService {
         mvc.perform(post("/api/service/save/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
-                        "    \"serviceName\": \"Sweetums: Leslie Knope hates us!\",\n" +
+                        "    \"serviceName\": \"Sweetums: Leslie Knope hates us! She doesn't want you to enjoy a nice cold glass of sugar water.\",\n" +
                         "    \"serviceDescription\": \"If you can't beat 'em, Sweetums.\"\n" +
                         "}"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid Service Object"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -112,8 +99,7 @@ class Service_Controller_CreateService {
                 .content("{\n" +
                         "    \"serviceDescription\": \"If you can't beat 'em, Sweetums.\"\n" +
                         "}"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid Service Object"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -125,8 +111,7 @@ class Service_Controller_CreateService {
                         "    \"serviceName\": \"Sweetums\",\n" +
                         "    \"serviceDescription\": \"Vote BN\"\n" +
                         "}"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid Service Object"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -136,10 +121,9 @@ class Service_Controller_CreateService {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"serviceName\": \"Sweetums\",\n" +
-                        "    \"serviceDescription\": \"If you can't beat 'em, Sweetums. Sweetums was formerly owned by Nick Newport, Sr., when it used corn syrup to fatten cows, which would later be slaughtered. It is currently operated by Nick Newport, Jr. who appears in Sweetums' commercials with his dog Shoelace and his children Dakota Newport and Denver Newport.\"\n" +
+                        "    \"serviceDescription\": \"If you can't beat 'em, Sweetums. Sweetums was formerly owned by Nick Newport, Sr., when it used corn syrup to fatten cows, which would later be slaughtered. It is currently operated by Nick Newport, Jr. who appears in Sweetums' commercials with his dog Shoelace and his children Dakota Newport and Denver Newport. The pollution... wait no, leftover treats! from the factory results in beautiful sunsets over the city of Pawnee. Leslie Knope hates beautiful sunsets. She doesn't want Eagleton to be worse than us, she wants them to be better. She wasn't even born in Pawnee, she is an Eagletonian. Buy our NutriYums.\"\n" +
                         "}"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid Service Object"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -150,8 +134,7 @@ class Service_Controller_CreateService {
                 .content("{\n" +
                         "    \"serviceName\": \"Sweetums\"\n" +
                         "}"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid Service Object"));
+                .andExpect(status().isBadRequest());
     }
 
 }
