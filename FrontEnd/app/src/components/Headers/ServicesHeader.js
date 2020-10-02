@@ -46,7 +46,7 @@ class ServicesHeader extends React.Component {
     }
 
     getServices() {
-        axios.get("http://localhost:8080/api/service/getall")
+        axios.get("http://3.237.203.90:8080/api/service/getall")
         .then(response => response.data)
         .then((data) => {
             this.setState({services: data});

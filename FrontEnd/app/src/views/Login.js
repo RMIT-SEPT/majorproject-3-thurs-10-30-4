@@ -68,7 +68,7 @@ class Login extends React.Component {
 			lastName: "abcdef"
 		}
 
-		axios.post("http://localhost:8080/api/Account/Login", newPerson)
+		axios.post("http://3.237.203.90:8080/api/Account/Login", newPerson)
 			.then(response =>
 			{
 				if (response.data != null)

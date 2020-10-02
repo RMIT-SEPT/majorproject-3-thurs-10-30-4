@@ -61,7 +61,7 @@ class Profile extends React.Component {
 
   getUpcomingBookings() {
     console.log()
-    axios.get("http://localhost:8080/api/booking/getbycustomer/" + this.getCustomerId())
+    axios.get("http://3.237.203.90:8080/api/booking/getbycustomer/" + this.getCustomerId())
     .then(response => response.data)
     .then((data) => {
         this.setState({upcomingBookings: data});

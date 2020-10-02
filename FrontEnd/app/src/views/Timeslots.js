@@ -58,7 +58,7 @@ class Timeslots extends React.Component {
 
   getTimeslots() {
     console.log()
-    axios.get("http://localhost:8080/api/timeslot/getbyservice/" + this.getServiceChosenID())
+    axios.get("http://3.237.203.90:8080/api/timeslot/getbyservice/" + this.getServiceChosenID())
     .then(response => response.data)
     .then((data) => {
         this.setState({timeslots: data});
@@ -78,7 +78,7 @@ class Timeslots extends React.Component {
       customerId: 1
     }
 
-    axios.post("http://localhost:8080/api/booking/save", newBooking)
+    axios.post("http://3.237.203.90:8080/api/booking/save", newBooking)
       .then(response => {
         alert("Booked"); 
         window.location.reload(false);
