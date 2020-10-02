@@ -80,11 +80,11 @@ class Login extends React.Component {
           localStorage.setItem('type', response.data.accountType);
 
           if(response.data.accountType == "CUSTOMER") {
-            window.location.href = "http://52.3.235.66:3000/admin/services_dashboard";
+            window.location.href = "/admin/services_dashboard";
           } else if (response.data.accountType == "ADMIN") {
-            window.location.href = "http://52.3.235.66:3000/admin/admin";
+            window.location.href = "/admin/admin";
           } else if (response.data.accountType == "WORKER") {
-            window.location.href = "http://52.3.235.66:3000/admin/worker";
+            window.location.href = "/admin/worker";
           }
 				}
 			})
