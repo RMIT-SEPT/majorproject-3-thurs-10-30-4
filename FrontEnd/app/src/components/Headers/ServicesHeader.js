@@ -52,10 +52,10 @@ class ServicesHeader extends React.Component {
             this.setState({services: data});
         })
         .catch(error => { 
-            console.log(error.response.data)
+            //console.log(error.response.data)
             
-            {/* BIT OF A HACK*/}
-            this.setState({services: error.response.data});
+            //{/* BIT OF A HACK*/}
+				//this.setState({services: error.response.data});
         });
     }
 
