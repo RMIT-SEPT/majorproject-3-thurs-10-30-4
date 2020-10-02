@@ -57,7 +57,7 @@ class Auth extends React.Component {
 
   checkLogin() {
     if(id != null) {
-      window.location.href = "http://localhost:3000/Admin/services_dashboard";
+      window.location.href = "http://52.3.235.66:3000/Admin/services_dashboard";
     }
   };
 
