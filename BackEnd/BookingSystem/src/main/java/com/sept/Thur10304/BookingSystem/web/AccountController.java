@@ -1,7 +1,6 @@
 package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
-import com.sept.Thur10304.BookingSystem.model.AuthorizationToken;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +21,21 @@ import java.util.List;
 import java.util.Map; // error map.
 import java.util.HashMap; // error map
 
+//import com.rmit.sept.turtorial.demo.payload.JWTLoginSucessReponse;
+//import com.rmit.sept.turtorial.demo.payload.LoginRequest;
+import com.sept.Thur10304.BookingSystem.security.JwtTokenProvider;
+//import com.rmit.sept.turtorial.demo.services.MapValidationErrorService;
+//import com.rmit.sept.turtorial.demo.services.UserService;
+//import com.rmit.sept.turtorial.demo.validator.UserValidator;
+
+// JWT Authentication/authorisation
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import static com.sept.Thur10304.BookingSystem.security.SecurityConstant.TOKEN_PREFIX;
+
 @RestController
 @RequestMapping("/api/Account")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -30,6 +44,7 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    // Register
     @PostMapping("")
     public ResponseEntity<?> createNewAccount(@Valid @RequestBody Account account, BindingResult result) {
         if (result.hasErrors()){
@@ -138,6 +153,12 @@ public class AccountController {
         return accountService.findAllEmails();
     }
 
+    // Authentication for login
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     // to login, make sure the account details match up with email and password.
     // I assume we can just construct an account object with nulls for everything except email and password
     // Todo: Add password check
@@ -169,9 +190,11 @@ public class AccountController {
         FieldError fe = new FieldError("", "", null, false, null, null, "Invalid login credentials");
         // HTTP Status for failed login is 401 Unauthorized
         return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+
+        //TODO: JWT login authentication goes here.
     }
 
-
+/*
     // Frontend POSTs their JWT. Backend returns the user Account.
     @PostMapping("Profile")
     public ResponseEntity<?> authoriseToken(@Valid @RequestBody AuthorizationToken token, BindingResult result) {
@@ -188,7 +211,7 @@ public class AccountController {
         }
         // for now this simply returns the first account in the repo, for testing
         // it returns null if repo is empty
-        Account authorisedAccount = accountService.authoriseJWT(token);
+        //Account authorisedAccount = accountService.authoriseJWT(token);
 
         if (authorisedAccount!=null)
         {
@@ -200,7 +223,10 @@ public class AccountController {
         // 200 OK and return matching account
         return new ResponseEntity<Account>(authorisedAccount, HttpStatus.OK);
     }
+*/
 
+
+/*
     // Frontend POSTs JWT to logout. Backend will delete the token, requiring user to login again.
     @PostMapping("Logout")
     public ResponseEntity<?> deauthoriseToken(@Valid @RequestBody AuthorizationToken token, BindingResult result) {
@@ -229,4 +255,5 @@ public class AccountController {
         // 417 expectatoin failed (expected valid jwt to deauthorise)
         return new ResponseEntity <FieldError>(fe, HttpStatus.EXPECTATION_FAILED);
     }
+*/
 }

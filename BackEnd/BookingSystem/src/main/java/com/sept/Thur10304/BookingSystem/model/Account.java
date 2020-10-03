@@ -10,6 +10,7 @@ import ch.qos.logback.core.joran.conditional.ElseAction;
 
 import java.util.Date; // for registration date
 import java.util.Set;
+import java.util.Collection; // UserDetails
 
 import javax.validation.constraints.Pattern; // regex validation
 import java.time.ZonedDateTime; // activity timestamp
@@ -18,8 +19,17 @@ import com.sept.Thur10304.BookingSystem.model.AccountTypeExtension;
 
 import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 
+//JWT Authorisation/authentication
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+// Account must implement SpringBoot interface UserDetails
+// UserDetails expects a username field, but we should be fine to
+// substitute it with email.
+
 @Entity
-public class Account {
+public class Account implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -104,6 +114,16 @@ public class Account {
         this.email=email;
     }
 
+    //UserDetails interface
+    public String getUsername() {
+        return getEmail();
+    }
+
+    // UserDetails interface
+    public void setUsername(String username) {
+        setEmail(username);
+    }
+
     public Date getDateCreated()
     {
         return this.dateCreated;
@@ -111,29 +131,6 @@ public class Account {
     public void setDateCreated(Date dateCreated)
     {
         this.dateCreated = dateCreated;
-    }
-  
-    public String generateToken()
-    {
-        // valid token characters
-        String tokenChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                    + "0123456789"
-                                    + "abcdefghijklmnopqrstuvxyz"; 
-  
-        // create StringBuffer size of AlphaNumericString 
-        StringBuilder sb = new StringBuilder(16); 
-  
-        for (int i = 0; i < 16; i++)
-        { 
-            // generate a random number between 
-            // 0 to AlphaNumericString variable length 
-            int index = (int)(tokenChars.length() * Math.random()); 
-  
-            // add Character one by one in end of sb 
-            sb.append(tokenChars.charAt(index)); 
-        } 
-  
-        return sb.toString(); 
     }
   
     public AccountType getAccountType(){
@@ -148,9 +145,39 @@ public class Account {
     protected void onCreate()
     {
         this.dateCreated = new Date();
-        // generate auth token, which will be a 12 digit alphanumeric string.
-        // Todo: Prevent duplicate tokens
-        userToken=generateToken();
+    }
+
+        // AccountDetails interface methods
+        ///////////////////////////////////
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isEnabled() {
+        return true;
     }
 
 }
