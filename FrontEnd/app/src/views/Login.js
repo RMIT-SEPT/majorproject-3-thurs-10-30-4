@@ -77,14 +77,15 @@ class Login extends React.Component {
           localStorage.setItem('id', response.data.id);
           localStorage.setItem('firstName', response.data.firstName);
           localStorage.setItem('lastName', response.data.lastName);
+          localStorage.setItem('email', response.data.email);
           localStorage.setItem('type', response.data.accountType);
 
           if(response.data.accountType == "CUSTOMER") {
             window.location.href = "http://localhost:3000/admin/services_dashboard";
           } else if (response.data.accountType == "ADMIN") {
-            window.location.href = "http://localhost:3000/admin/admin";
+            window.location.href = "http://localhost:3000/admin/admin-page";
           } else if (response.data.accountType == "WORKER") {
-            window.location.href = "http://localhost:3000/admin/worker";
+            window.location.href = "http://localhost:3000/admin/worker-profile";
           }
 				}
 			})

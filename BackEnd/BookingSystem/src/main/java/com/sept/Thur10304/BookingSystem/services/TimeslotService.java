@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TimeslotService {
@@ -67,6 +69,11 @@ public class TimeslotService {
         } else {
             return null;
         }
+    }
+
+    public Set<Timeslot> getTimeslotsByWorkerId(Long workerId) throws Exception{
+        Worker worker = accountService.findWorker(workerId);
+        return worker.getAssignedTimeslots();
     }
 
     public boolean deleteTimeslot(Long timeslotId){

@@ -50,16 +50,9 @@ class UserHeader extends React.Component {
               <Col lg="7" md="10">
                 <h1 className="display-2 text-white">Hello {this.state.name}</h1>
                 <p className="text-white mt-0 mb-5">
-                  This is your profile page. You can see the your upcoming bookings
-                  or edit your personal details.
+                  This is your profile page. You can see the upcoming bookings
+                  that you have been assigned to.
                 </p>
-                <Button
-                  color="info"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  Edit profile
-                </Button>
               </Col>
             </Row>
           </Container>
