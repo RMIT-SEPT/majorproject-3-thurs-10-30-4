@@ -126,12 +126,11 @@ public class BookingService {
         // Combine both calendar instances into one
         Calendar timeslotTime = Calendar.getInstance();
         timeslotTime.setTime(new Date());
+        timeslotTime.set(Calendar.YEAR, timeslotTimeDate.get(Calendar.YEAR));
         timeslotTime.set(Calendar.DAY_OF_YEAR, timeslotTimeDate.get(Calendar.DAY_OF_YEAR));
         timeslotTime.set(Calendar.HOUR_OF_DAY, timeslotTimeHours.get(Calendar.HOUR_OF_DAY));
 
-        if (timeslotTime.get(Calendar.DAY_OF_YEAR) < c.get(Calendar.DAY_OF_YEAR) ||
-          (timeslotTime.get(Calendar.DAY_OF_YEAR) < c.get(Calendar.DAY_OF_YEAR) &&
-          timeslotTime.get(Calendar.HOUR_OF_DAY) < c.get(Calendar.HOUR_OF_DAY))){
+        if (timeslotTime.getTimeInMillis() < c.getTimeInMillis()){
             throw new Exception("Can't cancel less than 48 hours before booking");
         }
 
