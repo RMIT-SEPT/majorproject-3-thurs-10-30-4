@@ -52,8 +52,8 @@ class Admin extends React.Component {
   priceList() {
     var list = new Array(50);
 
-    for(var i = 1; i <= 50; i++){
-      list.push(i)
+    for(var i = 4; i <= 200; i++){
+      list.push((i/4).toFixed(2));
     }
     
     return list
@@ -165,10 +165,12 @@ class Admin extends React.Component {
 	{
     e.preventDefault();
 
+    let res = this.menu.value;
+
 		const newTimeslot =
 		{
       date: this.state.date,
-      price: this.state.price,
+      price: res,
       startTime: this.state.startTime,
       endTime: this.state.endTime
 		}
@@ -202,8 +204,12 @@ class Admin extends React.Component {
 		else
 		{
       // alert("Passwords are not the same");
-      console.log(this.state.startTime);
-      console.log(this.state.endTime);
+      // console.log(this.state.startTime);
+      // console.log(this.state.endTime);
+
+      // HOW TO GET PRICE
+      let res = this.menu.value;
+      alert(res);
 		}
   }
     
@@ -376,7 +382,7 @@ class Admin extends React.Component {
                                 Start Time
                               </label>
                               <div>
-                                <TimePicker
+                                <TimePicker // required
                                   // className="form-control-alternative"
                                   // name="startTime"
                                   onChangeStartTime={this.onChangeStartTime}
@@ -397,7 +403,7 @@ class Admin extends React.Component {
                                 End Time
                               </label>
                               <div> 
-                                <TimePicker
+                                <TimePicker // required
                                   // className="form-control-alternative"
                                   // name="endTime"
                                   onChangeEndTime={this.onChangeEndTime}
@@ -418,8 +424,13 @@ class Admin extends React.Component {
                                 Date
                               </label>
                               <div>
-                                <DatePicker required
-                                  className="form-control-alternative"
+                                <DatePicker // required
+
+                                  // className="form-control-alternative"
+                                  name="date"
+                                  value={date}
+                                  type="date"
+
                                   selected={this.state.date}
                                   onSelect={this.handleSelect} //when day is clicked
                                   onChange={this.handleChange} //only when value has changed
@@ -438,10 +449,11 @@ class Admin extends React.Component {
                                 Price
                               </label>
                               <div>
-                                <select onChange={this.handleChange}>
+                                <select id = "priceSelected" onChange={this.handleChange} ref = {(input)=> this.menu = input}>
                                   {priceList.map(aPrice => {
                                     return (
-                                      <option value={aPrice}> {aPrice} </option>
+                                      <option value={aPrice}> $ {aPrice} </option>
+                                      
                                     )
                                   })}
                                 </select>
@@ -461,7 +473,7 @@ class Admin extends React.Component {
                               >
                                 Worker
                               </label>
-                              <Input required autoComplete="off"
+                              <Input // required autoComplete="off"
                                 className="form-control-alternative"
                                 name="worker"
                                 placeholder="Worker"
