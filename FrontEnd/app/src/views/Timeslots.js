@@ -75,7 +75,7 @@ class Timeslots extends React.Component {
     
     const newBooking = {
       timeslotId: timeslot.timeslotId,
-      customerId: 1
+      customerId: localStorage.getItem('id')
     }
 
     axios.post("http://localhost:8080/api/booking/save", newBooking)
@@ -159,7 +159,7 @@ class Timeslots extends React.Component {
                             <td>{timeslot.startTime}</td> {/* START TIME */}
                             <td>{timeslot.endTime}</td> {/* FINISH TIME */}
                             <td>${timeslot.price} </td> {/*  PRICE */}
-                            <td>{/*timeslot.serviceName*/} WORKER NAME</td> {/* WORKER NAME */}
+                            <td>{timeslot.worker.account.firstName} {timeslot.worker.account.lastName} </td> {/* WORKER NAME */}
                             <td> {/* PENDING STATUS */}
                                   {this.getStatus(timeslot)}
                             </td>

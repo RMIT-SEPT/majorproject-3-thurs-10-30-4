@@ -39,7 +39,6 @@ import {
 } from "reactstrap";
 // core components
 import UserHeader from "../components/Headers/UserHeader.js";
-// import ServiceChosen from "../components/ServiceChosen.js";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -54,9 +53,8 @@ class Profile extends React.Component {
     this.getUpcomingBookings();
   }
 
-  // Update Later to retreieve the local storage of customer ID and or Session Token
   getCustomerId() {
-      return 1;
+      return localStorage.getItem('id');
   }   
 
   getUpcomingBookings() {
@@ -201,6 +199,7 @@ class Profile extends React.Component {
                             <Table className="align-items-center table-flush" responsive>
                               <thead className="thead-light">
                                 <tr>
+                                <th scope="col"> Service Name</th>
                                   <th scope="col"> Date</th>
                                   <th scope="col">Start Time</th>
                                   <th scope="col">End Time</th>
@@ -217,11 +216,12 @@ class Profile extends React.Component {
                                   </tr> : 
                                   this.state.upcomingBookings.map((upcomingBooking) => (
                                     <tr key={upcomingBooking.timeslotId}> {/**/}
+                                        <td>{upcomingBooking.service.serviceName}</td> {/* DATE */}
                                         <td>{upcomingBooking.date}</td> {/* DATE */}
                                         <td>{upcomingBooking.startTime}</td> {/* START TIME */}
                                         <td>{upcomingBooking.endTime}</td> {/* FINISH TIME */}
-                                        <td>{/*timeslot.price*/} PRICE </td> {/*  PRICE */}
-                                        <td>{/*timeslot.serviceName*/} WORKER NAME</td> {/* WORKER NAME */}
+                                        <td>${upcomingBooking.price} </td> {/*  PRICE */}
+                                        <td>{upcomingBooking.worker.account.firstName} {upcomingBooking.worker.account.lastName} </td> {/* WORKER NAME */}
                                         <td className="text-right">
                                           <Button className="pr-5 pl-5" color="primary" type="button" onClick={e => this.cancelBooking(upcomingBooking)}>CANCEL</Button>
                                         </td>

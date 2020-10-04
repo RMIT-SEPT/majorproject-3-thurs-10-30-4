@@ -2,6 +2,7 @@ package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
 import com.sept.Thur10304.BookingSystem.model.AuthorizationToken;
+import com.sept.Thur10304.BookingSystem.model.Worker;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -121,6 +122,17 @@ public class AccountController {
     @GetMapping("")
     public List<Account> allUsers() {
         return accountService.findAll();
+    }
+
+    @GetMapping("/getworkersbyadmin/{adminId}")
+    public ResponseEntity<?> getWorkersByAdmin(@Valid @PathVariable Long adminId) {
+        try {
+            List<Worker> workers = accountService.getWorkersByAdminId(adminId);
+            return new ResponseEntity<List<Worker>>(workers, HttpStatus.CREATED);
+        } catch (Exception e){
+            FieldError fe = new FieldError("", "", null, false, null, null, e.getMessage());
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        }
     }
 
     // for demonstration purposes:
