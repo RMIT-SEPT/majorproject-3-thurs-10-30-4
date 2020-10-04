@@ -114,7 +114,6 @@ public class AccountController {
         } catch (Exception e){
             FieldError fe = new FieldError("", "", null, false, null, null, e.getMessage());
             return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
-
         }
     }
 
@@ -229,4 +228,6 @@ public class AccountController {
         // 417 expectatoin failed (expected valid jwt to deauthorise)
         return new ResponseEntity <FieldError>(fe, HttpStatus.EXPECTATION_FAILED);
     }
+
+
 }

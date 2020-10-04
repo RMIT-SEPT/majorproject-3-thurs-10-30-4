@@ -3,7 +3,6 @@ package com.sept.Thur10304.BookingSystem.services;
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
 import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
 import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
-import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
 import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
 import com.sept.Thur10304.BookingSystem.model.Account;
 import com.sept.Thur10304.BookingSystem.model.AuthorizationToken;
@@ -34,9 +33,6 @@ public class AccountService {
 
     @Autowired
     private AdminRepository adminRepository;
-
-    @Autowired
-    private Service_Repository serviceRepository;
 
     public List<Account> findAll() {
 
@@ -186,31 +182,7 @@ public class AccountService {
         }
     }
 
-    public List<Worker> findWorkersForService(Long serviceId) throws Exception {
-        // Finds service
-        Optional<Service_> findService = serviceRepository.findById(serviceId);
-
-        // If service not found then throw exceptioon
-        if (!findService.isPresent()){
-            throw new Exception("Service not found");
-        }
-
-        Service_ service = findService.get();
-
-        // Gets admin that manages service
-        Admin admin = service.getAdmin();
-
-        // Returns workers that the admin manages
-        return admin.getWorkers();
-    }
-
-    public Service_ findServiceByAdmin(Long adminId) throws Exception {
-        // Finds admin
-        Admin admin = findAdmin(adminId);
-
-        // Returns service (null if no service)
-        return admin.getService();
-    }
+    
 
     // public Account saveOrUpdateWorker(Account worker, Long adminId) throws Exception{
 
