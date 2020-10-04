@@ -60,7 +60,6 @@ class Profile extends React.Component {
   }   
 
   getUpcomingBookings() {
-    console.log()
     axios.get("http://localhost:8080/api/booking/getbycustomer/" + this.getCustomerId())
     .then(response => response.data)
     .then((data) => {
@@ -73,10 +72,22 @@ class Profile extends React.Component {
         this.setState({upcomingBookings: error.response.data});
     });
   }
-  // Connect Axios
-
-
-  // GET Request
+  
+  cancelBooking(upcomingBooking) {
+    axios.delete("http://localhost:8080/api/booking/delete/" + upcomingBooking.booking.bookingId)
+    .then(response => {
+      alert("Cancelled Booking"); 
+      window.location.reload(false);
+    })
+    .catch(err => {
+      // returns error message corresponding to issue
+      if (typeof err.response.data.defaultMessage != 'undefined') {
+        alert(err.response.data.defaultMessage);
+      } else {
+        alert(err.response.data[0].defaultMessage);
+      }
+    })
+  }
 
   
   // Render
@@ -212,32 +223,7 @@ class Profile extends React.Component {
                                         <td>{/*timeslot.price*/} PRICE </td> {/*  PRICE */}
                                         <td>{/*timeslot.serviceName*/} WORKER NAME</td> {/* WORKER NAME */}
                                         <td className="text-right">
-                                          <UncontrolledDropdown> {/* OPTION TO BOOK */}
-                                              <DropdownToggle
-                                              className="btn-icon-only text-light"
-                                              href="#pablo"
-                                              role="button"
-                                              size="sm"
-                                              color=""
-                                              onClick={e => e.preventDefault()}
-                                              >
-                                              <i className="fas fa-ellipsis-v" />
-                                              </DropdownToggle>
-                                              <DropdownMenu className="dropdown-menu-arrow" right>
-                                                <DropdownItem
-                                                    href="#pablo"
-                                                    onClick={e => e.preventDefault()}
-                                                >
-                                                    Edit Booking
-                                                </DropdownItem>
-                                                <DropdownItem
-                                                    href="#pablo"
-                                                    onClick={e => e.preventDefault()}
-                                                >
-                                                    Cancel Booking
-                                                </DropdownItem>
-                                              </DropdownMenu>
-                                          </UncontrolledDropdown>
+                                          <Button className="pr-5 pl-5" color="primary" type="button" onClick={e => this.cancelBooking(upcomingBooking)}>CANCEL</Button>
                                         </td>
                                     </tr>
                                   ))
