@@ -25,7 +25,7 @@ import {
 // core components
 import AdminHeader from "../components/Headers/AdminHeader.js";
 import DatePicker from "react-datepicker";
-
+import TimePicker from 'react-time-picker';
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -39,37 +39,43 @@ class Admin extends React.Component {
     this.onSubmit = this.onSubmitWorker.bind(this);
     this.onSubmit = this.onSubmitTimeslot.bind(this);
 
-    this.handleChange = this.handleChange.bind(this)
+    this.handleChange = this.handleChange.bind(this);
   }
 
+  // Initial States
   initialState = {
     firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errorResponse: [], 
-    startTime: "", endTime: "", date: new Date(), worker: "", price: "", times: [1, 2, 3, 4, 5]
+    startTime: '', endTime: '', date: new Date(), worker: "", price: "", priceList: this.priceList()
   }
 
+  // Helper Method: Generate optional prices
   priceList() {
-    
     var list = new Array(50);
 
     for(var i = 1; i <= 50; i++){
-      list[i] = i;
+      list.push(i)
     }
     
     return list
   }
 
-  sizes = this.priceList;
-
+  // HandleChange Method
   handleChange = date => {
     this.setState({
       startDate: date
     });
   };
 
+  // Primary OnChange Method
   onChange = e => {
     this.setState({[e.target.name]: e.target.value});
   }
 
+  // Secondary OnChange Method Related to time
+  onChangeStartTime = startTime => this.setState({ startTime })
+  onChangeEndTime = endTime => this.setState({ endTime })
+
+  // Helper Method: Check passwords are the same for new workers
   checkPasswords() {
     if (this.state.password === this.state.retypedPassword) {
       return true;
@@ -78,10 +84,12 @@ class Admin extends React.Component {
     }
   }
 
+  // Helper Method: Gets Admin ID for URL Building
   getAdminId() {
     return localStorage.getItem('id');
   }
 
+  // POST Request: Create A Valid Worker
 	onSubmitWorker = e =>
 	{  
 		e.preventDefault();
@@ -126,15 +134,33 @@ class Admin extends React.Component {
 			alert("Passwords are not the same");
 		}
   }
+
+  // GET Request: Retreieves All Workers for a given service
+  getWorkers() {
+    axios.get("http://localhost:8080/api/service/getall")
+        .then(response => response.data)
+        .then((data) => {
+            this.setState({workers: data});
+        })
+        .catch(error => { 
+            console.log(error.response.data)
+            
+            {/* BIT OF A HACK*/}
+            this.setState({workers: error.response.data});
+        });
+  }
   
+  // Helper Method: Gets the Service ID associated with the administrator logged in for URL Building
   getServiceId() {
 
   }
 
+  // Helper Method: Gets the Worker ID the timeslots is being assigned to for URL Building
   getWorkerId() {
 
   }
 
+  // POST Request: Get a valid Timeslot
   onSubmitTimeslot = e =>
 	{
     e.preventDefault();
@@ -147,7 +173,7 @@ class Admin extends React.Component {
       endTime: this.state.endTime
 		}
 
-		if (/*this.checkPasswords()*/ true)
+		if (/*this.checkPasswords()*/ false)
 		{
 			axios.post("http://localhost:8080/api/timeslot/save/" + this.getServiceId() + "/" + this.getWorkerId(), newTimeslot)
 			.then(response =>
@@ -173,16 +199,18 @@ class Admin extends React.Component {
 				}
 			});
 		}
-		// else
-		// {
-		// 	alert("Passwords are not the same");
-		// }
+		else
+		{
+      // alert("Passwords are not the same");
+      console.log(this.state.startTime);
+      console.log(this.state.endTime);
+		}
   }
     
     // Render
     render() {
 
-      const {firstName, lastName, email, password, retypedPassword, startTime, endTime, date, worker, price, times} = this.state;
+      const {firstName, lastName, email, password, retypedPassword, startTime, endTime, date, worker, price, priceList} = this.state;
       return (
         <>
           <AdminHeader />
@@ -315,9 +343,7 @@ class Admin extends React.Component {
 
                         {/* ADD WORKER SUBMISSION BUTTON */}
                         <div className="text-center">
-                          {/*<Link to="/admin/services_dashboard">*/}
                             <input type="submit" className="btn btn-primary btn-block mt-4" value="Add Worker"/>
-                          {/*</Link>*/}
                         </div>
 
                       </div>
@@ -339,7 +365,7 @@ class Admin extends React.Component {
                       <h6 className="heading-small text-muted mb-4"> Time Slot information </h6>
                       <div className="pl-lg-4">
                         <Row>
-                          <Col lg="6">
+                          <Col lg="3">
 
                             {/* START TIME INPUT */}
                             <FormGroup>
@@ -349,17 +375,18 @@ class Admin extends React.Component {
                               >
                                 Start Time
                               </label>
-                              <Input required autoComplete="off"
-                                className="form-control-alternative"
-                                name="startTime"
-                                placeholder="Start Time"
-                                type="text"
-                                value= {startTime}
-                                onChange = {this.onChange}
-                              />
+                              <div>
+                                <TimePicker
+                                  // className="form-control-alternative"
+                                  // name="startTime"
+                                  onChangeStartTime={this.onChangeStartTime}
+                                  value={startTime}
+                                  locale="sv-sv"
+                                />
+                              </div>
                             </FormGroup>
                           </Col>
-                          <Col lg="6">
+                          <Col lg="3">
 
                             {/* END TIME INPUT */}
                             <FormGroup>
@@ -369,19 +396,18 @@ class Admin extends React.Component {
                               >
                                 End Time
                               </label>
-                              <Input required autoComplete="off"
-                                className="form-control-alternative"
-                                name="endTime"
-                                placeholder="End Time"
-                                type="text"
-                                value= {endTime}
-                                onChange = {this.onChange}
-                              />
+                              <div> 
+                                <TimePicker
+                                  // className="form-control-alternative"
+                                  // name="endTime"
+                                  onChangeEndTime={this.onChangeEndTime}
+                                  value={endTime}
+                                  locale="sv-sv"
+                                />
+                              </div>
                             </FormGroup>
                           </Col>
-                        </Row>
-                        <Row>
-                          <Col lg="12">
+                          <Col lg="3">
 
                             {/* DATE INPUT */}
                             <FormGroup>
@@ -401,10 +427,32 @@ class Admin extends React.Component {
                               </div>
                             </FormGroup>
                           </Col>
+                          <Col lg="3">
+
+                            {/* PRICE INPUT */}
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-password"
+                              >
+                                Price
+                              </label>
+                              <div>
+                                <select onChange={this.handleChange}>
+                                  {priceList.map(aPrice => {
+                                    return (
+                                      <option value={aPrice}> {aPrice} </option>
+                                    )
+                                  })}
+                                </select>
+                              </div>
+                            </FormGroup>
+                          </Col>
                         </Row>
                         <Row>
-                          <Col lg="6">
-
+                          <Col lg="12">
+                            
+                            {/* GET REQUEST ALL WORKERS OF A SERVICE */}
                             {/* WORKER INPUT */}
                             <FormGroup>
                               <label
@@ -423,35 +471,11 @@ class Admin extends React.Component {
                               />
                             </FormGroup>
                           </Col>
-
-                          <Col lg="6">
-
-                            {/* PRICE INPUT */}
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-password"
-                              >
-                                Price
-                              </label>
-                              <div>
-                                <select onChange={this.handleChange}>
-                                  {times.map(time => {
-                                    return (
-                                      <option value={time}> {time} </option>
-                                    )
-                                  })}
-                                </select>
-                              </div>
-                            </FormGroup>
-                          </Col>
                         </Row>
 
-                        {/* ADD WORKER SUBMISSION BUTTON */}
+                        {/* ADD TIMESLOT SUBMISSION BUTTON */}
                         <div className="text-center">
-                          {/*<Link to="/admin/services_dashboard">*/}
                             <input type="submit" className="btn btn-primary btn-block mt-4" value="Add Timeslot"/>
-                          {/*</Link>*/}
                         </div>
 
                       </div>
