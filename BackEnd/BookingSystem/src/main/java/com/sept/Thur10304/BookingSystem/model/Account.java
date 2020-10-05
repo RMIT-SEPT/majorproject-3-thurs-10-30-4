@@ -40,7 +40,9 @@ public class Account implements UserDetails {
     @Size(min=1, max=20, message = "Last name must be between 1-20 characters.")
     @NotBlank(message = "Last name is required.")
     private String lastName;
-    @Size(min=6, max=20, message = "Password must be between 6-20 characters.")
+    // This has to be disabled because the password is now encrypted to a long ciphertext.
+    // Which triggers validation error.
+    //@Size(min=6, max=20, message = "Password must be between 6-20 characters.")
     @NotBlank(message = "Password is required.")
     private String password;
     @NotBlank(message = "Email is required.")
@@ -53,10 +55,6 @@ public class Account implements UserDetails {
     // Timestamp of last activity (to make login expire and require new login)
     @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
     private ZonedDateTime activityTimestamp;
-    // Login authentication code (normally should use encryption but should be fine for scope of project)
-    // We will just generate a unique authtoken which doesn't change so that we don't have to worry
-    // about multiple devices being logged into the same account.
-    private String userToken;
 
 
     // type : customer, employee/worker, admin (hardcoded in datbase)

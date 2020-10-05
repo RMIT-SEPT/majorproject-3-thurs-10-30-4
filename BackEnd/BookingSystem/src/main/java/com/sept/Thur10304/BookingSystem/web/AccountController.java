@@ -2,6 +2,7 @@ package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
+import com.sept.Thur10304.BookingSystem.validator.AccountValidator; //jwt
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,10 +45,14 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private AccountValidator accountValidator;
+
     // Register
     @PostMapping("")
     public ResponseEntity<?> createNewAccount(@Valid @RequestBody Account account, BindingResult result) {
         if (result.hasErrors()){
+            accountValidator.validate(account,result);
 
             System.out.println("Create new account.");
 
