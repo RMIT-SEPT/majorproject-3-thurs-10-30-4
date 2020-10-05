@@ -64,7 +64,7 @@ class Admin extends React.Component {
 
   checkLogin() {
     if(id == null) {
-      window.location.href = "http://localhost:3000/";
+      window.location.href = "/";
     }
   };
 

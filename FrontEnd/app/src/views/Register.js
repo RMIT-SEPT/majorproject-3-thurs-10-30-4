@@ -75,7 +75,7 @@ class Register extends React.Component {
 
 		if (this.checkPasswords())
 		{
-			axios.post("http://localhost:8080/api/Account", newPerson)
+			axios.post("http://3.237.203.90:8080/api/Account", newPerson)
 			.then(response =>
 			{
 				if (response.data != null)
@@ -83,7 +83,7 @@ class Register extends React.Component {
 					this.setState(this.initialState);
 					//localStorage.setItem('username', newPerson.firstName);
 					alert("New Person Saved, you may now login."); 
-					window.location.href = "http://localhost:3000/auth/login";
+					window.location.href = "/auth/login";
 				}
 			})
 			.catch(err =>

@@ -46,7 +46,7 @@ class AdminNavbar extends React.Component {
     localStorage.removeItem('id');
     localStorage.removeItem('firstName');
     localStorage.removeItem('lastName');
-    window.location.href = "http://localhost:3000/";
+    window.location.href = "/";
   }
   render() {
     return (

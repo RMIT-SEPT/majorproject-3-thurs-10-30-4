@@ -68,7 +68,7 @@ class Login extends React.Component {
 			lastName: "abcdef"
 		}
 
-		axios.post("http://localhost:8080/api/Account/Login", newPerson)
+		axios.post("http://3.237.203.90:8080/api/Account/Login", newPerson)
 			.then(response =>
 			{
 				if (response.data != null)
@@ -80,11 +80,11 @@ class Login extends React.Component {
           localStorage.setItem('type', response.data.accountType);
 
           if(response.data.accountType == "CUSTOMER") {
-            window.location.href = "http://localhost:3000/admin/services_dashboard";
+            window.location.href = "/admin/services_dashboard";
           } else if (response.data.accountType == "ADMIN") {
-            window.location.href = "http://localhost:3000/admin/admin";
+            window.location.href = "/admin/admin";
           } else if (response.data.accountType == "WORKER") {
-            window.location.href = "http://localhost:3000/admin/worker";
+            window.location.href = "/admin/worker";
           }
 				}
 			})
