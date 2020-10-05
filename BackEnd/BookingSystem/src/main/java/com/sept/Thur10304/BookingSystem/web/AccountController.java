@@ -2,7 +2,8 @@ package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
-import com.sept.Thur10304.BookingSystem.validator.AccountValidator; //jwt
+import com.sept.Thur10304.BookingSystem.validator.AccountValidator; //JWT
+import com.sept.Thur10304.BookingSystem.payload.JWTLoginSucessReponse; // JWT
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ import com.sept.Thur10304.BookingSystem.security.JwtTokenProvider;
 //import com.rmit.sept.turtorial.demo.services.UserService;
 //import com.rmit.sept.turtorial.demo.validator.UserValidator;
 
-// JWT Authentication/authorisation
+// JWT and Spring security Authentication/authorisation
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -181,6 +182,24 @@ public class AccountController {
             //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
         }
 
+        // new Spring security authentication
+        // first authenticate email and password,
+        // then generate JWT.
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    account.getEmail(),
+                    account.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = TOKEN_PREFIX +  tokenProvider.generateToken(authentication);
+
+        return ResponseEntity.ok(new JWTLoginSucessReponse(true, jwt));
+
+
+
+/*
         if (accountService.verifyAccount(account.getEmail(), account.getPassword()))
         {
             Account loginAccount = accountService.getAccount(account.getEmail(), account.getPassword());
@@ -197,6 +216,7 @@ public class AccountController {
         return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
 
         //TODO: JWT login authentication goes here.
+*/
     }
 
 /*
