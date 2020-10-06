@@ -402,7 +402,7 @@ class Admin extends React.Component {
                       <h6 className="heading-small text-muted mb-4"> Time Slot information </h6>
                       <div className="pl-lg-4">
                         <Row>
-                          <Col lg="2">
+                          <Col lg="4">
 
                             {/* START TIME INPUT */}
                             <FormGroup>
@@ -424,7 +424,7 @@ class Admin extends React.Component {
                               </div>
                             </FormGroup>
                           </Col>
-                          <Col lg="2">
+                          <Col lg="4">
 
                             {/* END TIME INPUT */}
                             <FormGroup>
@@ -446,7 +446,7 @@ class Admin extends React.Component {
                               </div>
                             </FormGroup>
                           </Col>
-                          <Col lg="3">
+                          <Col lg="4">
 
                             {/* DATE INPUT */}
                             <FormGroup>
@@ -468,7 +468,9 @@ class Admin extends React.Component {
                               </div>
                             </FormGroup>
                           </Col>
-                          <Col lg="2">
+                          </Row>
+                          <Row>
+                          <Col lg="4">
 
                             {/* PRICE INPUT */}
                             <FormGroup>
