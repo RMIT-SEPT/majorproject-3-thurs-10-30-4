@@ -65,9 +65,12 @@ class Booking_Controller_DeleteBookingTest {
 
     Service_ service1;
     Timeslot timeslot1;
+    Timeslot timeslot2;
     Account account1;
     Booking booking1;
+    Booking booking2;
 
+    String str_aweekaway;
     String str_tomorrow;
 
     @BeforeEach
@@ -103,13 +106,20 @@ class Booking_Controller_DeleteBookingTest {
         service1.setAdmin(admin2);
         serviceRepository.save(service1);
 
-        Date tomorrow = new Date();
+        Date aweekaway = new Date();
         Calendar c = Calendar.getInstance();
-        c.setTime(tomorrow);
-        c.add(Calendar.DATE, 1);
-        tomorrow = c.getTime();
+        c.setTime(aweekaway);
+        c.add(Calendar.DATE, 7);
+        aweekaway = c.getTime();
         String datePattern = "yyyy-MM-dd";
         DateFormat df = new SimpleDateFormat(datePattern);
+        str_aweekaway = df.format(aweekaway);
+
+        Date tomorrow = new Date();
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(tomorrow);
+        c2.add(Calendar.DATE, 7);
+        tomorrow = c2.getTime();
         str_tomorrow = df.format(tomorrow);
 
         DateFormat formatter = new SimpleDateFormat("hh:mm");
@@ -118,13 +128,23 @@ class Booking_Controller_DeleteBookingTest {
 
         timeslot1 = new Timeslot();
         timeslot1.setService(service1);
-        timeslot1.setDate(tomorrow);
+        timeslot1.setDate(aweekaway);
         timeslot1.setTimeslotId((long) 1);
         timeslot1.setStartTime(start);
         timeslot1.setEndTime(end);
         timeslot1.setPrice(10.00);
         timeslot1.setWorker(worker2);
         timeslotRepository.save(timeslot1);
+
+        timeslot2 = new Timeslot();
+        timeslot2.setService(service1);
+        timeslot2.setDate(aweekaway);
+        timeslot2.setTimeslotId((long) 2);
+        timeslot2.setStartTime(start);
+        timeslot2.setEndTime(end);
+        timeslot2.setPrice(10.00);
+        timeslot2.setWorker(worker2);
+        timeslotRepository.save(timeslot2);
 
         account1 = new Account();
         account1.setEmail("jeremy.jamm@pawnee.gov");
@@ -144,6 +164,11 @@ class Booking_Controller_DeleteBookingTest {
         booking1.setCustomer(customer1);
         bookingRepository.save(booking1);
 
+        booking2 = new Booking();
+        booking2.setTimeslot(timeslot2);
+        booking2.setCustomer(customer1);
+        bookingRepository.save(booking2);
+
     }
 
     @Test
@@ -155,9 +180,17 @@ class Booking_Controller_DeleteBookingTest {
 
     @Test
     void deleteBooking_badId() throws Exception {
-        mvc.perform(delete("/api/booking/delete/2")
+        mvc.perform(delete("/api/booking/delete/3")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Booking not found"));
+    }
+
+    @Test
+    void deleteBooking_within48hours() throws Exception {
+        mvc.perform(delete("/api/booking/delete/2")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Can't cancel less than 48 hours before booking"));
     }
 }
