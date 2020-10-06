@@ -45,7 +45,7 @@ class Admin extends React.Component {
   // Initial States
   initialState = {
     firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errorResponse: [], 
-    startTime: '', endTime: '', date: new Date(), worker: "", price: "", priceList: this.priceList()
+    startTime: "", endTime: "", date: "", workers: [], price: "", priceList: this.priceList()
   }
 
   // Helper Method: Generate optional prices
@@ -70,10 +70,6 @@ class Admin extends React.Component {
   onChange = e => {
     this.setState({[e.target.name]: e.target.value});
   }
-
-  // Secondary OnChange Method Related to time
-  onChangeStartTime = startTime => this.setState({ startTime })
-  onChangeEndTime = endTime => this.setState({ endTime })
 
   // Helper Method: Check passwords are the same for new workers
   checkPasswords() {
@@ -135,12 +131,32 @@ class Admin extends React.Component {
 		}
   }
 
-  // GET Request: Retreieves All Workers for a given service
-  getWorkers() {
-    axios.get("http://localhost:8080/api/service/getall")
+  // Helper Method: Gets the Service ID associated with the administrator logged in for URL Building
+  getServiceId() {
+    axios.get("http://localhost:8080/api/service/findbyadmin/" + this.getAdminId())
         .then(response => response.data)
         .then((data) => {
+          localStorage.setItem('serviceId', data.serviceId);
+        })
+        .catch(error => { 
+            console.log(error.response.data);
+        });
+  }
+
+  componentDidMount() {
+    this.getWorkers();
+  }
+
+  // GET Request: Retreieves All Workers for a given service
+  getWorkers() {
+    this.getServiceId();
+
+    axios.get("http://localhost:8080/api/service/getavailableworkers/" + localStorage.getItem('serviceId'))
+        .then(response => response.data)
+        .then((data) => {
+            // console.log(data[0].account);
             this.setState({workers: data});
+            // this.setState({workers: data});
         })
         .catch(error => { 
             console.log(error.response.data)
@@ -149,15 +165,42 @@ class Admin extends React.Component {
             this.setState({workers: error.response.data});
         });
   }
-  
-  // Helper Method: Gets the Service ID associated with the administrator logged in for URL Building
-  getServiceId() {
-
-  }
 
   // Helper Method: Gets the Worker ID the timeslots is being assigned to for URL Building
   getWorkerId() {
+    return this.worker.value;
+  }
 
+  checkValidTime() {
+    
+    let regex = new RegExp(/^([01]\d|2[0-3]):([0-5]\d)$/); 
+
+    if (regex.test(this.state.startTime) && regex.test(this.state.endTime)) {
+      return true;
+    } else {
+      alert("Invalid Start or End Time");
+      return false;
+    }
+  }
+
+  checkValidDate() {
+    
+    let regEx = new RegExp(/^\d{4}-\d{2}-\d{2}$/);
+
+    if(!this.state.date.match(regEx)) {
+      alert("Invalid Date")
+      return false;  // Invalid format
+    }
+
+    var d = new Date(this.state.date);
+    var dNum = d.getTime();
+
+    if(!dNum && dNum !== 0) {
+      alert("Invalid Date")
+      return false; // NaN value, Invalid date
+    }
+
+    return d.toISOString().slice(0,10) === this.state.date;
   }
 
   // POST Request: Get a valid Timeslot
@@ -173,50 +216,38 @@ class Admin extends React.Component {
       price: res,
       startTime: this.state.startTime,
       endTime: this.state.endTime
-		}
+    }
 
-		if (/*this.checkPasswords()*/ false)
+		if (this.checkValidTime() && this.checkValidDate())
 		{
-			axios.post("http://localhost:8080/api/timeslot/save/" + this.getServiceId() + "/" + this.getWorkerId(), newTimeslot)
+      this.getServiceId();
+      
+      axios.post("http://localhost:8080/api/timeslot/save/" + localStorage.getItem('serviceId') + "/" + this.getWorkerId(), newTimeslot)
 			.then(response =>
 			{
 				if (response.data != null)
 				{ 
-					this.setState(this.initialState);
-					//localStorage.setItem('username', newWorker.firstName);
+          this.setState(this.initialState);
+          this.getWorkers();
 					alert("New Timeslot Added");
 				}
 			})
 			.catch(err =>
 			{
-        
-        console.log("Error");
-        if (typeof err.response.data.defaultMessage != 'undefined')
-				{
-					alert(err.response.data.defaultMessage);
-				}
-				else
-				{
-					alert(err.response.data.errors[0].defaultMessage);
-				}
+        console.log(err.response.data);
+        alert(err.response.data)
 			});
 		}
 		else
 		{
-      // alert("Passwords are not the same");
-      // console.log(this.state.startTime);
-      // console.log(this.state.endTime);
-
-      // HOW TO GET PRICE
-      let res = this.menu.value;
-      alert(res);
+      alert("Errors");
 		}
   }
     
     // Render
     render() {
 
-      const {firstName, lastName, email, password, retypedPassword, startTime, endTime, date, worker, price, priceList} = this.state;
+      const {firstName, lastName, email, password, retypedPassword, startTime, endTime, date, workers, price, priceList} = this.state;
       return (
         <>
           <AdminHeader />
@@ -371,7 +402,7 @@ class Admin extends React.Component {
                       <h6 className="heading-small text-muted mb-4"> Time Slot information </h6>
                       <div className="pl-lg-4">
                         <Row>
-                          <Col lg="3">
+                          <Col lg="2">
 
                             {/* START TIME INPUT */}
                             <FormGroup>
@@ -382,17 +413,18 @@ class Admin extends React.Component {
                                 Start Time
                               </label>
                               <div>
-                                <TimePicker // required
-                                  // className="form-control-alternative"
-                                  // name="startTime"
-                                  onChangeStartTime={this.onChangeStartTime}
-                                  value={startTime}
-                                  locale="sv-sv"
+                                <Input required
+                                  className="form-control-alternative"
+                                  name="startTime"
+                                  placeholder="00:01"
+                                  type="text"
+                                  value= {startTime}
+                                  onChange = {this.onChange}
                                 />
                               </div>
                             </FormGroup>
                           </Col>
-                          <Col lg="3">
+                          <Col lg="2">
 
                             {/* END TIME INPUT */}
                             <FormGroup>
@@ -403,12 +435,13 @@ class Admin extends React.Component {
                                 End Time
                               </label>
                               <div> 
-                                <TimePicker // required
-                                  // className="form-control-alternative"
-                                  // name="endTime"
-                                  onChangeEndTime={this.onChangeEndTime}
-                                  value={endTime}
-                                  locale="sv-sv"
+                                <Input required
+                                  className="form-control-alternative"
+                                  name="endTime"
+                                  placeholder="23:59"
+                                  type="text"
+                                  value= {endTime}
+                                  onChange = {this.onChange}
                                 />
                               </div>
                             </FormGroup>
@@ -424,21 +457,18 @@ class Admin extends React.Component {
                                 Date
                               </label>
                               <div>
-                                <DatePicker // required
-
-                                  // className="form-control-alternative"
+                                <Input required
+                                  className="form-control-alternative"
                                   name="date"
-                                  value={date}
-                                  type="date"
-
-                                  selected={this.state.date}
-                                  onSelect={this.handleSelect} //when day is clicked
-                                  onChange={this.handleChange} //only when value has changed
+                                  placeholder="YYYY-MM-DD"
+                                  type="text"
+                                  value= {date}
+                                  onChange = {this.onChange}
                                 />
                               </div>
                             </FormGroup>
                           </Col>
-                          <Col lg="3">
+                          <Col lg="2">
 
                             {/* PRICE INPUT */}
                             <FormGroup>
@@ -460,9 +490,7 @@ class Admin extends React.Component {
                               </div>
                             </FormGroup>
                           </Col>
-                        </Row>
-                        <Row>
-                          <Col lg="12">
+                          <Col lg="3">
                             
                             {/* GET REQUEST ALL WORKERS OF A SERVICE */}
                             {/* WORKER INPUT */}
@@ -473,14 +501,16 @@ class Admin extends React.Component {
                               >
                                 Worker
                               </label>
-                              <Input // required autoComplete="off"
-                                className="form-control-alternative"
-                                name="worker"
-                                placeholder="Worker"
-                                type="password"
-                                value= {worker}
-                                onChange = {this.onChange}
-                              />
+                              <div>
+                                <select id = "workers" onChange={this.handleChange} ref = {(input)=> this.worker = input}>
+                                  {this.state.workers.map(worker => {
+                                    return (
+                                      <option value={worker.account.id}> {worker.account.firstName} {worker.account.lastName} </option>
+                                      
+                                    )
+                                  })}
+                                </select>
+                              </div>
                             </FormGroup>
                           </Col>
                         </Row>
