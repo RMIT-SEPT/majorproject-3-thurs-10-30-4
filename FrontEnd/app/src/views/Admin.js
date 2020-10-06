@@ -24,10 +24,6 @@ import {
 } from "reactstrap";
 // core components
 import AdminHeader from "../components/Headers/AdminHeader.js";
-import DatePicker from "react-datepicker";
-import TimePicker from 'react-time-picker';
-
-import "react-datepicker/dist/react-datepicker.css";
 
 class Admin extends React.Component {
   constructor(props){
@@ -240,7 +236,7 @@ class Admin extends React.Component {
 		}
 		else
 		{
-      alert("Errors");
+      // alert("Errors");
 		}
   }
     
