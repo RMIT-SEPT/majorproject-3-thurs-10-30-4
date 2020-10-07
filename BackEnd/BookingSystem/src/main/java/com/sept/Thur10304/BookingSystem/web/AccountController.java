@@ -220,7 +220,7 @@ public class AccountController {
 
     // TODO: Integrate this code with all FrontEnd mappings.
     // You pass the raw JWT to this mapping and it will return the Account tied to it.
-    // This expects the mapping and nothing else, however if there are { and " characters
+    // This expects the token and nothing else, however if there are { and " characters
     // we can just strip them and we should be fine.
     @PostMapping("Authenticate")
     public ResponseEntity<?> authenticateAccount(@Valid @RequestBody String token, BindingResult result) {
@@ -257,68 +257,52 @@ public class AccountController {
 
     }
 
-    //TODO: Update these mappings to use JWT, add all mappings we need.
+    //TODO: Update all mappings to use JWT
 
-/*
     // Frontend POSTs their JWT. Backend returns the user Account.
+    // This is basically doing exactly the same thing as "Authenticate" mapping
     @PostMapping("Profile")
-    public ResponseEntity<?> authoriseToken(@Valid @RequestBody AuthorizationToken token, BindingResult result) {
+    public ResponseEntity<?> profileMapping(@Valid @RequestBody String token, BindingResult result) {
         if (result.hasErrors()){
-            // Todo: return cleaner error codes using tutorial
-            // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
-            //Map <String, String> errorMap = new HashMap<>();
-
-            //for (FieldError error : result.getFieldErrors()){
-                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
-            //}
-
-            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
-        }
-        // for now this simply returns the first account in the repo, for testing
-        // it returns null if repo is empty
-        //Account authorisedAccount = accountService.authoriseJWT(token);
-
-        if (authorisedAccount!=null)
-        {
-            //jwt authorisation failed
-            FieldError fe = new FieldError("", "", null, false, null, null, "jwt authorisation failed");
-            // 401 Unauthorized
-            return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
-        }
-        // 200 OK and return matching account
-        return new ResponseEntity<Account>(authorisedAccount, HttpStatus.OK);
+            return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
     }
-*/
+
+    System.out.println("Authenticating: "+token);
+    // Passing the raw token seems to work, for example just posting:
+    // eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjEiLCJleHAi...
+    // I'm not sure if this is possible using AXIOS.
+
+    try
+    {
+        if ( tokenProvider.validateToken(token) )
+        {
+            // Token validated okay, return the account we want
+            long userID = tokenProvider.getUserIdFromJWT(token);
+            Account retAccount = accountService.loadAccountById(userID);
+            return new ResponseEntity<Account>(retAccount, HttpStatus.OK);
+        }
+    }
+    catch (Exception e)
+    {
+        // tokenProvider threw exception.
+        FieldError fe = new FieldError("", "", null, false, null, null, "JWT EXCEPTION");
+        return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+    }
+    // tokenProvider returned false on validate.
+    FieldError fe = new FieldError("", "", null, false, null, null, "JWT FAIL");
+    return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+}
 
 
+    // I don't know if backend needs a logout function. I think FrontEnd can just throw away the JWT.
+    // But there might be some JWT function to deauthorise a token for security.
 /*
     // Frontend POSTs JWT to logout. Backend will delete the token, requiring user to login again.
     @PostMapping("Logout")
     public ResponseEntity<?> deauthoriseToken(@Valid @RequestBody AuthorizationToken token, BindingResult result) {
         if (result.hasErrors()){
-            // Todo: return cleaner error codes using tutorial
-            // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
-            //Map <String, String> errorMap = new HashMap<>();
 
-            //for (FieldError error : result.getFieldErrors()){
-                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
-            //}
-
-            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
         }
-
-        // pass the jwt token to deauthorise
-        // if the token doesn't exist or is wrong, function will return false
-        if (accountService.deauthoriseJWT(token))
-        {
-            // 200 OK, jwt deauthorised
-            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
-        }
-        // jwt deauthorisation failed
-        // there is probably nothing we can do about this except ignore it
-        FieldError fe = new FieldError("", "", null, false, null, null, "jwt deauthorisation failed");
-        // 417 expectatoin failed (expected valid jwt to deauthorise)
-        return new ResponseEntity <FieldError>(fe, HttpStatus.EXPECTATION_FAILED);
     }
 */
 }
