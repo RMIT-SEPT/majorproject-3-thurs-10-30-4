@@ -115,10 +115,11 @@ public class TimeslotService {
         return timeslots;
     }
 
-    // Removes all timeslots that have ended
+    // Removes all timeslots that have passed their end time
     public Collection<Timeslot> filterCurrentTimeslots(Collection<Timeslot> timeslots){
         for (Timeslot timeslot : timeslots){
             Calendar timeslotTime = Calendar.getInstance();
+            // Used {} brackets to unset these temp calendar variables after use
             {
                 Calendar day = Calendar.getInstance();
                 day.setTime(timeslot.getDate());
