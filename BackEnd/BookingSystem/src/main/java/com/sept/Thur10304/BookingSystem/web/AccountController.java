@@ -213,7 +213,12 @@ public class AccountController {
         long userID = tokenProvider.getUserIdFromJWT(rawtoken);
         System.out.println("Token matches with user ID: "+userID);
 
-        return ResponseEntity.ok(new JWTLoginSucessReponse(true, jwt));
+        // I don't know why we are prefixing the token (except perhaps so frontend knows it got it)
+        // So I am just returning the raw token because that's what you want to be passing anyway.
+        return ResponseEntity.ok(new JWTLoginSucessReponse(true, rawtoken));
+
+        
+        
 
 
 
@@ -244,19 +249,32 @@ public class AccountController {
                 return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
         }
 
+        System.out.println("Authenticating: "+token);
+        // Passing the raw token seems to work, for example just posting:
+        // eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjEiLCJleHAi...
+        // I'm not sure if this is possible using AXIOS.
+
         try
         {
             if ( tokenProvider.validateToken(token) )
             {
-                return ResponseEntity.ok("GOOD");
+                // Token validated okay, return the account we want
+                long userID = tokenProvider.getUserIdFromJWT(token);
+                Account retAccount = accountService.loadAccountById(userID);
+                return new ResponseEntity<Account>(retAccount, HttpStatus.OK);
             }
         }
         catch (Exception e)
         {
-            return ResponseEntity.ok("EXCEPTION"); 
+            // tokenProvider threw exception.
+            FieldError fe = new FieldError("", "", null, false, null, null, "JWT EXCEPTION");
+            return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+            //return ResponseEntity.ok("EXCEPTION");
         }
-        //validateToken
-        return ResponseEntity.ok("BAD");
+        // tokenProvider returned false on validate.
+        FieldError fe = new FieldError("", "", null, false, null, null, "JWT FAIL");
+        return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+        //return ResponseEntity.ok("BAD");
 
     }
 
