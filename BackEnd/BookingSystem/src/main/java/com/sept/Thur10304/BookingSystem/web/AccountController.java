@@ -189,13 +189,25 @@ public class AccountController {
                 new UsernamePasswordAuthenticationToken(
                     account.getEmail(),
                     account.getPassword()
+                    //account.getId(),
+                    //account.getEmail()
                 )
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = TOKEN_PREFIX +  tokenProvider.generateToken(authentication);
+        String rawtoken = tokenProvider.generateToken(authentication);
+        String jwt = TOKEN_PREFIX +  rawtoken;
 
-        return ResponseEntity.ok(new JWTLoginSucessReponse(true, jwt));
+        if (tokenProvider.validateToken(rawtoken))
+        {
+            return ResponseEntity.ok("VALID: "+jwt);
+        }
+        else
+        {
+            return ResponseEntity.ok("INVALID:"+jwt);
+        }
+
+        //return ResponseEntity.ok(new JWTLoginSucessReponse(true, jwt));
 
 
 
@@ -217,6 +229,29 @@ public class AccountController {
 
         //TODO: JWT login authentication goes here.
 */
+    }
+
+    // pass jwt and should return user details
+    @PostMapping("Authenticate")
+    public ResponseEntity<?> authenticateAccount(@Valid @RequestBody String token, BindingResult result) {
+        if (result.hasErrors()){
+                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+        }
+
+        try
+        {
+            if ( tokenProvider.validateToken(token) )
+            {
+                return ResponseEntity.ok("GOOD");
+            }
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.ok("EXCEPTION"); 
+        }
+        //validateToken
+        return ResponseEntity.ok("BAD");
+
     }
 
 /*
