@@ -102,8 +102,8 @@ class Admin extends React.Component {
 			{
 				if (response.data != null)
 				{ 
-					this.setState(this.initialState);
-					//localStorage.setItem('username', newWorker.firstName);
+          this.setState(this.initialState);
+          this.getWorkers();
 					alert("New Worker Added");
 				}
 			})
