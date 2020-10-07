@@ -5,6 +5,8 @@ import com.sept.Thur10304.BookingSystem.model.Worker;
 import com.sept.Thur10304.BookingSystem.repositories.TimeslotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.sept.Thur10304.BookingSystem.model.Admin;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 
 import java.util.Calendar;
@@ -94,5 +96,14 @@ public class TimeslotService {
         } else {
             return false;
         }
+    }
+
+    public Set<Timeslot> getTimeslotsByAdmin(Long adminId) throws Exception{
+        Admin admin = accountService.findAdmin(adminId);
+        if (admin.getService() == null){
+            throw new Exception("Admin doesn't have a service");
+        }
+
+        return admin.getService().getTimeslots();
     }
 }

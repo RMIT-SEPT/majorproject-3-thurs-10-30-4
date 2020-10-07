@@ -84,7 +84,7 @@ public class TimeslotController {
     }
 
     @DeleteMapping("/delete/{timeslotId}")
-    public ResponseEntity<?> deleteService(@Valid @PathVariable Long timeslotId) {
+    public ResponseEntity<?> deleteTimeslot(@Valid @PathVariable Long timeslotId) {
         // Run service to delete timeslot from databse
         boolean timeslotDeleted = timeslotService.deleteTimeslot(timeslotId);
         // If timeslot deleted then return true, else false
@@ -92,6 +92,16 @@ public class TimeslotController {
             return new ResponseEntity<Boolean>(true, HttpStatus.OK);
         } else {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getbyadmin/{adminId}")
+    public ResponseEntity<?> getTimeslotsByAdmin(@Valid @PathVariable Long adminId) {
+        try {
+            Set<Timeslot> timeslots = timeslotService.getTimeslotsByAdmin(adminId);
+            return new ResponseEntity<Set<Timeslot>>(timeslots, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }
