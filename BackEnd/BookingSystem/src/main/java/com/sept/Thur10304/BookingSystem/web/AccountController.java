@@ -216,33 +216,12 @@ public class AccountController {
         // I don't know why we are prefixing the token (except perhaps so frontend knows it got it)
         // So I am just returning the raw token because that's what you want to be passing anyway.
         return ResponseEntity.ok(new JWTLoginSucessReponse(true, rawtoken));
-
-        
-        
-
-
-
-/*
-        if (accountService.verifyAccount(account.getEmail(), account.getPassword()))
-        {
-            Account loginAccount = accountService.getAccount(account.getEmail(), account.getPassword());
-            // login authorised
-            // presumably we send an authentication token or do a redirect
-            //Account account1 = accountService.saveOrUpdateAccount(account);
-            // HTTP Status for successful login should be 200 OK
-            return new ResponseEntity<Account>(loginAccount, HttpStatus.OK);
-        }
-        // login not authorised
-        // return failed login message
-        FieldError fe = new FieldError("", "", null, false, null, null, "Invalid login credentials");
-        // HTTP Status for failed login is 401 Unauthorized
-        return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
-
-        //TODO: JWT login authentication goes here.
-*/
     }
 
-    // pass jwt and should return user details
+    // TODO: Integrate this code with all FrontEnd mappings.
+    // You pass the raw JWT to this mapping and it will return the Account tied to it.
+    // This expects the mapping and nothing else, however if there are { and " characters
+    // we can just strip them and we should be fine.
     @PostMapping("Authenticate")
     public ResponseEntity<?> authenticateAccount(@Valid @RequestBody String token, BindingResult result) {
         if (result.hasErrors()){
@@ -277,6 +256,8 @@ public class AccountController {
         //return ResponseEntity.ok("BAD");
 
     }
+
+    //TODO: Update these mappings to use JWT, add all mappings we need.
 
 /*
     // Frontend POSTs their JWT. Backend returns the user Account.

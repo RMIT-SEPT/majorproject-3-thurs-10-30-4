@@ -77,17 +77,4 @@ public class JwtTokenProvider {
         return Long.parseLong(id);
     }
 
-    private AccountService customUserDetailsService;
-
-    public Account getAccountFromJWT(String token)
-    {
-        Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
-        String id = (String)claims.get("id");
-        Long idl = Long.parseLong(id);
-        
-        // return account by id
-
-
-        return customUserDetailsService.loadAccountById(idl);
-    }
 }
