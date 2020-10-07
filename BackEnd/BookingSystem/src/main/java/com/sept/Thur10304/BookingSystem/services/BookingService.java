@@ -20,6 +20,8 @@ import com.sept.Thur10304.BookingSystem.model.Account;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 @Service
 public class BookingService {
@@ -106,6 +108,31 @@ public class BookingService {
         }
 
         Booking booking = findBooking.get();
+
+        // Check that booking is at least 48 hours into the future
+        // TODO clean up code
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.HOUR_OF_DAY, 48);
+
+        // This calendar instance is made to get date from timeslot
+        Calendar timeslotTimeDate = Calendar.getInstance();
+        timeslotTimeDate.setTime(new Date());
+        timeslotTimeDate.setTime(booking.getTimeslot().getDate());
+        // This calendar instance is made to get hours from timeslot
+        Calendar timeslotTimeHours = Calendar.getInstance();
+        timeslotTimeHours.setTime(new Date());
+        timeslotTimeHours.setTime(booking.getTimeslot().getStartTime());
+        // Combine both calendar instances into one
+        Calendar timeslotTime = Calendar.getInstance();
+        timeslotTime.setTime(new Date());
+        timeslotTime.set(Calendar.YEAR, timeslotTimeDate.get(Calendar.YEAR));
+        timeslotTime.set(Calendar.DAY_OF_YEAR, timeslotTimeDate.get(Calendar.DAY_OF_YEAR));
+        timeslotTime.set(Calendar.HOUR_OF_DAY, timeslotTimeHours.get(Calendar.HOUR_OF_DAY));
+
+        if (timeslotTime.getTimeInMillis() < c.getTimeInMillis()){
+            throw new Exception("Can't cancel less than 48 hours before booking");
+        }
 
         // De-associate timeslot and booking
         booking.getTimeslot().setBooking(null);

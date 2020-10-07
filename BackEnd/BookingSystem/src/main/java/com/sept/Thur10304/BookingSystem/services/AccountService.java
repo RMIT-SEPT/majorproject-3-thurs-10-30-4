@@ -182,7 +182,11 @@ public class AccountService {
         }
     }
 
-    
+
+    public List<Worker> getWorkersByAdminId(Long adminId) throws Exception{
+        Admin admin = findAdmin(adminId);
+        return admin.getWorkers();
+    }
 
     // public Account saveOrUpdateWorker(Account worker, Long adminId) throws Exception{
 

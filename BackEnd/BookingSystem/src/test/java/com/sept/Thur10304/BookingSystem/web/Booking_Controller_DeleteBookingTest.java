@@ -1,16 +1,21 @@
 package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
+import com.sept.Thur10304.BookingSystem.model.Admin;
 import com.sept.Thur10304.BookingSystem.model.Booking;
 import com.sept.Thur10304.BookingSystem.model.Customer;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 import com.sept.Thur10304.BookingSystem.model.Timeslot;
+import com.sept.Thur10304.BookingSystem.model.Worker;
 import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
+import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
 import com.sept.Thur10304.BookingSystem.repositories.BookingRepository;
 import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
 import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
 import com.sept.Thur10304.BookingSystem.repositories.TimeslotRepository;
+import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +55,12 @@ class Booking_Controller_DeleteBookingTest {
     private AccountRepository accountRepository;
 
     @Resource
+    private AdminRepository adminRepository;
+    
+    @Resource
+    private WorkerRepository workerRepository;
+
+    @Resource
     private CustomerRepository customerRepository;
 
     Service_ service1;
@@ -61,10 +72,35 @@ class Booking_Controller_DeleteBookingTest {
 
     @BeforeEach
     void setUp() throws ParseException, Exception {
+
+        Account account3 = new Account();
+        account3.setEmail("teremy.jamm@pawnee.gov");
+        account3.setFirstName("Teremy");
+        account3.setLastName("Tamm");
+        // account3.setId((long) 3);
+        account3.setPassword("YouJustGotTammed");
+        Admin admin2 = new Admin();
+        admin2.setAccount(account3);
+        // accountRepository.save(account3);
+        adminRepository.save(admin2);
+
+        Account account4 = new Account();
+        account4.setEmail("beremy.gamm@pawnee.gov");
+        account4.setFirstName("Beremy");
+        account4.setLastName("Bamm");
+        // account4.setId((long) 4);
+        account4.setPassword("YouJustGotBammed");
+        Worker worker2 = new Worker();
+        worker2.setAccount(account4);
+        worker2.setAdmin(admin2);
+        // accountRepository.save(account4);
+        workerRepository.save(worker2);
+
         service1 = new Service_();
         service1.setServiceId((long) 1);
         service1.setServiceName("Paunch Burger");
         service1.setServiceDescription("Home of the Greasy Lard Bomb");
+        service1.setAdmin(admin2);
         serviceRepository.save(service1);
 
         Date tomorrow = new Date();
@@ -87,16 +123,17 @@ class Booking_Controller_DeleteBookingTest {
         timeslot1.setStartTime(start);
         timeslot1.setEndTime(end);
         timeslot1.setPrice(10.00);
+        timeslot1.setWorker(worker2);
         timeslotRepository.save(timeslot1);
 
         account1 = new Account();
         account1.setEmail("jeremy.jamm@pawnee.gov");
         account1.setFirstName("Jeremy");
         account1.setLastName("Jamm");
-        account1.setId((long) 1);
+        // account1.setId((long) 1);
         account1.setPassword("YouJustGotJammed");
-        account1.setAccountType(AccountType.CUSTOMER);
-        accountRepository.save(account1);
+        // account1.setAccountType(AccountType.CUSTOMER);
+        // accountRepository.save(account1);
 
         Customer customer1 = new Customer();
         customer1.setAccount(account1);
