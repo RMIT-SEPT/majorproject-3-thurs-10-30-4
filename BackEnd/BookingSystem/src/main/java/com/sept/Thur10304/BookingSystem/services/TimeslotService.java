@@ -106,4 +106,24 @@ public class TimeslotService {
 
         return admin.getService().getTimeslots();
     }
+
+    // Removes all timeslots that have ended
+    public Set<Timeslot> filterCurrentTimeslots(Set<Timeslot> timeslots){
+        for (Timeslot timeslot : timeslots){
+            Calendar timeslotTime = Calendar.getInstance();
+                // Used these brackets so variables get unset/unreferencable
+                {
+                    Calendar day = Calendar.getInstance();
+                    day.setTime(timeslot.getDate());
+                    c.set(Calendar.DATE, day.get(Calendar.DATE));
+                    Calendar endTime = Calendar.getInstance();
+                    endTime.setTime(timeslot.getEndTime());
+                    c.set(Calendar.HOUR_OF_DAY, endTime.get(Calendar.HOUR_OF_DAY));
+                }
+            if (timeslotTime.getTimeInMillis() < new Date().getTime()){
+                timeslots.remove(timeslot);
+            }
+        }
+        return timeslots;
+    }
 }
