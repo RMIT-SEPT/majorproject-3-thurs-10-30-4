@@ -1,6 +1,7 @@
 package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Service_;
+import com.sept.Thur10304.BookingSystem.model.Worker;
 import com.sept.Thur10304.BookingSystem.services.Service_Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+
 import javax.validation.Valid;
 
 /**
@@ -75,6 +79,26 @@ public class Service_Controller {
             return new ResponseEntity<Boolean>(true, HttpStatus.OK);
         } else {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/findbyadmin/{adminId}")
+    public ResponseEntity<?> findServiceByAdmin(@Valid @PathVariable Long adminId) {
+        try {
+            Service_ service = serviceService.findServiceByAdmin(adminId);
+            return new ResponseEntity<Service_>(service, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getavailableworkers/{serviceId}")
+    public ResponseEntity<?> findWorkersForService(@Valid @PathVariable Long serviceId) {
+        try {
+            List<Worker> workers = serviceService.findWorkersForService(serviceId);
+            return new ResponseEntity<List<Worker>>(workers, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

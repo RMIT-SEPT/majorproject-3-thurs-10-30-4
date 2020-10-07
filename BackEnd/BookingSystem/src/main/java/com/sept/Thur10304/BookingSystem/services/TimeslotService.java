@@ -6,6 +6,8 @@ import com.sept.Thur10304.BookingSystem.repositories.TimeslotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sept.Thur10304.BookingSystem.model.Service_;
+
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,19 +31,24 @@ public class TimeslotService {
         Service_ service = serviceService.getServiceById(Long.toString(serviceId));
         // Check to see if worker exists (throws error if not found)
         Worker worker = accountService.findWorker(workerId);
+        Calendar tommorow = Calendar.getInstance();
+        tommorow.add(Calendar.DATE, 1);
         // Checks if service exists
-        if (service != null
-          // Checks that start time is before end time
-          // TODO doesn't currently work
-          && timeslot.getStartTime().before(timeslot.getEndTime())
-          // CHecks that date of timeslot is at least tomorrow 
-          && timeslot.getDate().after(new Date())){
+        if (service == null){
+            throw new Exception("Service not found");
+
+        // Checks that start time is before end time
+        } else if (!timeslot.getStartTime().before(timeslot.getEndTime())){
+            throw new Exception("Start time must be before end time");
+
+        // CHecks that date of timeslot is at least tomorrow 
+        } else if (timeslot.getDate().getTime() < tommorow.getTimeInMillis()){
+            throw new Exception("Date must be after today");
+        } else {
             // Set service and save timeslot
             timeslot.setService(service);
             timeslot.setWorker(worker);
             return timeslotRepository.save(timeslot);
-        } else {
-            throw new Exception("Timeslot is invalid");
         }
     }
 
