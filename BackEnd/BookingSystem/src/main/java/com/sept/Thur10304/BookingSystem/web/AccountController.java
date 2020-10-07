@@ -200,14 +200,20 @@ public class AccountController {
 
         if (tokenProvider.validateToken(rawtoken))
         {
-            return ResponseEntity.ok("VALID: "+jwt);
+            System.out.println("Token validated");
+            //return ResponseEntity.ok("VALID: "+jwt);
         }
         else
         {
-            return ResponseEntity.ok("INVALID:"+jwt);
+            System.out.println("Token did not validate");
+            //return ResponseEntity.ok("INVALID:"+jwt);
         }
 
-        //return ResponseEntity.ok(new JWTLoginSucessReponse(true, jwt));
+        // Try getting user ID from token
+        long userID = tokenProvider.getUserIdFromJWT(rawtoken);
+        System.out.println("Token matches with user ID: "+userID);
+
+        return ResponseEntity.ok(new JWTLoginSucessReponse(true, jwt));
 
 
 
