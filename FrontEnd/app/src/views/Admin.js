@@ -41,18 +41,36 @@ class Admin extends React.Component {
   // Initial States
   initialState = {
     firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errorResponse: [], 
-    startTime: "", endTime: "", date: "", workers: [], price: "", priceList: this.priceList()
+    startTime: "", endTime: "", date: "", timeslots: [], workers: [], priceList: this.priceList()
   }
 
-  // Helper Method: Generate optional prices
-  priceList() {
-    var list = new Array(50);
+  componentDidMount() {
+    this.getWorkers();
+    this.getAdminId();
+    this.getTimeslots();
+  }
 
-    for(var i = 4; i <= 200; i++){
-      list.push((i/4).toFixed(2));
-    }
-    
-    return list
+  getAdminId() {
+    return localStorage.getItem('id');
+  }
+
+  getWorkerId() {
+    return this.worker.value;
+  }
+
+  getServiceId() {
+    axios.get("http://localhost:8080/api/service/findbyadmin/" + this.getAdminId())
+        .then(response => response.data)
+        .then((data) => {
+          localStorage.setItem('serviceId', data.serviceId);
+        })
+        .catch(error => { 
+            console.log(error.response.data);
+        });
+  }
+
+  getServiceName() {
+    return localStorage.getItem('serviceName');
   }
 
   // HandleChange Method
@@ -67,6 +85,55 @@ class Admin extends React.Component {
     this.setState({[e.target.name]: e.target.value});
   }
 
+  getTimeslots() {
+    console.log()
+    axios.get("http://localhost:8080/api/timeslot/getbyadmin/" + this.getAdminId())
+    .then(response => response.data)
+    .then((data) => {
+        this.setState({timeslots: data});
+    })
+    .catch(error => { 
+        console.log(error.response.data)
+
+        {/* BIT OF A HACK*/}
+        this.setState({timeslots: error.response.data});
+    });
+  }
+
+  getStatus(timeslot) {
+    if(timeslot.booking == null) {
+      return (
+      <Badge color="" className="badge-dot mr-4">
+        <i className="bg-success"/>
+        Available
+      </Badge>
+      );
+    } else {
+      return (
+        <Badge color="" className="badge-dot mr-4">
+        <i className="bg-danger"/>
+        Booked
+      </Badge>
+      );
+    }
+  }
+
+  deleteTimeslot(timeslot) {
+    axios.delete("http://localhost:8080/api/timeslot/delete/" + timeslot.timeslotId)
+    .then(response => {
+      alert("Deleted Timeslot"); 
+      window.location.reload(false);
+    })
+    .catch(err => {
+      // returns error message corresponding to issue
+      if (typeof err.response.data.defaultMessage != 'undefined') {
+        alert(err.response.data.defaultMessage);
+      } else {
+        alert(err.response.data[0].defaultMessage);
+      }
+    })
+  }
+
   // Helper Method: Check passwords are the same for new workers
   checkPasswords() {
     if (this.state.password === this.state.retypedPassword) {
@@ -74,11 +141,6 @@ class Admin extends React.Component {
     } else {
       return false;
     }
-  }
-
-  // Helper Method: Gets Admin ID for URL Building
-  getAdminId() {
-    return localStorage.getItem('id');
   }
 
   // POST Request: Create A Valid Worker
@@ -104,6 +166,7 @@ class Admin extends React.Component {
 				{ 
           this.setState(this.initialState);
           this.getWorkers();
+          this.getTimeslots();
 					alert("New Worker Added");
 				}
 			})
@@ -127,22 +190,6 @@ class Admin extends React.Component {
 		}
   }
 
-  // Helper Method: Gets the Service ID associated with the administrator logged in for URL Building
-  getServiceId() {
-    axios.get("http://localhost:8080/api/service/findbyadmin/" + this.getAdminId())
-        .then(response => response.data)
-        .then((data) => {
-          localStorage.setItem('serviceId', data.serviceId);
-        })
-        .catch(error => { 
-            console.log(error.response.data);
-        });
-  }
-
-  componentDidMount() {
-    this.getWorkers();
-  }
-
   // GET Request: Retreieves All Workers for a given service
   getWorkers() {
     this.getServiceId();
@@ -160,11 +207,6 @@ class Admin extends React.Component {
             {/* BIT OF A HACK*/}
             this.setState({workers: error.response.data});
         });
-  }
-
-  // Helper Method: Gets the Worker ID the timeslots is being assigned to for URL Building
-  getWorkerId() {
-    return this.worker.value;
   }
 
   checkValidTime() {
@@ -199,6 +241,17 @@ class Admin extends React.Component {
     return d.toISOString().slice(0,10) === this.state.date;
   }
 
+  // Helper Method: Generate optional prices
+  priceList() {
+    var list = new Array(50);
+
+    for(var i = 4; i <= 200; i++){
+      list.push((i/4).toFixed(2));
+    }
+    
+    return list
+  }
+
   // POST Request: Get a valid Timeslot
   onSubmitTimeslot = e =>
 	{
@@ -225,6 +278,7 @@ class Admin extends React.Component {
 				{ 
           this.setState(this.initialState);
           this.getWorkers();
+          this.getTimeslots();
 					alert("New Timeslot Added");
 				}
 			})
@@ -243,7 +297,7 @@ class Admin extends React.Component {
     // Render
     render() {
 
-      const {firstName, lastName, email, password, retypedPassword, startTime, endTime, date, workers, price, priceList} = this.state;
+      const {firstName, lastName, email, password, retypedPassword, startTime, endTime, date, timeslots, workers, priceList} = this.state;
       return (
         <>
           <AdminHeader />
@@ -252,6 +306,49 @@ class Admin extends React.Component {
             <Row>
               <Col>
                 <Card className="bg-secondary shadow">
+
+                  {/* VIEW TIMESLOTS AREA*/}
+                  <CardHeader className="border-0">
+                    <h3 className="mb-0"> {this.getServiceName()} Time slots</h3>
+                  </CardHeader>
+                  <CardBody>
+                    <Table className="align-items-center table-flush" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col"> Date</th>
+                          <th scope="col">Start Time</th>
+                          <th scope="col">End Time</th>
+                          <th scope="col">Price</th>
+                          <th scope="col">Worker Assigned</th>
+                          <th scope="col">Availability Status</th>
+                          <th scope="col" /> 
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          this.state.timeslots.length === 0 ? 
+                          <tr align="center">
+                              <td colSpan="7"> No Time slots. </td>
+                          </tr> : 
+                          this.state.timeslots.map((timeslot) => (
+                            <tr key={timeslot.timeslotId}> {/**/}
+                                <td>{timeslot.date}</td> {/* DATE */}
+                                <td>{timeslot.startTime}</td> {/* START TIME */}
+                                <td>{timeslot.endTime}</td> {/* FINISH TIME */}
+                                <td>${timeslot.price} </td> {/*  PRICE */}
+                                <td>{timeslot.worker.account.firstName} {timeslot.worker.account.lastName} </td> {/* WORKER NAME */}
+                                <td> {/* PENDING STATUS */}
+                                      {this.getStatus(timeslot)}
+                                </td>
+                                <td className="text-right">
+                                  <Button className="pr-5 pl-5" color="primary" type="button" onClick={e => this.deleteTimeslot(timeslot)}>DELETE</Button>
+                                </td>
+                            </tr>
+                          ))
+                        }
+                      </tbody>
+                    </Table>
+                  </CardBody>
 
                   {/* ADD WORKERS AREA*/}
                   <CardHeader className="bg-white border-0">
