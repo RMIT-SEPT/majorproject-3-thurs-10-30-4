@@ -10,6 +10,7 @@ import com.sept.Thur10304.BookingSystem.model.Admin;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -54,14 +55,16 @@ public class TimeslotService {
         }
     }
 
-    public Iterable<Timeslot> getAllTimeslotsForService(Long serviceId){
+    public Set<Timeslot> getAllTimeslotsForService(Long serviceId){
         // Gets service from database
         Service_ service = serviceService.getServiceById(Long.toString(serviceId));
         // If service found then return all found timeslots (or empty iterable if none)
         // If no service found then return null
         if (service != null){
             // Finds timeslots that are registered with that service
-            Iterable<Timeslot> timeslots = timeslotRepository.findByService(service);
+            Set<Timeslot> timeslots = service.getTimeslots();
+            // Filters out timeslots that have passed
+            filterCurrentTimeslots(timeslots);
             // Returns timeslots found (if any)
             return timeslots;
         } else {
@@ -82,7 +85,10 @@ public class TimeslotService {
 
     public Set<Timeslot> getTimeslotsByWorkerId(Long workerId) throws Exception{
         Worker worker = accountService.findWorker(workerId);
-        return worker.getAssignedTimeslots();
+        Set<Timeslot> timeslots = worker.getAssignedTimeslots();
+        // Filter to current timeslots (ones that have yet to end)
+        filterCurrentTimeslots(timeslots);
+        return timeslots;
     }
 
     public boolean deleteTimeslot(Long timeslotId){
@@ -103,23 +109,24 @@ public class TimeslotService {
         if (admin.getService() == null){
             throw new Exception("Admin doesn't have a service");
         }
-
-        return admin.getService().getTimeslots();
+        Set<Timeslot> timeslots = admin.getService().getTimeslots();
+        // Filter timeslots to current timeslots
+        filterCurrentTimeslots(timeslots);
+        return timeslots;
     }
 
     // Removes all timeslots that have ended
-    public Set<Timeslot> filterCurrentTimeslots(Set<Timeslot> timeslots){
+    public Collection<Timeslot> filterCurrentTimeslots(Collection<Timeslot> timeslots){
         for (Timeslot timeslot : timeslots){
             Calendar timeslotTime = Calendar.getInstance();
-                // Used these brackets so variables get unset/unreferencable
-                {
-                    Calendar day = Calendar.getInstance();
-                    day.setTime(timeslot.getDate());
-                    c.set(Calendar.DATE, day.get(Calendar.DATE));
-                    Calendar endTime = Calendar.getInstance();
-                    endTime.setTime(timeslot.getEndTime());
-                    c.set(Calendar.HOUR_OF_DAY, endTime.get(Calendar.HOUR_OF_DAY));
-                }
+            {
+                Calendar day = Calendar.getInstance();
+                day.setTime(timeslot.getDate());
+                timeslotTime.set(Calendar.DATE, day.get(Calendar.DATE));
+                Calendar endTime = Calendar.getInstance();
+                endTime.setTime(timeslot.getEndTime());
+                timeslotTime.set(Calendar.HOUR_OF_DAY, endTime.get(Calendar.HOUR_OF_DAY));
+            }
             if (timeslotTime.getTimeInMillis() < new Date().getTime()){
                 timeslots.remove(timeslot);
             }
