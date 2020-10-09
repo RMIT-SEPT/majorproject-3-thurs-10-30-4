@@ -1,6 +1,7 @@
 package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Service_;
+import com.sept.Thur10304.BookingSystem.security.JwtTokenProvider;
 import com.sept.Thur10304.BookingSystem.services.Service_Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,12 +30,23 @@ public class Service_Controller {
     @Autowired
     private Service_Service serviceService;
 
+    // Authentication for login
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+
     // Saves a service to the database
     @PostMapping("/save/{adminId}")
-    public ResponseEntity<?> createNewService(@Valid @RequestBody Service_ service, @PathVariable Long adminId, BindingResult result) {
+    public ResponseEntity<?> createNewService(@Valid @RequestBody Service_ service, @PathVariable Long adminId,
+      @RequestParam(name="token", required=true) String token, BindingResult result) {
         if (result.hasErrors()){
             return new ResponseEntity<String>("Invalid Service Object", HttpStatus.BAD_REQUEST);
         }
+
+        // Check that token is valid and id of login token is same as admin id
+        if (!(tokenProvider.validateToken(token) && tokenProvider.getUserIdFromJWT(token) == adminId.longValue())){
+            return new ResponseEntity <String>("Not logged in as same account as admin id", HttpStatus.BAD_REQUEST);
+        }
+
         try {
             Service_ service1 = serviceService.saveOrUpdateService(service, adminId);
             return new ResponseEntity<Service_>(service1, HttpStatus.CREATED);

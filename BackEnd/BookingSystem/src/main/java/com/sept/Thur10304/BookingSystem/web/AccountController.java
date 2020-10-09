@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -84,7 +85,8 @@ public class AccountController {
     }
 
     @PostMapping("/saveworker/{adminId}")
-    public ResponseEntity<?> createNewWorker(@Valid @RequestBody Account account, @PathVariable Long adminId, BindingResult result) {
+    public ResponseEntity<?> createNewWorker(@Valid @RequestBody Account account, @PathVariable Long adminId,
+      @RequestParam(name="token", required=true) String token, BindingResult result) {
         if (result.hasErrors()){
             //Map <String, String> errorMap = new HashMap<>();
 
@@ -101,6 +103,13 @@ public class AccountController {
             FieldError fe = new FieldError("", "", null, false, null, null, "Email already registered");
             return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
         }
+
+        // Check that token is valid and id of login token is same as admin id
+        if (!(tokenProvider.validateToken(token) && tokenProvider.getUserIdFromJWT(token) == adminId.longValue())){
+            FieldError fe = new FieldError("", "", null, false, null, null, "Not logged in as same account as admin id");
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        }
+
         try {
             Account account1 = accountService.saveWorker(account, adminId);
             return new ResponseEntity<Account>(account, HttpStatus.CREATED);
