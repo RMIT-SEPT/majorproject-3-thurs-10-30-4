@@ -1,5 +1,6 @@
 package com.sept.Thur10304.BookingSystem.web;
 
+import com.sept.Thur10304.BookingSystem.model.Admin;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 import com.sept.Thur10304.BookingSystem.security.JwtTokenProvider;
 import com.sept.Thur10304.BookingSystem.services.Service_Service;
@@ -43,7 +44,9 @@ public class Service_Controller {
         }
 
         // Check that token is valid and id of login token is same as admin id
-        if (!(tokenProvider.validateToken(token) && tokenProvider.getUserIdFromJWT(token) == adminId.longValue())){
+        if (!(tokenProvider.validateToken(token))){
+            return new ResponseEntity <String>("Invalid token", HttpStatus.BAD_REQUEST);
+        } else if (tokenProvider.getUserIdFromJWT(token) != adminId.longValue()){
             return new ResponseEntity <String>("Not logged in as same account as admin id", HttpStatus.BAD_REQUEST);
         }
 
@@ -79,7 +82,29 @@ public class Service_Controller {
     }
 
     @DeleteMapping("/delete/{serviceId}")
-    public ResponseEntity<?> deleteService(@Valid @PathVariable Long serviceId) {
+    public ResponseEntity<?> deleteService(@Valid @PathVariable Long serviceId,
+      @RequestParam(name="token", required=true) String token) {
+
+        // Checks if token is valid
+        if (!(tokenProvider.validateToken(token))){
+            return new ResponseEntity <String>("Invalid token", HttpStatus.BAD_REQUEST);
+
+        } 
+        
+        // Checks if service exists
+        Service_ service = serviceService.getServiceById(Long.toString(serviceId));
+
+        if (service == null){
+            return new ResponseEntity <String>("Service not found", HttpStatus.BAD_REQUEST);
+        }
+
+        Admin admin = service.getAdmin();
+
+        // checks if user logged in is admin for service
+        if (tokenProvider.getUserIdFromJWT(token) !=
+          admin.getAccount().getId()){
+            return new ResponseEntity <String>("Not logged into admin of service", HttpStatus.BAD_REQUEST);
+        }
         // Run service to delete service and its timeslots from databse
         boolean serviceDeleted = serviceService.deleteService(serviceId);
         // If service found and deleted then return true, else false

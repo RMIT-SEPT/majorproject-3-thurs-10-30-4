@@ -20,7 +20,7 @@ public class Service_ {
 
     // TODO
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id", referencedColumnName = "account_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Admin admin;

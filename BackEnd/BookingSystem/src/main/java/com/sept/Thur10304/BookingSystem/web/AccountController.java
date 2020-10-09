@@ -105,7 +105,10 @@ public class AccountController {
         }
 
         // Check that token is valid and id of login token is same as admin id
-        if (!(tokenProvider.validateToken(token) && tokenProvider.getUserIdFromJWT(token) == adminId.longValue())){
+        if (!(tokenProvider.validateToken(token))){
+            FieldError fe = new FieldError("", "", null, false, null, null, "Invalid token");
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        } else if (tokenProvider.getUserIdFromJWT(token) != adminId.longValue()){
             FieldError fe = new FieldError("", "", null, false, null, null, "Not logged in as same account as admin id");
             return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
         }
