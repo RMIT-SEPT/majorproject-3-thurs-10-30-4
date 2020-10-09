@@ -90,21 +90,14 @@ public class Service_Controller {
             return new ResponseEntity <String>("Invalid token", HttpStatus.BAD_REQUEST);
 
         } 
-        
-        // Checks if service exists
-        Service_ service = serviceService.getServiceById(Long.toString(serviceId));
-
-        if (service == null){
-            return new ResponseEntity <String>("Service not found", HttpStatus.BAD_REQUEST);
+        try{
+            if (!serviceService.verifyIfAdmin(serviceId, tokenProvider.getUserIdFromJWT(token))){
+                return new ResponseEntity <String>("Not logged into admin of service", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        Admin admin = service.getAdmin();
-
-        // checks if user logged in is admin for service
-        if (tokenProvider.getUserIdFromJWT(token) !=
-          admin.getAccount().getId()){
-            return new ResponseEntity <String>("Not logged into admin of service", HttpStatus.BAD_REQUEST);
-        }
         // Run service to delete service and its timeslots from databse
         boolean serviceDeleted = serviceService.deleteService(serviceId);
         // If service found and deleted then return true, else false
