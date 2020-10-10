@@ -74,10 +74,12 @@ class Login extends React.Component {
 				if (response.data != null)
 				{ 
           this.setState(this.initialState);
-          localStorage.setItem('id', response.data.id);
-          localStorage.setItem('firstName', response.data.firstName);
-          localStorage.setItem('lastName', response.data.lastName);
-          localStorage.setItem('type', response.data.accountType);
+          //localStorage.setItem('id', response.data.id);
+          //localStorage.setItem('firstName', response.data.firstName);
+          //localStorage.setItem('lastName', response.data.lastName);
+          //localStorage.setItem('type', response.data.accountType);
+          localStorage.setItem('token', response.data.token);
+          console.log("Token: "+response.data.token);
 
           if(response.data.accountType == "CUSTOMER") {
             window.location.href = "http://localhost:3000/admin/services_dashboard";
