@@ -237,16 +237,16 @@ public class AccountService {
         int activeBookings = 0;
         int bookedToday = 0;
         int unbookedToday = 0;
-        int[] expectedIncome = new int[7];
+        double[] expectedIncome = new double[7];
 
         // Today
         Calendar today = Calendar.getInstance();
         today.setTime(new Date());
         // Calculate days that will need to have income checked on
-        Calendar[] days = new Calendar[7];
-        for (int i = 0; i < days.length; i++){
-            days[i] = Calendar.getInstance();
-            days[i].add(Calendar.DATE, i + 1);
+        Calendar[] nextDays = new Calendar[6];
+        for (int i = 0; i < nextDays.length; i++){
+            nextDays[i] = Calendar.getInstance();
+            nextDays[i].add(Calendar.DATE, i + 1);
         }
 
         if (admin.getService() == null){
@@ -288,24 +288,26 @@ public class AccountService {
                 } else {
                     unbookedToday += 1;
                 }
-            }
-
-            // Check if booking is on during the next week
-            if (timeslot.getBooking() != null){
-                for (int i = 0; i < days.length; i++){
-                    if (days[i].get(Calendar.DATE) == timeslotTime.get(Calendar.DATE) && days[i].get(Calendar.YEAR) == timeslotTime.get(Calendar.YEAR)){
-                            expectedIncome[i] += timeslot.getPrice();
-                            break;
+                expectedIncome[0] = timeslot.getPrice();
+            } else {
+                // Check if booking is on during the next week
+                if (timeslot.getBooking() != null){
+                    for (int i = 0; i < nextDays.length; i++){
+                        if (nextDays[i].get(Calendar.DATE) == timeslotTime.get(Calendar.DATE) && nextDays[i].get(Calendar.YEAR) == timeslotTime.get(Calendar.YEAR)){
+                                expectedIncome[i + 1] += timeslot.getPrice();
+                                break;
+                        }
                     }
                 }
             }
+
+            
 
             // Check if booked and active or completed
             if (timeslot.getBooking() != null){
                 if (today.after(timeslotTime)){
                     complededBookings += 1;
                 } else {
-                    System.out.println(Integer.toString(today.get(Calendar.DATE)) + Integer.toString(today.get(Calendar.HOUR_OF_DAY)) + " is before " + Integer.toString(timeslotTime.get(Calendar.DATE)) + Integer.toString(timeslotTime.get(Calendar.HOUR_OF_DAY)));
                     activeBookings += 1;
                 }
             }
@@ -318,6 +320,16 @@ public class AccountService {
         analyticsData.put("unbooked_today", unbookedToday);
         analyticsData.put("booked_today", bookedToday);
 
+        String[] dayStrings = new String[nextDays.length + 1];
+        dayStrings[0] = String.format("%d-%d-%d", today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+
+        // Put Next week dates into an array
+        for (int i = 0; i < nextDays.length; i++){
+            dayStrings[i + 1] = String.format("%d-%d-%d", nextDays[i].get(Calendar.YEAR), nextDays[i].get(Calendar.MONTH), nextDays[i].get(Calendar.DATE));
+        }
+
+        analyticsData.put("next_week_dates", dayStrings);
+        analyticsData.put("next_week_expected_income", expectedIncome);
 
         return analyticsData;
     }
