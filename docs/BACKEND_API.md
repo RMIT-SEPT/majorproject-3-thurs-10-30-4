@@ -1,6 +1,7 @@
 url|method|Login Status|Input|Output|description
 ---|---|---|---|---|---
 /api/Account|POST|Any|Account fields in JSON format|Account created or error|Creates a new account
+/api/Account/Authenticate|Any|JWT|Account object or error|Provides Account object linked with JWT
 /api/Account/saveadmin|POST|Any|Account fields in JSON format|Admin created or error|Creates a new admin account, temp
 /api/Account/saveworker/{adminId}|POST|As admin|Account fields in JSON format, admin id in path|Worker created or error|Creates a new worker account
 /api/service/save/{adminId}|POST|Same admin as id given|Service fields in JSON format|Service created or error|Creates a new service

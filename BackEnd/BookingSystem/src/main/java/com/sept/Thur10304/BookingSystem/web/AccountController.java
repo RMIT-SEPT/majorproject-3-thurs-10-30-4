@@ -234,8 +234,12 @@ public class AccountController {
     // You pass the raw JWT to this mapping and it will return the Account tied to it.
     // This expects the token and nothing else, however if there are { and " characters
     // we can just strip them and we should be fine.
+
+    //Note that Frontend can POST the JWT to Authenticate at any time to get the Account details
     @PostMapping("Authenticate")
     public ResponseEntity<?> authenticateAccount(@Valid @RequestBody String token, BindingResult result) {
+        System.out.println("Authenticate called");
+
         if (result.hasErrors()){
                 return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
         }

@@ -74,25 +74,51 @@ class Login extends React.Component {
 				if (response.data != null)
 				{ 
           this.setState(this.initialState);
-          //localStorage.setItem('id', response.data.id);
-          //localStorage.setItem('firstName', response.data.firstName);
-          //localStorage.setItem('lastName', response.data.lastName);
-          //localStorage.setItem('type', response.data.accountType);
           localStorage.setItem('token', response.data.token);
           console.log("Token: "+response.data.token);
+        }
+        
 
-          if(response.data.accountType == "CUSTOMER") {
-            window.location.href = "http://localhost:3000/admin/services_dashboard";
-          } else if (response.data.accountType == "ADMIN") {
-            window.location.href = "http://localhost:3000/admin/admin";
-          } else if (response.data.accountType == "WORKER") {
-            window.location.href = "http://localhost:3000/admin/worker";
+        // JWT was successful. Now we authorise and obtain Account info.
+        // POST token to Authenticate whenever we want Account info
+        // This means we can authorise the account without needing to store password.
+        axios.post("http://localhost:8080/api/Account/Authenticate", localStorage.getItem('token'))
+        .then(response =>
+        {
+          if (response.data != null)
+          {
+            localStorage.setItem('id', response.data.id);
+            localStorage.setItem('firstName', response.data.firstName);
+            localStorage.setItem('lastName', response.data.lastName);
+            localStorage.setItem('type', response.data.accountType);
+
+            console.log("authentication successful");
+            //redirect here
+            if(response.data.accountType == "CUSTOMER") {
+              window.location.href = "http://localhost:3000/admin/services_dashboard";
+            } else if (response.data.accountType == "ADMIN") {
+              window.location.href = "http://localhost:3000/admin/admin";
+            } else if (response.data.accountType == "WORKER") {
+              window.location.href = "http://localhost:3000/admin/worker";
+            }
           }
-				}
+        })
+        .catch(err =>
+          {
+            console.log("Error authorising JWT with Account");
+            if (typeof err.response.data.defaultMessage != 'undefined')
+            {
+              alert(err.response.data.defaultMessage);
+            }
+            else
+            {
+              alert(err.response.data[0].defaultMessage);
+            }
+          });
 			})
 			.catch(err =>
 			{
-				console.log("Error");
+				console.log("Error getting JWT");
 				if (typeof err.response.data.defaultMessage != 'undefined')
 				{
 					alert(err.response.data.defaultMessage);
