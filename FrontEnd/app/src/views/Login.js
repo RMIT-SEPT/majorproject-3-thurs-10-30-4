@@ -16,7 +16,10 @@
 
 */
 import React from "react";
-import axios from 'axios';
+import { login } from "../actions/securityActions";
+import PropTypes from "prop-types";
+import { connect } from 'react-redux';
+import classnames from "classnames";
 
 // reactstrap components
 import {
@@ -49,7 +52,16 @@ class Login extends React.Component {
 
   initialState = {
     email: "",
-    password: ""
+    password: "",
+    errors: {}
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
+    }
   }
 
   onChange = e => {
@@ -60,50 +72,20 @@ class Login extends React.Component {
 	{  
 		e.preventDefault();
 
-		const newPerson =
+		const LoginRequest =
 		{
 			password: this.state.password,
       email: this.state.email,
       firstName: "abcdef",
 			lastName: "abcdef"
-		}
+    }
+    
+    this.props.login(LoginRequest, this.props.history);
 
-		axios.post("http://localhost:8080/api/Account/Login", newPerson)
-			.then(response =>
-			{
-				if (response.data != null)
-				{ 
-          this.setState(this.initialState);
-          localStorage.setItem('id', response.data.id);
-          localStorage.setItem('firstName', response.data.firstName);
-          localStorage.setItem('lastName', response.data.lastName);
-          localStorage.setItem('type', response.data.accountType);
-
-          if(response.data.accountType == "CUSTOMER") {
-            window.location.href = "http://localhost:3000/admin/services_dashboard";
-          } else if (response.data.accountType == "ADMIN") {
-            window.location.href = "http://localhost:3000/admin/admin";
-          } else if (response.data.accountType == "WORKER") {
-            window.location.href = "http://localhost:3000/admin/worker";
-          }
-				}
-			})
-			.catch(err =>
-			{
-				console.log("Error");
-				if (typeof err.response.data.defaultMessage != 'undefined')
-				{
-					alert(err.response.data.defaultMessage);
-				}
-				else
-				{
-					alert(err.response.data[0].defaultMessage);
-				}
-			});
-		}
+	}
 
   render() {
-    const {email, password} = this.state;
+    const {email, password, errors} = this.state;
     return (
       <>
         <Col lg="5" md="7">
@@ -125,9 +107,15 @@ class Login extends React.Component {
                       type="email"
                       autoComplete="off"
                       name="email"
+                      className = {classnames("", {
+                        "is-invalid": errors.email
+                      })}
                       value={email}
                       onChange = {this.onChange}
                     />
+                    {errors.email && (
+                      <div className="invalid-feedback p-2">{errors.email}</div>
+                    )}
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -142,9 +130,15 @@ class Login extends React.Component {
                       type="password"
                       autoComplete="off"
                       name="password"
+                      className = {classnames("", {
+                        "is-invalid": errors.password
+                      })}
                       value={password}
                       onChange = {this.onChange}
                     />
+                    {errors.password && (
+                      <div className="invalid-feedback p-2">{errors.password}</div>
+                    )}
                   </InputGroup>
                 </FormGroup>
                 <div className="text-center">
@@ -171,4 +165,11 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+const mapStateToProps = state => {
+  return { errors: state.errors };
+};
+
+export default connect(
+  mapStateToProps,
+  { login }
+)(Login);

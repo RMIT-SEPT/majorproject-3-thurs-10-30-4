@@ -16,9 +16,11 @@
 
 */
 import React from "react";
-import axios from 'axios';
-
-import UserProfile from '../session/UserProfile';
+import { createNewUser } from "../actions/securityActions";
+import PropTypes from "prop-types";
+import { connect } from 'react-redux';
+import classnames from "classnames";
+import UserProfile from "../session/UserProfile";
 
 // reactstrap components
 import {
@@ -44,11 +46,19 @@ class Register extends React.Component {
   }
 
   initialState = {
-    firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errorResponse: []
+    firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errors: {}
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
+    }
   }
 
   onChange = e => {
-    this.setState({[e.target.name]: e.target.value});
+    this.setState({ [e.target.name]: e.target.value });
   }
 
   checkPasswords() {
@@ -69,35 +79,11 @@ class Register extends React.Component {
 			lastName: this.state.lastName,
 			password: this.state.password,
 			email:this.state.email
-		}
-
-		//UserProfile.setName("REGISTERED USER: "+newPerson.firstName+" "+newPerson.lastName);
+    }
 
 		if (this.checkPasswords())
 		{
-			axios.post("http://localhost:8080/api/Account", newPerson)
-			.then(response =>
-			{
-				if (response.data != null)
-				{ 
-					this.setState(this.initialState);
-					//localStorage.setItem('username', newPerson.firstName);
-					alert("New Person Saved, you may now login."); 
-					window.location.href = "http://localhost:3000/auth/login";
-				}
-			})
-			.catch(err =>
-			{
-				console.log("Error");
-				if (typeof err.response.data.defaultMessage != 'undefined')
-				{
-					alert(err.response.data.defaultMessage);
-				}
-				else
-				{
-					alert(err.response.data[0].defaultMessage);
-				}
-			});
+      this.props.createNewUser(newPerson, this.props.history);
 		}
 		else
 		{
@@ -105,12 +91,8 @@ class Register extends React.Component {
 		}
 	}
 
-  component
-
   render() {
-	console.log("User stored name: "+UserProfile.getName());
-	  
-    const {firstName, lastName, email, password, retypedPassword} = this.state;
+    const { firstName, lastName, email, password, retypedPassword, errors } = this.state;
     return (
       <>
         <Col lg="6" md="8">
@@ -133,9 +115,15 @@ class Register extends React.Component {
                       type="text" 
                       placeholder="First Name" 
                       name="firstName"
-                      value= {firstName}
-                      onChange = {this.onChange}
+                      className = {classnames("", {
+                          "is-invalid": errors.firstName
+                      })}
+                      value= { firstName }
+                      onChange = { this.onChange }
                     />
+                    {errors.firstName && (
+                      <div className="invalid-feedback p-2">{errors.firstName}</div>
+                    )}
                   </InputGroup>
                 </FormGroup>
 
@@ -151,9 +139,15 @@ class Register extends React.Component {
                       type="text" 
                       placeholder="Last Name" 
                       name="lastName"
+                      className = {classnames("", {
+                        "is-invalid": errors.lastName
+                      })}
                       value= {lastName}
                       onChange = {this.onChange}
                     />
+                    {errors.lastName && (
+                      <div className="invalid-feedback p-2">{errors.lastName}</div>
+                    )}
                   </InputGroup>
                 </FormGroup>
 
@@ -169,9 +163,15 @@ class Register extends React.Component {
                       type="email"
                       placeholder="Email" 
                       name="email"
+                      className = {classnames("", {
+                        "is-invalid": errors.email
+                      })}
                       value= {email}
                       onChange = {this.onChange}
                     />
+                    {errors.email && (
+                      <div className="invalid-feedback p-2">{errors.email}</div>
+                    )}
                   </InputGroup>
                 </FormGroup>
 
@@ -187,9 +187,15 @@ class Register extends React.Component {
                       type="password"
                       placeholder="Password" 
                       name="password"
+                      className = {classnames("", {
+                        "is-invalid": errors.password
+                      })}
                       value= {password}
                       onChange = {this.onChange}
                     />
+                    {errors.password && (
+                      <div className="invalid-feedback p-2">{errors.password}</div>
+                    )}
                   </InputGroup>
                 </FormGroup>
       
@@ -205,9 +211,16 @@ class Register extends React.Component {
                       placeholder="Re-Type Password" 
                       type="password" 
                       name="retypedPassword"
+                      className = {classnames("", {
+                        "is-invalid": errors.password
+                      })}
                       value= {retypedPassword}
                       onChange = {this.onChange}
                     />
+                    {errors.password && (
+                      <div className="invalid-feedback p-2">{errors.password}</div>
+                    )}
+                    
                   </InputGroup>
                 </FormGroup>
 
@@ -225,5 +238,15 @@ class Register extends React.Component {
     );
   }
 }
+// Register.propTypes = {
+//   createProject: PropTypes.func.isRequired
+// };
 
-export default Register;
+const mapStateToProps = state => {
+  return { errors: state.errors };
+};
+
+export default connect(
+  mapStateToProps,
+  { createNewUser }
+)(Register);

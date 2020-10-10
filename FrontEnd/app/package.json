@@ -47,6 +47,7 @@
     "axios": "^0.20.0",
     "chart.js": "2.9.3",
     "classnames": "2.2.6",
+    "jwt-decode": "^3.0.0",
     "moment": "2.24.0",
     "node-sass": "4.13.1",
     "nouislider": "14.1.1",
@@ -59,7 +60,9 @@
     "react-redux": "^7.2.1",
     "react-router-dom": "5.1.2",
     "react-scripts": "^3.4.3",
-    "reactstrap": "8.4.1"
+    "reactstrap": "8.4.1",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@types/googlemaps": "3.39.2",
