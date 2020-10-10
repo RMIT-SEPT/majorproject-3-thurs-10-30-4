@@ -4,6 +4,7 @@ url|method|Input|Output|description
 /api/Account/saveadmin|POST|Account fields in JSON format|Admin created or error|Creates a new admin account, temp
 /api/Account/saveworker/{adminId}|POST|Account fields in JSON format, admin id in path|Worker created or error|Creates a new worker account
 /api/Account/getworkersbyadmin/{adminId}|GET|admin id as path variable|All workers the admin has registered, or error|Retrieves all workers managed by admin
+/api/Account/adminanalytics/{adminId}|GET|admin id as path variable|Data needed for analytics page on front end|Used by front end to visualise performance of service to admin
 /api/service/save/{adminId}|POST|Service fields in JSON format|Service created or error|Creates a new service
 /api/service/getall|GET|None|All registered services in JSON format|Retrieves all registered services
 /api/service/get|GET|id (append ?id=(ID) to end of url)|Service that id belongs to|Gets a service by its id then returns it
