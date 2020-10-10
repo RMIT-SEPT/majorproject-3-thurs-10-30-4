@@ -5,11 +5,13 @@ import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
 import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
 import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
 import com.sept.Thur10304.BookingSystem.model.Account;
-import com.sept.Thur10304.BookingSystem.model.AuthorizationToken;
+//import com.sept.Thur10304.BookingSystem.model.AuthorizationToken;
 import com.sept.Thur10304.BookingSystem.model.Admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +21,20 @@ import com.sept.Thur10304.BookingSystem.model.Customer;
 import com.sept.Thur10304.BookingSystem.model.Worker;
 import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 
+// JWT
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+// This service now implements a UserDetailsService interface, which
+// I think helps it interface with JWT. UserDetailsService expects
+// username instead of email, but I think we can just use email as
+// username. Homy's implementation added a wrapper class
+// CustomUserDetailsService.java but I just added it directly into
+// our main class here.
+
 @Service
-public class AccountService {
+public class AccountService implements UserDetailsService {
     @Autowired
     private AccountRepository AccountRepository;
 
@@ -32,6 +46,9 @@ public class AccountService {
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public List<Account> findAll() {
 
@@ -78,41 +95,32 @@ public class AccountService {
         return null;
     }
 
-
-// original account creation, now uses account creation for account type
-    // public Account saveOrUpdateAccount(Account account) {
-
-    //     //logic
-    //     return AccountRepository.save(account);
-    // }
-
-    
-
-
-    // same as above but return an authentication token which frontend can use
-    // note, authentication token may generate duplicates, therefore it is important
-    // for frontend to also track the account id or email.
-    public Account authoriseJWT(AuthorizationToken jwt)
+    @Override
+    //UserDetailsService interface (expects username but use email as username)
+    public Account loadUserByUsername(String email)
     {
-        List <Account> lAccount = findAll();
-
-        if (lAccount.size()>0)
+        Account user = AccountRepository.findByEmail(email);
+        //if(user==null) new UsernameNotFoundException("User not found");
+        if (user==null)
         {
-            // for now just return the first account in the list, no verification needed.
-            return lAccount.get(0);
+            return null;
         }
-        // there is no account
-        return null;
+        return user;
     }
 
-    // When a user session needs to be terminated, jwt should be removed from repo
-    // return true if this is successful, return false if jwt doesn't authorise
-    // for now we can't delete the token because it is not generated.
-    public Boolean deauthoriseJWT(AuthorizationToken jwt)
-    {
-        // deauthorisation code
-        return false;
+
+    @Transactional
+    public Account loadAccountById(Long id){
+        Account account = AccountRepository.getById(id);
+        //if(user==null) new UsernameNotFoundException("User not found");
+        if (account==null)
+        {
+            return null;
+        }
+        return account;
+
     }
+
 
 // original account creation, now uses account creation for account type
     // public Account saveOrUpdateAccount(Account account) {
@@ -120,6 +128,29 @@ public class AccountService {
     //     //logic
     //     return AccountRepository.save(account);
     // }
+
+// original account creation, now uses account creation for account type
+    // public Account saveOrUpdateAccount(Account account) {
+
+    //     //logic
+    //     return AccountRepository.save(account);
+    // }
+
+
+    // New system template using JWT
+    // TODO: Merge this template into our Customer/Worker/Admin design
+    public Account saveUser (Account newUser)
+    {
+        // email has to be unique (exception)
+        // Make sure that password and confirmPassword match
+        // We don't persist or show the confirmPassword
+
+        newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
+        //Username has to be unique (exception)
+        newUser.setEmail(newUser.getEmail());
+
+        return AccountRepository.save(newUser);
+    }
 
   public Account saveCustomer(Account account){
         AccountRepository.save(account);
@@ -196,10 +227,6 @@ public class AccountService {
     //     AccountRepository.save(worker);
     // }
 
-    public String test() {
-        return "THIS IS A TEST OF BACKEND OUTPUT.<br/><br/><marquee>AYYY</marquee>";
-    }
-
     public List<String> findAllEmails() {
 
         Iterable<Account> it = AccountRepository.findAll();
@@ -208,5 +235,9 @@ public class AccountService {
         it.forEach(e -> emails.add(e.getEmail()));
 
         return emails;
+    }
+
+    public String test() {
+        return "THIS IS A TEST OF BACKEND OUTPUT.<br/><br/><marquee>AYYY</marquee>";
     }
 }
