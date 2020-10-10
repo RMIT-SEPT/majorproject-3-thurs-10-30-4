@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Date;
 
 import com.sept.Thur10304.BookingSystem.model.Customer;
 import com.sept.Thur10304.BookingSystem.model.Service_;
@@ -240,6 +241,7 @@ public class AccountService {
 
         // Today
         Calendar today = Calendar.getInstance();
+        today.setTime(new Date());
         // Calculate days that will need to have income checked on
         Calendar[] days = new Calendar[7];
         for (int i = 0; i < days.length; i++){
@@ -270,12 +272,17 @@ public class AccountService {
                 Calendar timeslotEndTime = Calendar.getInstance();
                 timeslotEndTime.setTime(timeslot.getEndTime());
 
-                timeslotTime.set(Calendar.DATE, timeslotDate.get(Calendar.DATE));
+                // Add 14 because timezones acting weird
+                timeslotEndTime.add(Calendar.HOUR_OF_DAY, 14);
+
+                timeslotTime.set(Calendar.YEAR, timeslotDate.get(Calendar.YEAR));
+                timeslotTime.set(Calendar.DAY_OF_YEAR, timeslotDate.get(Calendar.DAY_OF_YEAR));
                 timeslotTime.set(Calendar.HOUR_OF_DAY, timeslotEndTime.get(Calendar.HOUR_OF_DAY));
+                timeslotTime.set(Calendar.MINUTE, timeslotEndTime.get(Calendar.MINUTE));
             }
 
             // Check if today
-            if (today.get(Calendar.DATE) == timeslotTime.get(Calendar.DATE) && today.get(Calendar.YEAR) == timeslotTime.get(Calendar.YEAR)){
+            if (today.get(Calendar.DAY_OF_YEAR) == timeslotTime.get(Calendar.DAY_OF_YEAR) && today.get(Calendar.YEAR) == timeslotTime.get(Calendar.YEAR)){
                 if (timeslot.getBooking() != null){
                     bookedToday += 1;
                 } else {
@@ -289,7 +296,6 @@ public class AccountService {
                     if (days[i].get(Calendar.DATE) == timeslotTime.get(Calendar.DATE) && days[i].get(Calendar.YEAR) == timeslotTime.get(Calendar.YEAR)){
                             expectedIncome[i] += timeslot.getPrice();
                             break;
-                        
                     }
                 }
             }
@@ -299,6 +305,7 @@ public class AccountService {
                 if (today.after(timeslotTime)){
                     complededBookings += 1;
                 } else {
+                    System.out.println(Integer.toString(today.get(Calendar.DATE)) + Integer.toString(today.get(Calendar.HOUR_OF_DAY)) + " is before " + Integer.toString(timeslotTime.get(Calendar.DATE)) + Integer.toString(timeslotTime.get(Calendar.HOUR_OF_DAY)));
                     activeBookings += 1;
                 }
             }
