@@ -97,6 +97,8 @@ public class BookingService {
             timeslots.add(booking.getTimeslot());
         }
 
+        timeslotService.filterCurrentTimeslots(timeslots);
+
         return timeslots;
     }
 
