@@ -6,6 +6,8 @@ import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
 import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
 import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
+import com.sept.Thur10304.BookingSystem.services.AccountService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import javax.annotation.Resource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -25,35 +29,73 @@ class Account_Controller_CreateWorkerTest {
     @Autowired
     private MockMvc mvc;
 
-    @Autowired
+    @Resource
     private AdminRepository adminRepository;
 
-    @Autowired
+    @Resource
     private AccountRepository accountRepository;
 
-    Admin admin1;
-    Account account1;
+    @Resource
+    private AccountService accountService;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    Account adminBeforeCreate;
+//     Account adminAfterCreate;
+//     Account account1;
 
     @BeforeEach
     void setUp() {
-        account1 = new Account();
-        account1.setId((long) 1);
-        account1.setFirstName("Daniel");
-        account1.setLastName("Levy");
-        account1.setPassword("IMissGareth<3");
-        account1.setEmail("dlevy@hotspurway.com");
-        account1.setAccountType(AccountType.ADMIN);
-        accountRepository.save(account1);
+        adminBeforeCreate = new Account();
+        // account1.setId((long) 1);
+        adminBeforeCreate.setFirstName("Daniel");
+        adminBeforeCreate.setLastName("Levy");
+        adminBeforeCreate.setPassword("IMissGareth");
+        adminBeforeCreate.setEmail("dlevy@hotspurway.com");
+        // account1.setAccountType(AccountType.ADMIN);
+        // account1 = accountRepository.save(account1);
+        try{
+        mvc.perform(post("/api/Account/saveadmin")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("{\n" +
+                "    \"firstName\": \"" + adminBeforeCreate.getFirstName() + "\",\n" +
+                "    \"lastName\": \"" + adminBeforeCreate.getLastName() + "\",\n" +
+                "    \"password\": \"" + adminBeforeCreate.getPassword() + "\",\n" +
+                "    \"email\": \"" + adminBeforeCreate.getEmail() + "\"\n" +
+                "}"));
+        }catch(Exception e){}
+//        adminBeforeCreate = new Admin();
+//        adminBeforeCreate.setAccount(account1);
+//         adminAfterCreate = adminBeforeCreate;
+//         adminAfterCreate.setPassword(bCryptPasswordEncoder.encode(adminBeforeCreate.getPassword()));
+//         Admin admin1 = new Admin();
+//         admin1.setAccount(adminAfterCreate);
+//        admin1 =  adminRepository.save(admin1); //accountService.saveAdmin(adminBeforeCreate);
 
-//        admin1 = new Admin();
-//        admin1.setAccount(account1);
-//        adminRepository.save(admin1);
+       
+       // To test that admin is being created
+//        for (int i = 0; i < 200; i++){
+//                System.out.println(adminAfterCreate.getAccount().getAccountType());
+//        }
     }
 
     @Test
     void createNewWorker_accepted() throws Exception {
-
-        mvc.perform(post("/api/Account/saveworker/1")
+        String token = mvc.perform(post("/api/Account/Login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"firstName\": \"" + adminBeforeCreate.getFirstName() + "\",\n" +
+                        "    \"lastName\": \"" + adminBeforeCreate.getLastName() + "\",\n" +
+                        "    \"password\": \"" + adminBeforeCreate.getPassword() + "\",\n" +
+                        "    \"email\": \"" + adminBeforeCreate.getEmail() + "\"\n" +
+                        "}")).andReturn().getResponse().getContentAsString(); //.getHeader("token");
+                        // // To test the output for request
+                        for (int i = 0; i < 100; i++){
+                                System.out.println(token);
+                        }
+                        String request = String.format("/api/Account/saveworker/1?token=%s",token);
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
