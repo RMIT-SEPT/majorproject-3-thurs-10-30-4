@@ -16,7 +16,10 @@
 
 */
 import React from "react";
-import axios from 'axios';
+import { login } from "../actions/securityActions";
+import PropTypes from "prop-types";
+import { connect } from 'react-redux';
+import classnames from "classnames";
 
 // reactstrap components
 import {
@@ -49,7 +52,16 @@ class Login extends React.Component {
 
   initialState = {
     email: "",
-    password: ""
+    password: "",
+    errors: {}
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
+    }
   }
 
   onChange = e => {
@@ -60,7 +72,7 @@ class Login extends React.Component {
 	{  
 		e.preventDefault();
 
-		const newPerson =
+		const LoginRequest =
 		{
 			password: this.state.password,
       email: this.state.email,
@@ -129,9 +141,14 @@ class Login extends React.Component {
 				}
 			});
 		}
+    }
+    
+    this.props.login(LoginRequest, this.props.history);
+
+	}
 
   render() {
-    const {email, password} = this.state;
+    const {email, password, errors} = this.state;
     return (
       <>
         <Col lg="5" md="7">
@@ -153,9 +170,15 @@ class Login extends React.Component {
                       type="email"
                       autoComplete="off"
                       name="email"
+                      className = {classnames("", {
+                        "is-invalid": errors.email
+                      })}
                       value={email}
                       onChange = {this.onChange}
                     />
+                    {errors.email && (
+                      <div className="invalid-feedback p-2">{errors.email}</div>
+                    )}
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -170,9 +193,15 @@ class Login extends React.Component {
                       type="password"
                       autoComplete="off"
                       name="password"
+                      className = {classnames("", {
+                        "is-invalid": errors.password
+                      })}
                       value={password}
                       onChange = {this.onChange}
                     />
+                    {errors.password && (
+                      <div className="invalid-feedback p-2">{errors.password}</div>
+                    )}
                   </InputGroup>
                 </FormGroup>
                 <div className="text-center">
@@ -199,4 +228,11 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+const mapStateToProps = state => {
+  return { errors: state.errors };
+};
+
+export default connect(
+  mapStateToProps,
+  { login }
+)(Login);
