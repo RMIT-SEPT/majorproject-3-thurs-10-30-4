@@ -1,7 +1,7 @@
 package com.sept.Thur10304.BookingSystem.security;
 
 import com.google.gson.Gson;
-//import com.sept.Thur10304.BookingSystem.exceptions.InvalidLoginResponse;
+import com.sept.Thur10304.BookingSystem.exceptions.InvalidLoginResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -18,14 +18,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                          AuthenticationException e) throws IOException, ServletException {
 
-        //InvalidLoginResponse loginResponse = new InvalidLoginResponse();
-        //String jsonLoginResponse = new Gson().toJson(loginResponse);
+        InvalidLoginResponse loginResponse = new InvalidLoginResponse();
+        String jsonLoginResponse = new Gson().toJson(loginResponse);
 
 
         httpServletResponse.setContentType("application/json");
         httpServletResponse.setStatus(401);
-        //httpServletResponse.getWriter().print(jsonLoginResponse);
-        httpServletResponse.getWriter().print("JWT: invalid login");
+        httpServletResponse.getWriter().print(jsonLoginResponse);
+        //httpServletResponse.getWriter().print("JWT: invalid login");
 
 
     }

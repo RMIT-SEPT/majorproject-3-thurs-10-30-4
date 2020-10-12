@@ -145,6 +145,7 @@ public class AccountService implements UserDetailsService {
         // Make sure that password and confirmPassword match
         // We don't persist or show the confirmPassword
 
+        // encrypt the password so it can't be read from db as cleartext
         newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
         //Username has to be unique (exception)
         newUser.setEmail(newUser.getEmail());
@@ -152,8 +153,10 @@ public class AccountService implements UserDetailsService {
         return AccountRepository.save(newUser);
     }
 
-  public Account saveCustomer(Account account){
-        AccountRepository.save(account);
+  public Account saveCustomer(Account account) {
+        // encrypt the password so it can't be read from db as cleartext
+        account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
+
         Customer customer = new Customer();
         customer.setAccount(account);
         customerRepository.save(customer);
@@ -161,11 +164,15 @@ public class AccountService implements UserDetailsService {
     
     }
 
-    public Account saveWorker(Account account, Long adminId) throws Exception{
+    public Account saveWorker(Account account, Long adminId) throws Exception {
         Optional<Admin> findAdmin = adminRepository.findById(adminId);
         if (!findAdmin.isPresent()){
             throw new Exception("Admin not found");
         }
+
+        // encrypt the password so it can't be read from db as cleartext
+        account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
+
         Admin admin = findAdmin.get();
         AccountRepository.save(account);
         Worker worker = new Worker();
@@ -175,8 +182,11 @@ public class AccountService implements UserDetailsService {
         return account;
     }
 
-    public Account saveAdmin(Account account){
+    public Account saveAdmin(Account account) {
         // TODO add connection to service
+
+        // encrypt the password so it can't be read from db as cleartext
+        account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
 
         AccountRepository.save(account);
         Admin admin = new Admin();

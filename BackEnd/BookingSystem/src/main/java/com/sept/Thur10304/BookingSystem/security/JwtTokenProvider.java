@@ -12,6 +12,8 @@ import java.util.Map;
 import static com.sept.Thur10304.BookingSystem.security.SecurityConstant.EXPIRATION_TIME;
 import static com.sept.Thur10304.BookingSystem.security.SecurityConstant.SECRET;
 
+import com.sept.Thur10304.BookingSystem.services.AccountService;
+
 @Component
 public class JwtTokenProvider {
 
@@ -25,7 +27,14 @@ public class JwtTokenProvider {
 
         String userId = Long.toString(user.getId());
 
+        // Anything you want to pull using JWT must be in claims.
+        // Or you can just save the ID and then use that to lookup
+        // other data normally.
+
         Map<String,Object> claims = new HashMap<>();
+        //claims.put("email", user.getEmail());
+        //claims.put("password", user.getPassword());
+
         claims.put("id", (Long.toString(user.getId())));
         claims.put("email", user.getEmail());
         //claims.put("fullName", user.getFullName());
@@ -67,4 +76,5 @@ public class JwtTokenProvider {
 
         return Long.parseLong(id);
     }
+
 }

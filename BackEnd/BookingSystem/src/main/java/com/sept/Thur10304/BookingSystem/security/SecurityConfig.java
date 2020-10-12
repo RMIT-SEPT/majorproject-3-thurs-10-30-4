@@ -72,10 +72,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js"
                 ).permitAll()
-                .antMatchers(SIGN_UP_URLS).permitAll()
-                //.antMatchers("/api/users/**").permitAll()
-                .antMatchers(H2_URL).permitAll()
-                .anyRequest().authenticated();
+                //.antMatchers(SIGN_UP_URLS).permitAll()
+                //.antMatchers(H2_URL).permitAll()
+                //.anyRequest().authenticated(); // Disabling until I can figure out why I can't access H2 console.
+                ;
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
