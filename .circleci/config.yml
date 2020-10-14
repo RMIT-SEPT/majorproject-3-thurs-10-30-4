@@ -2,9 +2,10 @@ version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@6.12.2
   aws-ecs: circleci/aws-ecs@1.3.0
-
+  node: circleci/node@4.0.1
+  
 jobs:
-  build_and_deploy:
+  BackEnd:
     docker:
       - image: circleci/openjdk:8-jdk
     environment:
@@ -70,11 +71,43 @@ jobs:
             
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 857544276754.dkr.ecr.us-east-1.amazonaws.com
             docker push $FULL_IMAGE_NAME
+            
+  FrontEnd:
+    docker:
+      - image: circleci/node:latest
+    environment:
+      ECR_REPOSITORY_NAME: frontend
+      FULL_IMAGE_NAME: 857544276754.dkr.ecr.us-east-1.amazonaws.com/frontend:prod
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install dependencies for AWS
+          command: |
+            sudo apt-get update
+            sudo apt-get -y -qq install awscli
+            sudo apt-get install python3-pip
+            sudo pip3 install --upgrade awscli
+      - run:
+          name: build React docker
+          command: |
+            cd ~/project/FrontEnd/app
+            dir
+            sudo npm install -g create-react-app@3.4.1
+            cd ..
+            docker build app -f app/Dockerfile.prod -t 857544276754.dkr.ecr.us-east-1.amazonaws.com/frontend:prod
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 857544276754.dkr.ecr.us-east-1.amazonaws.com
+            docker push $FULL_IMAGE_NAME
+
 workflows:
   build-deploy-qa:
     jobs:
-      - build_and_deploy:
+      - BackEnd:
           filters:
             branches:
-              only: develop # develop is the most developed branch so we will deploy there for now
+              only: master
+      - FrontEnd:
+          filters:
+            branches:
+              only: master
 
