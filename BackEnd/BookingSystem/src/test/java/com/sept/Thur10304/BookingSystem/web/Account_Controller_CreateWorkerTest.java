@@ -5,7 +5,9 @@ import com.sept.Thur10304.BookingSystem.model.Admin;
 import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
 import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
+import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
 import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
+import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,10 +17,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Collection;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -36,6 +43,12 @@ class Account_Controller_CreateWorkerTest {
     private AccountRepository accountRepository;
 
     @Resource
+    private WorkerRepository workerRepository;
+
+    @Resource
+    private CustomerRepository customerRepository;
+
+    @Resource
     private AccountService accountService;
 
     @Autowired
@@ -46,7 +59,12 @@ class Account_Controller_CreateWorkerTest {
 //     Account account1;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception{
+        workerRepository.deleteAll();
+        adminRepository.deleteAll();
+        customerRepository.deleteAll();
+        accountRepository.deleteAll();
+
         adminBeforeCreate = new Account();
         // account1.setId((long) 1);
         adminBeforeCreate.setFirstName("Daniel");
@@ -55,7 +73,7 @@ class Account_Controller_CreateWorkerTest {
         adminBeforeCreate.setEmail("dlevy@hotspurway.com");
         // account1.setAccountType(AccountType.ADMIN);
         // account1 = accountRepository.save(account1);
-        try{
+
         mvc.perform(post("/api/Account/saveadmin")
         .contentType(MediaType.APPLICATION_JSON)
         .content("{\n" +
@@ -64,7 +82,7 @@ class Account_Controller_CreateWorkerTest {
                 "    \"password\": \"" + adminBeforeCreate.getPassword() + "\",\n" +
                 "    \"email\": \"" + adminBeforeCreate.getEmail() + "\"\n" +
                 "}"));
-        }catch(Exception e){}
+        
 //        adminBeforeCreate = new Admin();
 //        adminBeforeCreate.setAccount(account1);
 //         adminAfterCreate = adminBeforeCreate;
@@ -82,29 +100,35 @@ class Account_Controller_CreateWorkerTest {
 
     @Test
     void createNewWorker_accepted() throws Exception {
-        String token = mvc.perform(post("/api/Account/Login")
+        String loginResponse = mvc.perform(post("/api/Account/Login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"" + adminBeforeCreate.getFirstName() + "\",\n" +
                         "    \"lastName\": \"" + adminBeforeCreate.getLastName() + "\",\n" +
                         "    \"password\": \"" + adminBeforeCreate.getPassword() + "\",\n" +
                         "    \"email\": \"" + adminBeforeCreate.getEmail() + "\"\n" +
-                        "}")).andReturn().getResponse().getContentAsString(); //.getHeader("token");
-                        // // To test the output for request
+                        "}")).andReturn().getResponse().getContentAsString(); //.getHeader("token"); // 
+        Map<String, Object> map = new ObjectMapper().readValue(loginResponse, Map.class);
+        String token = (String) map.get("token");
+
+                        // // // To test the output for request
                         for (int i = 0; i < 100; i++){
                                 System.out.println(token);
                         }
                         String request = String.format("/api/Account/saveworker/1?token=%s",token);
-        mvc.perform(post(request)
+        String output = mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
                         "    \"lastName\": \"Swanson\",\n" +
                         "    \"password\": \"IAmDukeSilver\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
-                        "    \"dateCreated\": \"2020-08-23\"\n" +
+                        "    \"email\": \"ron@pawnee.gov\"\n" +
+                        // "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
-                .andExpect(status().isCreated());
+                .andReturn().getResponse().getContentAsString();//andExpect(status().isCreated());
+                for (int i = 0; i < 100; i++){
+                        System.out.println(output);
+                }
     }
 
     @Test
