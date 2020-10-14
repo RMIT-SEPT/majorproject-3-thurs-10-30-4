@@ -4,8 +4,8 @@ url|method|Login Status|Input|Output|description
 /api/Account/Authenticate|POST|Any|JWT|Account or error|Provides Account object linked with JWT
 /api/Account/Login|POST|Any|Username and password|JWT and Account|User logs in with username, password and recieved JWT and Account
 /api/Account/saveadmin|POST|Any|Account fields in JSON format|Admin created or error|Creates a new admin account, temp
-/api/Account/saveworker/{adminId}|POST|As admin|Account fields in JSON format, admin id in path|Worker created or error|Creates a new worker account
-/api/service/save/{adminId}|POST|Same admin as id given|Service fields in JSON format|Service created or error|Creates a new service
+/api/Account/saveworker/{adminId}?token={token}|POST|As admin|Account fields in JSON format, admin id in path|Worker created or error|Creates a new worker account
+/api/service/save/{adminId}?token={token}|POST|Same admin as id given|Service fields in JSON format|Service created or error|Creates a new service (1 per admin?)
 /api/service/getall|GET|Any|None|All registered services in JSON format|Retrieves all registered services
 /api/service/get|GET|Any|id (append ?id=(ID) to end of url)|Service that id belongs to|Gets a service by its id then returns it
 /api/service/delete/{serviceId}|DELETE|As admin of service|id of service as path variable|Confirmation that service and associated timeslots were found and deleted, or error|Deletes service and associated timeslots from backend
