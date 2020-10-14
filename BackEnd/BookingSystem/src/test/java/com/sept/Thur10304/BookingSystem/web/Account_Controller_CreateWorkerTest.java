@@ -57,6 +57,7 @@ class Account_Controller_CreateWorkerTest {
     Account adminBeforeCreate;
 //     Account adminAfterCreate;
 //     Account account1;
+        int adminId;
 
     @BeforeEach
     void setUp() throws Exception{
@@ -74,14 +75,16 @@ class Account_Controller_CreateWorkerTest {
         // account1.setAccountType(AccountType.ADMIN);
         // account1 = accountRepository.save(account1);
 
-        mvc.perform(post("/api/Account/saveadmin")
+        String adminCreateString = mvc.perform(post("/api/Account/saveadmin")
         .contentType(MediaType.APPLICATION_JSON)
         .content("{\n" +
                 "    \"firstName\": \"" + adminBeforeCreate.getFirstName() + "\",\n" +
                 "    \"lastName\": \"" + adminBeforeCreate.getLastName() + "\",\n" +
                 "    \"password\": \"" + adminBeforeCreate.getPassword() + "\",\n" +
                 "    \"email\": \"" + adminBeforeCreate.getEmail() + "\"\n" +
-                "}"));
+                "}")).andReturn().getResponse().getContentAsString();
+                Map<String, Object> map = new ObjectMapper().readValue(adminCreateString, Map.class);
+        adminId = (int) map.get("id");
         
 //        adminBeforeCreate = new Admin();
 //        adminBeforeCreate.setAccount(account1);
@@ -112,11 +115,11 @@ class Account_Controller_CreateWorkerTest {
         String token = (String) map.get("token");
 
                         // // // To test the output for request
-                        for (int i = 0; i < 100; i++){
-                                System.out.println(token);
-                        }
-                        String request = String.format("/api/Account/saveworker/1?token=%s",token);
-        String output = mvc.perform(post(request)
+                        // for (int i = 0; i < 100; i++){
+                        //         System.out.println(token);
+                        // }
+                        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, token);
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
@@ -125,10 +128,7 @@ class Account_Controller_CreateWorkerTest {
                         "    \"email\": \"ron@pawnee.gov\"\n" +
                         // "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
-                .andReturn().getResponse().getContentAsString();//andExpect(status().isCreated());
-                for (int i = 0; i < 100; i++){
-                        System.out.println(output);
-                }
+                .andExpect(status().isCreated());
     }
 
     @Test
