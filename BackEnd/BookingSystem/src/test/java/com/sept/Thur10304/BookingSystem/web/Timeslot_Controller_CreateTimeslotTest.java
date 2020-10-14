@@ -160,7 +160,6 @@ class Timeslot_Controller_CreateTimeslotTest {
         workerId = (int) workerCreateMap.get("id");
 
         service1 = new Service_();
-        service1.setServiceId((long) 1);
         service1.setServiceName("Paunch Burger");
         service1.setServiceDescription("Home of the Greasy Lard Bomb");
         service1.setAdmin(adminRepository.findById(Long.valueOf(adminId)).get());
@@ -193,12 +192,13 @@ class Timeslot_Controller_CreateTimeslotTest {
     @Test
     void createNewTimeslot_accepted() throws Exception {
         // Format ids and token into the request
-        String request = String.format("/api/timeslot/save/%d/%d?token=%s", adminId, workerId, adminToken);
+        String request = String.format("/api/timeslot/save/%d/%d?token=%s", service1.getServiceId(), workerId, adminToken);
         // Use post request
         mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
+                        "    \"price\": 10.00,\n" +
                         "    \"startTime\": \"01:00\",\n" +
                         "    \"endTime\": \"02:00\"\n" +
                         "}"))
@@ -214,6 +214,7 @@ class Timeslot_Controller_CreateTimeslotTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"06-09-2024\",\n" +
+                        "    \"price\": 10.00,\n" +
                         "    \"startTime\": \"09:00\",\n" +
                         "    \"endTime\": \"11:00\"\n" +
                         "}"))
@@ -229,6 +230,7 @@ class Timeslot_Controller_CreateTimeslotTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
+                        "    \"price\": 10.00,\n" +
                         "    \"startTime\": \"59:12\",\n" +
                         "    \"endTime\": \"11:00\"\n" +
                         "}"))
@@ -244,6 +246,7 @@ class Timeslot_Controller_CreateTimeslotTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
+                        "    \"price\": 10.00,\n" +
                         "    \"startTime\": \"05:00\",\n" +
                         "    \"endTime\": \"77-00\"\n" +
                         "}"))
@@ -259,6 +262,7 @@ class Timeslot_Controller_CreateTimeslotTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
+                        "    \"price\": 10.00,\n" +
                         "    \"startTime\": \"05:00\",\n" +
                         "    \"endTime\": \"03:00\"\n" +
                         "}"))
@@ -274,6 +278,7 @@ class Timeslot_Controller_CreateTimeslotTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
+                        "    \"price\": 10.00,\n" +
                         "    \"startTime\": \"03:00\",\n" +
                         "    \"endTime\": \"05:00\"\n" +
                         "}"))
@@ -289,6 +294,7 @@ class Timeslot_Controller_CreateTimeslotTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"2020-09-04\",\n" +
+                        "    \"price\": 10.00,\n" +
                         "    \"startTime\": \"03:00\",\n" +
                         "    \"endTime\": \"05:00\"\n" +
                         "}"))
@@ -304,6 +310,7 @@ class Timeslot_Controller_CreateTimeslotTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"date\": \"" + str_tomorrow + "\",\n" +
+                        "    \"price\": 10.00,\n" +
                         "    \"startTime\": \"07:00\",\n" +
                         "    \"endTime\": \"08:00\"\n" +
                         "}"))
