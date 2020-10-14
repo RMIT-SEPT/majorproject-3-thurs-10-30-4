@@ -71,8 +71,6 @@ class Timeslot_Controller_GetTimeslotTest {
     DateFormat df;
     Date tomorrow;
 
-//     int serviceId1;
-//     int serviceId2;
     int workerId1;
     int workerId2;
     String adminToken1;
