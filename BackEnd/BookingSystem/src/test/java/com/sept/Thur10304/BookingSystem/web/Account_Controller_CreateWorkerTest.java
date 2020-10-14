@@ -51,9 +51,6 @@ class Account_Controller_CreateWorkerTest {
     @Resource
     private AccountService accountService;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
     Account adminBeforeCreate;
     int adminId;
     String adminToken;
