@@ -55,26 +55,26 @@ class Account_Controller_CreateWorkerTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     Account adminBeforeCreate;
-//     Account adminAfterCreate;
-//     Account account1;
-        int adminId;
+    int adminId;
+    String adminToken;
 
     @BeforeEach
     void setUp() throws Exception{
+        // Clears all repositories
         workerRepository.deleteAll();
         adminRepository.deleteAll();
         customerRepository.deleteAll();
         accountRepository.deleteAll();
 
+        // Creates admin account entity
         adminBeforeCreate = new Account();
-        // account1.setId((long) 1);
         adminBeforeCreate.setFirstName("Daniel");
         adminBeforeCreate.setLastName("Levy");
         adminBeforeCreate.setPassword("IMissGareth");
         adminBeforeCreate.setEmail("dlevy@hotspurway.com");
-        // account1.setAccountType(AccountType.ADMIN);
-        // account1 = accountRepository.save(account1);
 
+        // Saves admin into database through post request
+        // (not done manually as this way automatically does the password encryption)
         String adminCreateString = mvc.perform(post("/api/Account/saveadmin")
         .contentType(MediaType.APPLICATION_JSON)
         .content("{\n" +
@@ -82,27 +82,16 @@ class Account_Controller_CreateWorkerTest {
                 "    \"lastName\": \"" + adminBeforeCreate.getLastName() + "\",\n" +
                 "    \"password\": \"" + adminBeforeCreate.getPassword() + "\",\n" +
                 "    \"email\": \"" + adminBeforeCreate.getEmail() + "\"\n" +
-                "}")).andReturn().getResponse().getContentAsString();
-                Map<String, Object> map = new ObjectMapper().readValue(adminCreateString, Map.class);
-        adminId = (int) map.get("id");
-        
-//        adminBeforeCreate = new Admin();
-//        adminBeforeCreate.setAccount(account1);
-//         adminAfterCreate = adminBeforeCreate;
-//         adminAfterCreate.setPassword(bCryptPasswordEncoder.encode(adminBeforeCreate.getPassword()));
-//         Admin admin1 = new Admin();
-//         admin1.setAccount(adminAfterCreate);
-//        admin1 =  adminRepository.save(admin1); //accountService.saveAdmin(adminBeforeCreate);
+                "}"))
+        // Expects that creation is successful and returns raw json string
+        .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
 
-       
-       // To test that admin is being created
-//        for (int i = 0; i < 200; i++){
-//                System.out.println(adminAfterCreate.getAccount().getAccountType());
-//        }
-    }
+        // Converts raw json string into a map, then retrieves the admin id and puts in into a
+        //   global variable for use in the tests
+        Map<String, Object> adminCreateMap = new ObjectMapper().readValue(adminCreateString, Map.class);
+        adminId = (int) adminCreateMap.get("id");
 
-    @Test
-    void createNewWorker_accepted() throws Exception {
+        // Logs in using admin values
         String loginResponse = mvc.perform(post("/api/Account/Login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
@@ -110,15 +99,23 @@ class Account_Controller_CreateWorkerTest {
                         "    \"lastName\": \"" + adminBeforeCreate.getLastName() + "\",\n" +
                         "    \"password\": \"" + adminBeforeCreate.getPassword() + "\",\n" +
                         "    \"email\": \"" + adminBeforeCreate.getEmail() + "\"\n" +
-                        "}")).andReturn().getResponse().getContentAsString(); //.getHeader("token"); // 
-        Map<String, Object> map = new ObjectMapper().readValue(loginResponse, Map.class);
-        String token = (String) map.get("token");
+                        "}"))
+                // Expects login to be successful, recieves json output as string
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
-                        // // // To test the output for request
-                        // for (int i = 0; i < 100; i++){
-                        //         System.out.println(token);
-                        // }
-                        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, token);
+        // Extracts token from login response, puts it into global variable
+        Map<String, Object> map = new ObjectMapper().readValue(loginResponse, Map.class);
+        adminToken = (String) map.get("token");
+        
+    }
+
+    @Test
+    void createNewWorker_accepted() throws Exception {
+        
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
         mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
@@ -126,15 +123,19 @@ class Account_Controller_CreateWorkerTest {
                         "    \"lastName\": \"Swanson\",\n" +
                         "    \"password\": \"IAmDukeSilver\",\n" +
                         "    \"email\": \"ron@pawnee.gov\"\n" +
-                        // "    \"dateCreated\": \"2020-08-23\"\n" +
                         "}"))
+                // Expects worker to be successful
                 .andExpect(status().isCreated());
     }
 
     @Test
     void createNewWorker_firstNameTooShort() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"\",\n" +
@@ -149,7 +150,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_firstNameTooLong() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ronald Duke Silver Tammy I and Tammy II\",\n" +
@@ -164,7 +169,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_firstNameBlank() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"lastName\": \"Swanson\",\n" +
@@ -178,7 +187,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_lastNameTooShort() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
@@ -193,7 +206,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_lastNameTooLong() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
@@ -208,7 +225,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_lastNameBlank() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
@@ -222,7 +243,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_passwordTooShort() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
@@ -237,7 +262,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_passwordTooLong() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
@@ -252,7 +281,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_passwordBlank() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
@@ -266,7 +299,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_emailTooShort() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
@@ -281,7 +318,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_emailTooLong() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
@@ -296,7 +337,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_emailIncorrectFormat() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
@@ -311,7 +356,11 @@ class Account_Controller_CreateWorkerTest {
     @Test
     void createNewWorker_emailBlank() throws Exception {
 
-        mvc.perform(post("/api/Account/saveworker/1")
+        // Formats request to use admin id and token
+        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+        
+        // Performs add worker request
+        mvc.perform(post(request)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n" +
                         "    \"firstName\": \"Ron\",\n" +
