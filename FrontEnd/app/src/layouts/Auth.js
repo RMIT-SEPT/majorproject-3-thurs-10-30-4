@@ -57,7 +57,8 @@ class Auth extends React.Component {
 
   checkLogin() {
     if(id != null) {
-      window.location.href = "http://localhost:3000/Admin/services_dashboard";
+		 // This needs to redirect based on account types.
+      //window.location.href = "http://localhost:3000/Admin/services_dashboard";
     }
   };
 
