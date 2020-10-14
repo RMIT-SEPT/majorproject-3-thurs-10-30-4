@@ -3,6 +3,9 @@ package com.sept.Thur10304.BookingSystem.web;
 import com.sept.Thur10304.BookingSystem.model.Account;
 import com.sept.Thur10304.BookingSystem.model.Service_;
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
+import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
+import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
+import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,18 +33,43 @@ class Account_Controller_LoginTest {
     @Resource
     private AccountRepository accountRepository;
 
+    @Resource
+    private AdminRepository adminRepository;
+
+    @Resource
+    private WorkerRepository workerRepository;
+
+    @Resource
+    private CustomerRepository customerRepository;
+
+
     Account account1;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
+        // Clears all repositories
+        workerRepository.deleteAll();
+        adminRepository.deleteAll();
+        customerRepository.deleteAll();
+        accountRepository.deleteAll();
+
         account1 = new Account();
-        account1.setId((long) 1);
         account1.setFirstName("Ron");
         account1.setLastName("Swanson");
         account1.setEmail("ron@pawnee.gov");
         account1.setPassword("IAmDukeSilver");
-        account1.setDateCreated(new Date());
-        accountRepository.save(account1);
+
+        // Save customer through post request, so it encrypts password
+        mvc.perform(post("/api/Account")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("{\n" +
+                "    \"firstName\": \"" + account1.getFirstName() + "\",\n" +
+                "    \"lastName\": \"" + account1.getLastName() + "\",\n" +
+                "    \"password\": \"" + account1.getPassword() + "\",\n" +
+                "    \"email\": \"" + account1.getEmail() + "\"\n" +
+                "}"))
+        // Expects that creation is successful
+        .andExpect(status().isCreated());
 
     }
 

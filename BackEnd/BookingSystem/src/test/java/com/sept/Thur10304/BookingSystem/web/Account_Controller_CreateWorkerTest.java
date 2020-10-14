@@ -35,12 +35,12 @@ class Account_Controller_CreateWorkerTest {
 
     @Autowired
     private MockMvc mvc;
+    
+    @Resource
+    private AccountRepository accountRepository;
 
     @Resource
     private AdminRepository adminRepository;
-
-    @Resource
-    private AccountRepository accountRepository;
 
     @Resource
     private WorkerRepository workerRepository;
