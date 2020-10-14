@@ -1,7 +1,8 @@
 import React from "react";
 import axios from 'axios';
 
-// CREATE SEPARATE ADMIN PROFILE PAGE??
+import { Line, Bar } from "react-chartjs-2";
+import Chart from "chart.js";
 
 // reactstrap components
 import {
@@ -15,6 +16,7 @@ import {
   Card,
   CardHeader,
   CardBody,
+  CardTitle,
   FormGroup,
   Form,
   Input,
@@ -24,6 +26,10 @@ import {
 } from "reactstrap";
 // core components
 import AdminHeader from "../components/Headers/AdminHeader.js";
+import {
+  chartOptions,
+  parseOptions
+} from "../variables/charts.js";
 
 class Admin extends React.Component {
   constructor(props){
@@ -36,23 +42,47 @@ class Admin extends React.Component {
     this.onSubmit = this.onSubmitTimeslot.bind(this);
 
     this.handleChange = this.handleChange.bind(this);
+
+    if (window.Chart) {
+      parseOptions(Chart, chartOptions());
+    }
   }
 
   // Initial States
   initialState = {
     firstName: "", lastName: "", password: "", email: "", retypedPassword: "", errorResponse: [], 
-    startTime: "", endTime: "", date: "", workers: [], price: "", priceList: this.priceList()
+    startTime: "", endTime: "", date: "", timeslots: [], workers: [], priceList: this.priceList(),
+    analytics: {}, chart1: {}, chart2: {}
   }
 
-  // Helper Method: Generate optional prices
-  priceList() {
-    var list = new Array(50);
+componentDidMount() {
+    this.getWorkers();
+    this.getAdminId();
+    this.getTimeslots();
+    this.getAnalytics();
+  }
 
-    for(var i = 4; i <= 200; i++){
-      list.push((i/4).toFixed(2));
-    }
-    
-    return list
+  getAdminId() {
+    return localStorage.getItem('id');
+  }
+
+  getWorkerId() {
+    return this.worker.value;
+  }
+
+  getServiceId() {
+    axios.get("http://localhost:8080/api/service/findbyadmin/" + this.getAdminId())
+        .then(response => response.data)
+        .then((data) => {
+          localStorage.setItem('serviceId', data.serviceId);
+        })
+        .catch(error => { 
+            console.log(error.response.data);
+        });
+  }
+
+  getServiceName() {
+    return localStorage.getItem('serviceName');
   }
 
   // HandleChange Method
@@ -67,6 +97,55 @@ class Admin extends React.Component {
     this.setState({[e.target.name]: e.target.value});
   }
 
+  getTimeslots() {
+    console.log()
+    axios.get("http://localhost:8080/api/timeslot/getbyadmin/" + this.getAdminId())
+    .then(response => response.data)
+    .then((data) => {
+        this.setState({timeslots: data});
+    })
+    .catch(error => { 
+        console.log(error.response.data)
+
+        {/* BIT OF A HACK*/}
+        this.setState({timeslots: error.response.data});
+    });
+  }
+
+  getStatus(timeslot) {
+    if(timeslot.booking == null) {
+      return (
+      <Badge color="" className="badge-dot mr-4">
+        <i className="bg-success"/>
+        Available
+      </Badge>
+      );
+    } else {
+      return (
+        <Badge color="" className="badge-dot mr-4">
+        <i className="bg-danger"/>
+        Booked
+      </Badge>
+      );
+    }
+  }
+
+  deleteTimeslot(timeslot) {
+    axios.delete("http://localhost:8080/api/timeslot/delete/" + timeslot.timeslotId)
+    .then(response => {
+      alert("Deleted Timeslot"); 
+      window.location.reload(false);
+    })
+    .catch(err => {
+      // returns error message corresponding to issue
+      if (typeof err.response.data.defaultMessage != 'undefined') {
+        alert(err.response.data.defaultMessage);
+      } else {
+        alert(err.response.data[0].defaultMessage);
+      }
+    })
+  }
+
   // Helper Method: Check passwords are the same for new workers
   checkPasswords() {
     if (this.state.password === this.state.retypedPassword) {
@@ -74,11 +153,6 @@ class Admin extends React.Component {
     } else {
       return false;
     }
-  }
-
-  // Helper Method: Gets Admin ID for URL Building
-  getAdminId() {
-    return localStorage.getItem('id');
   }
 
   // POST Request: Create A Valid Worker
@@ -104,6 +178,7 @@ class Admin extends React.Component {
 				{ 
           this.setState(this.initialState);
           this.getWorkers();
+          this.getTimeslots();
 					alert("New Worker Added");
 				}
 			})
@@ -127,22 +202,6 @@ class Admin extends React.Component {
 		}
   }
 
-  // Helper Method: Gets the Service ID associated with the administrator logged in for URL Building
-  getServiceId() {
-    axios.get("http://localhost:8080/api/service/findbyadmin/" + this.getAdminId())
-        .then(response => response.data)
-        .then((data) => {
-          localStorage.setItem('serviceId', data.serviceId);
-        })
-        .catch(error => { 
-            console.log(error.response.data);
-        });
-  }
-
-  componentDidMount() {
-    this.getWorkers();
-  }
-
   // GET Request: Retreieves All Workers for a given service
   getWorkers() {
     this.getServiceId();
@@ -160,11 +219,6 @@ class Admin extends React.Component {
             {/* BIT OF A HACK*/}
             this.setState({workers: error.response.data});
         });
-  }
-
-  // Helper Method: Gets the Worker ID the timeslots is being assigned to for URL Building
-  getWorkerId() {
-    return this.worker.value;
   }
 
   checkValidTime() {
@@ -199,6 +253,17 @@ class Admin extends React.Component {
     return d.toISOString().slice(0,10) === this.state.date;
   }
 
+  // Helper Method: Generate optional prices
+  priceList() {
+    var list = new Array(50);
+
+    for(var i = 4; i <= 200; i++){
+      list.push((i/4).toFixed(2));
+    }
+    
+    return list
+  }
+
   // POST Request: Get a valid Timeslot
   onSubmitTimeslot = e =>
 	{
@@ -225,6 +290,7 @@ class Admin extends React.Component {
 				{ 
           this.setState(this.initialState);
           this.getWorkers();
+          this.getTimeslots();
 					alert("New Timeslot Added");
 				}
 			})
@@ -239,11 +305,129 @@ class Admin extends React.Component {
       // alert("Errors");
 		}
   }
+
+  getAnalytics() {
+      axios.get("http://localhost:8080/api/Account/adminanalytics/" + this.getAdminId())
+      .then(response => response.data)
+      .then((data) => {
+          console.log(data);
+          this.setState({analytics: data});
+
+          this.getChart1();
+          this.getChart2();
+      })
+      .catch(error => { 
+          console.log(error.response.data)
+          
+          {/* BIT OF A HACK*/}
+          this.setState({workers: error.response.data});
+      });
+  }
+
+  getChart1() {
+    this.setState({
+      chart1: {
+        options: {
+          scales: {
+            yAxes: [
+              {
+                gridLines: {
+                  color: "#525f7f",
+                  zeroLineColor: "#525f7f"
+                },
+                ticks: {
+                  callback: function(value) {
+                    if (!(value % 1)) {
+                      return '$' + value
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          tooltips: {
+            callbacks: {
+              label: function(item, data) {
+                var label = data.datasets[item.datasetIndex].label || "";
+                var yLabel = item.yLabel;
+                var content = "";
+      
+                if (data.datasets.length > 1) {
+                  content += label;
+                }
+      
+                content += "$" + yLabel;
+                return content;
+              }
+            }
+          }
+        },
+        data: {
+          labels: this.state.analytics.next_week_dates,
+          datasets: [
+            {
+              label: "Income",
+              data: this.state.analytics.next_week_expected_income
+            }
+          ]
+        }
+      }
+    })
+  }
+
+  getChart2() {
+    this.setState({
+      chart2: {
+        options: {
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  callback: function(value) {
+                    if (!(value % 1)) {
+                      //return '$' + value + 'k'
+                      return value;
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          tooltips: {
+            callbacks: {
+              label: function(item, data) {
+                var label = data.datasets[item.datasetIndex].label || "";
+                var yLabel = item.yLabel;
+                var content = "";
+                if (data.datasets.length > 1) {
+                  content += label;
+                }
+                content += yLabel;
+                return content;
+              }
+            }
+          }
+        },
+        data: {
+          labels: ["Booked", "Not Booked"],
+          datasets: [
+            {
+              label: "Bookings",
+              data: [this.state.analytics.booked_today, this.state.analytics.unbooked_today],
+              maxBarThickness: 10
+            }
+          ]
+        }
+      }
+    })
+  }
     
     // Render
     render() {
 
-      const {firstName, lastName, email, password, retypedPassword, startTime, endTime, date, workers, price, priceList} = this.state;
+      const {firstName, lastName, email, password, retypedPassword, startTime, endTime, date, timeslots, workers, priceList, chart1, chart2} = this.state;
+      const { active_bookings, completed_bookings, worker_count } = this.state.analytics;
+      console.log(this.state.chart1);
       return (
         <>
           <AdminHeader />
@@ -252,6 +436,49 @@ class Admin extends React.Component {
             <Row>
               <Col>
                 <Card className="bg-secondary shadow">
+
+                  {/* VIEW TIMESLOTS AREA*/}
+                  <CardHeader className="border-0">
+                    <h3 className="mb-0"> {this.getServiceName()} Time slots</h3>
+                  </CardHeader>
+                  <CardBody>
+                    <Table className="align-items-center table-flush" responsive>
+                      <thead className="thead-light">
+                        <tr>
+                          <th scope="col"> Date</th>
+                          <th scope="col">Start Time</th>
+                          <th scope="col">End Time</th>
+                          <th scope="col">Price</th>
+                          <th scope="col">Worker Assigned</th>
+                          <th scope="col">Availability Status</th>
+                          <th scope="col" /> 
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          this.state.timeslots.length === 0 ? 
+                          <tr align="center">
+                              <td colSpan="7"> No Time slots. </td>
+                          </tr> : 
+                          this.state.timeslots.map((timeslot) => (
+                            <tr key={timeslot.timeslotId}> {/**/}
+                                <td>{timeslot.date}</td> {/* DATE */}
+                                <td>{timeslot.startTime}</td> {/* START TIME */}
+                                <td>{timeslot.endTime}</td> {/* FINISH TIME */}
+                                <td>${timeslot.price} </td> {/*  PRICE */}
+                                <td>{timeslot.worker.account.firstName} {timeslot.worker.account.lastName} </td> {/* WORKER NAME */}
+                                <td> {/* PENDING STATUS */}
+                                      {this.getStatus(timeslot)}
+                                </td>
+                                <td className="text-right">
+                                  <Button className="pr-5 pl-5" color="primary" type="button" onClick={e => this.deleteTimeslot(timeslot)}>DELETE</Button>
+                                </td>
+                            </tr>
+                          ))
+                        }
+                      </tbody>
+                    </Table>
+                  </CardBody>
 
                   {/* ADD WORKERS AREA*/}
                   <CardHeader className="bg-white border-0">
@@ -522,6 +749,136 @@ class Admin extends React.Component {
                       <hr className="my-4" />
                     </Form>
                   </CardBody>
+
+                  {/* ANALYTICS SECTION */}
+                  <CardHeader className="bg-white border-0">
+                    <Row className="align-items-center">
+                      <Col xs="8">
+                        <h3 className="mb-0">Analytics</h3>
+                      </Col>
+                    </Row>
+                  </CardHeader>
+                  <CardBody>
+                  <Row>
+
+                    {/* ACTIVE BOOKINGS CARD */}
+                    <Col lg="6" xl="4">
+                      <Card className="card-stats mb-4 mb-xl-0">
+                        <CardBody>
+                          <Row>
+                            <div className="col">
+                              <CardTitle
+                                tag="h5"
+                                className="text-uppercase text-muted mb-0"
+                              >
+                                Active Bookings
+                              </CardTitle>
+                              <span className="display-2 h1 font-weight-bold mb-0">
+                                {active_bookings}
+                              </span>
+                            </div>
+                          </Row>
+                        </CardBody>
+                      </Card>
+                    </Col>
+
+                    {/* COMPLETED BOOKINGS CARD */}
+                    <Col lg="6" xl="4">
+                      <Card className="card-stats mb-4 mb-xl-0">
+                        <CardBody>
+                          <Row>
+                            <div className="col">
+                              <CardTitle
+                                tag="h5"
+                                className="text-uppercase text-muted mb-0"
+                              >
+                                Completed Bookings
+                              </CardTitle>
+                              <span className="display-2 h1 font-weight-bold mb-0">
+                                {completed_bookings}
+                              </span>
+                            </div>
+                          </Row>
+                        </CardBody>
+                      </Card>
+                    </Col>
+
+                    {/* WORKERS CARD */}
+                    <Col lg="6" xl="4">
+                      <Card className="card-stats mb-4 mb-xl-0">
+                        <CardBody>
+                          <Row>
+                            <div className="col">
+                              <CardTitle
+                                tag="h5"
+                                className="text-uppercase text-muted mb-0"
+                              >
+                                Workers
+                              </CardTitle>
+                              <span className="display-2 h1 font-weight-bold mb-0">
+                                {worker_count}
+                              </span>
+                            </div>
+                          </Row>
+                        </CardBody>
+                      </Card>
+                    </Col>
+                  </Row>
+
+                  {/* CHARTS */}
+                  <Row className="mt-4">
+
+                    {/* PRICE CHART */}
+                    <Col className="mb-5 mb-xl-0" xl="8">
+                      <Card className="bg-gradient-default shadow">
+                        <CardHeader className="bg-transparent">
+                          <Row className="align-items-center">
+                            <div className="col">
+                              <h6 className="text-uppercase text-light ls-1 mb-1">
+                                Income
+                              </h6>
+                              <h2 className="text-white mb-0">Income for the next week</h2>
+                            </div>
+                          </Row>
+                        </CardHeader>
+                        <CardBody>
+                          {/* Chart */}
+                          <div className="chart">
+                            <Line
+                              data={chart1.data}
+                              options={chart1.options}
+                            />
+                          </div>
+                        </CardBody>
+                      </Card>
+                    </Col>
+
+                    {/* BOOKINGS CHART */}
+                    <Col xl="4">
+                      <Card className="shadow">
+                        <CardHeader className="bg-transparent">
+                          <Row className="align-items-center">
+                            <div className="col">
+                              <h6 className="text-uppercase text-muted ls-1 mb-1">
+                                Daily Overview
+                              </h6>
+                              <h2 className="mb-0">Bookings today</h2>
+                            </div>
+                          </Row>
+                        </CardHeader>
+                        <CardBody>
+                        {/* Chart */}
+                          <div className="chart">
+                            <Bar
+                              data={chart2.data}
+                              options={chart2.options}
+                            />
+                          </div>
+                        </CardBody>
+                      </Card>
+                    </Col>
+                  </Row>
+                </CardBody>
                 </Card>
               </Col>
             </Row>

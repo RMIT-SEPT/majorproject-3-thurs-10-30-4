@@ -34,6 +34,7 @@ public class Service_ {
     @NotBlank(message = "Service requires a description")
     private String serviceDescription;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "service", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Timeslot> timeslots;
 
@@ -69,4 +70,13 @@ public class Service_ {
     public void setServiceDescription(String serviceDescription) {
         this.serviceDescription = serviceDescription;
     }
+
+    public Set<Timeslot> getTimeslots() {
+        return this.timeslots;
+    }
+
+    public void setTimeslots(Set<Timeslot> timeslots) {
+        this.timeslots = timeslots;
+    }
+
 }

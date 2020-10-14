@@ -4,6 +4,7 @@ url|method|Input|Output|description
 /api/Account/saveadmin|POST|Account fields in JSON format|Admin created or error|Creates a new admin account, temp
 /api/Account/saveworker/{adminId}|POST|Account fields in JSON format, admin id in path|Worker created or error|Creates a new worker account
 /api/Account/getworkersbyadmin/{adminId}|GET|admin id as path variable|All workers the admin has registered, or error|Retrieves all workers managed by admin
+/api/Account/adminanalytics/{adminId}|GET|admin id as path variable|Data needed for analytics page on front end|Used by front end to visualise performance of service to admin
 /api/service/save/{adminId}|POST|Service fields in JSON format|Service created or error|Creates a new service
 /api/service/getall|GET|None|All registered services in JSON format|Retrieves all registered services
 /api/service/get|GET|id (append ?id=(ID) to end of url)|Service that id belongs to|Gets a service by its id then returns it
@@ -14,6 +15,7 @@ url|method|Input|Output|description
 /api/timeslot/getbyservice/{serviceId}|GET|id of service as path variable|All timeslots that belong to that service, or null if no service found|Gets all timeslots that relate to a service
 /api/timeslot/getbyid/{timeslotId}|GET|id of timeslot as path variable|Timeslot that belongs to that id, if it exists|Gets a timeslot from its id
 /api/timeslot/getbyworkerid/{workerId}|GET|id of worker as path variable|Timeslots that have been assigned to worker, or error message|Gets timeslots that are assigned to worker
+/api/timeslot/getbyadmin/{adminId}|GET|id of admin as path variable|Timeslots that belong to service that admin manages, or error message|Retrieves all timeslots for service that admin manages
 /api/timeslot/delete/{timeslotId}|DELETE|id of timeslot as path variable|Confirmation that timeslot was found and deleted, or error|Deletes timeslot from backend
 /api/booking/save|POST|id of timeslot as timeslotId, id of customer as customerId, in json)|Timeslot including booking or error message|Creates a booking for a timeslot
 /api/booking/getbyid/{bookingId}|GET|id of booking as path variable|Timeslot that booking belongs to or error message|Gets the timeslot for a booking (including the booking)

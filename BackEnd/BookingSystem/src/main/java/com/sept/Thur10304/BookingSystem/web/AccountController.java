@@ -241,5 +241,16 @@ public class AccountController {
         return new ResponseEntity <FieldError>(fe, HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/adminanalytics/{adminId}")
+    public ResponseEntity<?> adminAnalytics(@Valid @PathVariable Long adminId) {
+
+        try{
+            Map<String, Object> adminAnalytics = accountService.getAdminAnalytics(adminId);
+            return new ResponseEntity<Map<String, Object>>(adminAnalytics, HttpStatus.OK);
+        } catch (Exception e){
+            FieldError fe = new FieldError(e.getClass().getName(), "", null, false, null, null, e.getMessage());
+            return new ResponseEntity<FieldError>(fe, HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

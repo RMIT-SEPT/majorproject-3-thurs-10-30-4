@@ -12,11 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Date;
 
 import com.sept.Thur10304.BookingSystem.model.Customer;
 import com.sept.Thur10304.BookingSystem.model.Service_;
+import com.sept.Thur10304.BookingSystem.model.Timeslot;
 import com.sept.Thur10304.BookingSystem.model.Worker;
 import com.sept.Thur10304.BookingSystem.model.enums.AccountType;
 
@@ -216,5 +223,114 @@ public class AccountService {
         it.forEach(e -> emails.add(e.getEmail()));
 
         return emails;
+    }
+
+    public Map<String, Object> getAdminAnalytics(Long adminId) throws Exception{
+        Admin admin = findAdmin(adminId);
+
+        Map<String, Object> analyticsData = new HashMap<String, Object>();
+
+        // Find amount of workers
+        int numberOfWorkers = admin.getWorkers().size();
+
+        int complededBookings = 0;
+        int activeBookings = 0;
+        int bookedToday = 0;
+        int unbookedToday = 0;
+        double[] expectedIncome = new double[7];
+
+        // Today
+        Calendar today = Calendar.getInstance();
+        today.setTime(new Date());
+        // Calculate days that will need to have income checked on
+        Calendar[] nextDays = new Calendar[6];
+        for (int i = 0; i < nextDays.length; i++){
+            nextDays[i] = Calendar.getInstance();
+            nextDays[i].add(Calendar.DATE, i + 1);
+        }
+
+        if (admin.getService() == null){
+            throw new Exception("Admin does not have a service");
+        }
+
+        // Number of completed/active bookings
+        Set<Timeslot> timeslots = admin.getService().getTimeslots();
+
+        if (timeslots == null){
+            throw new Exception("Admin does not have any timeslots");
+        }
+
+        Iterator<Timeslot> iterator = timeslots.iterator();
+        while (iterator.hasNext()){
+            Timeslot timeslot = iterator.next();
+            Calendar timeslotTime = Calendar.getInstance();
+
+            // Used {} so timeslotDate and timeslotEndTime don't get mixed up with timeslotTime later in the method
+            {
+                Calendar timeslotDate = Calendar.getInstance();
+                timeslotDate.setTime(timeslot.getDate());
+                Calendar timeslotEndTime = Calendar.getInstance();
+                timeslotEndTime.setTime(timeslot.getEndTime());
+
+                // Add 14 because timezones acting weird
+                timeslotEndTime.add(Calendar.HOUR_OF_DAY, 14);
+
+                timeslotTime.set(Calendar.YEAR, timeslotDate.get(Calendar.YEAR));
+                timeslotTime.set(Calendar.DAY_OF_YEAR, timeslotDate.get(Calendar.DAY_OF_YEAR));
+                timeslotTime.set(Calendar.HOUR_OF_DAY, timeslotEndTime.get(Calendar.HOUR_OF_DAY));
+                timeslotTime.set(Calendar.MINUTE, timeslotEndTime.get(Calendar.MINUTE));
+            }
+
+            // Check if today
+            if (today.get(Calendar.DAY_OF_YEAR) == timeslotTime.get(Calendar.DAY_OF_YEAR) && today.get(Calendar.YEAR) == timeslotTime.get(Calendar.YEAR)){
+                if (timeslot.getBooking() != null){
+                    bookedToday += 1;
+                } else {
+                    unbookedToday += 1;
+                }
+                expectedIncome[0] += timeslot.getPrice();
+            } else {
+                // Check if booking is on during the next week
+                if (timeslot.getBooking() != null){
+                    for (int i = 0; i < nextDays.length; i++){
+                        if (nextDays[i].get(Calendar.DATE) == timeslotTime.get(Calendar.DATE) && nextDays[i].get(Calendar.YEAR) == timeslotTime.get(Calendar.YEAR)){
+                                expectedIncome[i + 1] += timeslot.getPrice();
+                                break;
+                        }
+                    }
+                }
+            }
+
+            
+
+            // Check if booked and active or completed
+            if (timeslot.getBooking() != null){
+                if (today.after(timeslotTime)){
+                    complededBookings += 1;
+                } else {
+                    activeBookings += 1;
+                }
+            }
+        }
+
+        // Add fields into map
+        analyticsData.put("active_bookings", activeBookings);
+        analyticsData.put("completed_bookings", complededBookings);
+        analyticsData.put("worker_count", numberOfWorkers);
+        analyticsData.put("unbooked_today", unbookedToday);
+        analyticsData.put("booked_today", bookedToday);
+
+        String[] dayStrings = new String[nextDays.length + 1];
+        dayStrings[0] = String.format("%d-%d-%d", today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+
+        // Put Next week dates into an array
+        for (int i = 0; i < nextDays.length; i++){
+            dayStrings[i + 1] = String.format("%d-%d-%d", nextDays[i].get(Calendar.YEAR), nextDays[i].get(Calendar.MONTH), nextDays[i].get(Calendar.DATE));
+        }
+
+        analyticsData.put("next_week_dates", dayStrings);
+        analyticsData.put("next_week_expected_income", expectedIncome);
+
+        return analyticsData;
     }
 }
