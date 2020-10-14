@@ -14,6 +14,7 @@ import com.sept.Thur10304.BookingSystem.repositories.TimeslotRepository;
 import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -182,6 +183,18 @@ class Timeslot_Controller_DeleteTimeslotTest {
         timeslot1.setPrice(10.00);
         timeslot1.setWorker(workerRepository.findById(Long.valueOf(workerId)).get());
         timeslot1 = timeslotRepository.save(timeslot1);
+    }
+
+    @AfterEach
+    void cleanUp() throws Exception {
+        // Clears all repositories
+        bookingRepository.deleteAll();
+        timeslotRepository.deleteAll();
+        serviceRepository.deleteAll();
+        workerRepository.deleteAll();
+        adminRepository.deleteAll();
+        customerRepository.deleteAll();
+        accountRepository.deleteAll();
     }
 
     @Test

@@ -10,6 +10,7 @@ import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
 import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
 import com.sept.Thur10304.BookingSystem.services.Service_Service;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -48,6 +49,9 @@ class Service_Controller_CreateService {
     @Resource
     private CustomerRepository customerRepository;
 
+    @Resource
+    private Service_Repository serviceRepository;
+
     @MockBean
     private Service_Service service;
 
@@ -59,6 +63,7 @@ class Service_Controller_CreateService {
     @BeforeEach
     void setUp()  throws Exception{
         // Clears all repositories
+        serviceRepository.deleteAll();
         workerRepository.deleteAll();
         adminRepository.deleteAll();
         customerRepository.deleteAll();
@@ -104,6 +109,16 @@ class Service_Controller_CreateService {
         // Extracts token from login response, puts it into global variable
         Map<String, Object> map = new ObjectMapper().readValue(loginResponse, Map.class);
         adminToken = (String) map.get("token");
+    }
+
+    @AfterEach
+    void cleanUp() throws Exception {
+        // Clears all repositories
+        serviceRepository.deleteAll();
+        workerRepository.deleteAll();
+        adminRepository.deleteAll();
+        customerRepository.deleteAll();
+        accountRepository.deleteAll();
     }
 
     @Test

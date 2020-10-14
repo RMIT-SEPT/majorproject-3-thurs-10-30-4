@@ -8,6 +8,7 @@ import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
 import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -71,6 +72,15 @@ class Account_Controller_LoginTest {
         // Expects that creation is successful
         .andExpect(status().isCreated());
 
+    }
+
+    @AfterEach
+    void cleanUp() throws Exception {
+        // Clears all repositories
+        workerRepository.deleteAll();
+        adminRepository.deleteAll();
+        customerRepository.deleteAll();
+        accountRepository.deleteAll();
     }
 
     @Test

@@ -2,7 +2,12 @@ package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
+import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
+import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
+import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,15 +34,29 @@ class Account_Controller_CreateNewAccountTest {
     @Autowired
     private MockMvc mvc;
 
-    //@Resource
-    //private AccountRepository accountRepository;
+    @Resource
+    private AccountRepository accountRepository;
 
+    @Resource
+    private AdminRepository adminRepository;
+
+    @Resource
+    private WorkerRepository workerRepository;
+
+    @Resource
+    private CustomerRepository customerRepository;
 
     //Account testAccount1;
     //Account testAccount2;
 
     @BeforeEach
-    void setUp() throws ParseException {
+    void setUp() throws Exception {
+        // Clears all repositories
+        workerRepository.deleteAll();
+        adminRepository.deleteAll();
+        customerRepository.deleteAll();
+        accountRepository.deleteAll();
+
         //testAccount1 = new Account();
 
         //testAccount1.setId((long) 1);
@@ -48,6 +67,15 @@ class Account_Controller_CreateNewAccountTest {
        // testAccount1.setPassword("TEST");
        // testAccount1.setEmail("Test@Testmail.com");
        // accountRepository.save(testAccount1);
+    }
+
+    @AfterEach
+    void cleanUp() throws Exception {
+        // Clears all repositories
+        workerRepository.deleteAll();
+        adminRepository.deleteAll();
+        customerRepository.deleteAll();
+        accountRepository.deleteAll();
     }
 
     @Test
