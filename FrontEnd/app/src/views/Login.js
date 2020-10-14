@@ -16,6 +16,7 @@
 
 */
 import React from "react";
+import axios from 'axios';
 import { login } from "../actions/securityActions";
 import PropTypes from "prop-types";
 import { connect } from 'react-redux';
@@ -75,12 +76,12 @@ class Login extends React.Component {
 		const LoginRequest =
 		{
 			password: this.state.password,
-      email: this.state.email,
-      firstName: "abcdef",
+			email: this.state.email,
+			firstName: "abcdef",
 			lastName: "abcdef"
 		}
 
-		axios.post("http://localhost:8080/api/Account/Login", newPerson)
+		axios.post("http://localhost:8080/api/Account/Login", LoginRequest)
 			.then(response =>
 			{
 				if (response.data != null)
@@ -127,7 +128,7 @@ class Login extends React.Component {
               alert(err.response.data[0].defaultMessage);
             }
           });
-			})
+			})	
 			.catch(err =>
 			{
 				console.log("Error getting JWT");
@@ -140,8 +141,6 @@ class Login extends React.Component {
 					alert(err.response.data[0].defaultMessage);
 				}
 			});
-		}
-    }
     
     this.props.login(LoginRequest, this.props.history);
 
