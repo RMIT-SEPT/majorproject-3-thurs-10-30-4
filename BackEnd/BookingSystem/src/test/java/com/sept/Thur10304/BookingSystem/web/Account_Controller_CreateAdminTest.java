@@ -129,35 +129,35 @@ class Account_Controller_CreateAdminTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void createNewAdmin_passwordTooShort() throws Exception {
+//     @Test
+//     void createNewAdmin_passwordTooShort() throws Exception {
 
-        mvc.perform(post("/api/Account/saveadmin")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "    \"firstName\": \"Ron\",\n" +
-                        "    \"lastName\": \"Swanson\",\n" +
-                        "    \"password\": \"Tammy\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
-                        "    \"dateCreated\": \"2020-08-23\"\n" +
-                        "}"))
-                .andExpect(status().isBadRequest());
-    }
+//         mvc.perform(post("/api/Account/saveadmin")
+//                 .contentType(MediaType.APPLICATION_JSON)
+//                 .content("{\n" +
+//                         "    \"firstName\": \"Ron\",\n" +
+//                         "    \"lastName\": \"Swanson\",\n" +
+//                         "    \"password\": \"Tammy\",\n" +
+//                         "    \"email\": \"ron@pawnee.gov\",\n" +
+//                         "    \"dateCreated\": \"2020-08-23\"\n" +
+//                         "}"))
+//                 .andExpect(status().isBadRequest());
+//     }
 
-    @Test
-    void createNewAdmin_passwordTooLong() throws Exception {
+//     @Test
+//     void createNewAdmin_passwordTooLong() throws Exception {
 
-        mvc.perform(post("/api/Account/saveadmin")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "    \"firstName\": \"Ron\",\n" +
-                        "    \"lastName\": \"Swanson\",\n" +
-                        "    \"password\": \"IAmDukeSilverandIWouldLikeAllYourEggsPlease\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
-                        "    \"dateCreated\": \"2020-08-23\"\n" +
-                        "}"))
-                .andExpect(status().isBadRequest());
-    }
+//         mvc.perform(post("/api/Account/saveadmin")
+//                 .contentType(MediaType.APPLICATION_JSON)
+//                 .content("{\n" +
+//                         "    \"firstName\": \"Ron\",\n" +
+//                         "    \"lastName\": \"Swanson\",\n" +
+//                         "    \"password\": \"IAmDukeSilverandIWouldLikeAllYourEggsPlease\",\n" +
+//                         "    \"email\": \"ron@pawnee.gov\",\n" +
+//                         "    \"dateCreated\": \"2020-08-23\"\n" +
+//                         "}"))
+//                 .andExpect(status().isBadRequest());
+//     }
 
     @Test
     void createNewAdmin_passwordBlank() throws Exception {

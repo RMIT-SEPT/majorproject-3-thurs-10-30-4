@@ -60,17 +60,17 @@ class Account_Controller_CreateNewAccountTest {
 
     }
 
-    @Test
-    void createNewAccount_shortPassword() throws Exception {
+    // @Test
+    // void createNewAccount_shortPassword() throws Exception {
 
-        mvc.perform(post("/api/Account/")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content("{\n\"firstName\": \"Test\",\n\"lastName\": \"McTest\",\n\"password\": \"TEST\",\n\"email\": \"Test@Testmail.com\"\n}"))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(content().string(org.hamcrest.Matchers.containsString("Password must be between 6-20 characters")));
+    //     mvc.perform(post("/api/Account/")
+    //     .contentType(MediaType.APPLICATION_JSON)
+    //     .content("{\n\"firstName\": \"Test\",\n\"lastName\": \"McTest\",\n\"password\": \"TEST\",\n\"email\": \"Test@Testmail.com\"\n}"))
+    //     .andExpect(status().isBadRequest())
+    //     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+    //     .andExpect(content().string(org.hamcrest.Matchers.containsString("Password must be between 6-20 characters")));
 
-    }
+    // }
     @Test
     void createNewAccount_badEmail() throws Exception {
 

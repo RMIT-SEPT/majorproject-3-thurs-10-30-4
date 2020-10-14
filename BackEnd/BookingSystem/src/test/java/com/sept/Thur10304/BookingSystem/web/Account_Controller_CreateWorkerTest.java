@@ -237,43 +237,43 @@ class Account_Controller_CreateWorkerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void createNewWorker_passwordTooShort() throws Exception {
+//     @Test
+//     void createNewWorker_passwordTooShort() throws Exception {
 
-        // Formats request to use admin id and token
-        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+//         // Formats request to use admin id and token
+//         String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
         
-        // Performs add worker request
-        mvc.perform(post(request)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "    \"firstName\": \"Ron\",\n" +
-                        "    \"lastName\": \"Swanson\",\n" +
-                        "    \"password\": \"Tammy\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
-                        "    \"dateCreated\": \"2020-08-23\"\n" +
-                        "}"))
-                .andExpect(status().isBadRequest());
-    }
+//         // Performs add worker request
+//         mvc.perform(post(request)
+//                 .contentType(MediaType.APPLICATION_JSON)
+//                 .content("{\n" +
+//                         "    \"firstName\": \"Ron\",\n" +
+//                         "    \"lastName\": \"Swanson\",\n" +
+//                         "    \"password\": \"Tammy\",\n" +
+//                         "    \"email\": \"ron@pawnee.gov\",\n" +
+//                         "    \"dateCreated\": \"2020-08-23\"\n" +
+//                         "}"))
+//                 .andExpect(status().isBadRequest());
+//     }
 
-    @Test
-    void createNewWorker_passwordTooLong() throws Exception {
+//     @Test
+//     void createNewWorker_passwordTooLong() throws Exception {
 
-        // Formats request to use admin id and token
-        String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
+//         // Formats request to use admin id and token
+//         String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
         
-        // Performs add worker request
-        mvc.perform(post(request)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "    \"firstName\": \"Ron\",\n" +
-                        "    \"lastName\": \"Swanson\",\n" +
-                        "    \"password\": \"IAmDukeSilverandIWouldLikeAllYourEggsPlease\",\n" +
-                        "    \"email\": \"ron@pawnee.gov\",\n" +
-                        "    \"dateCreated\": \"2020-08-23\"\n" +
-                        "}"))
-                .andExpect(status().isBadRequest());
-    }
+//         // Performs add worker request
+//         mvc.perform(post(request)
+//                 .contentType(MediaType.APPLICATION_JSON)
+//                 .content("{\n" +
+//                         "    \"firstName\": \"Ron\",\n" +
+//                         "    \"lastName\": \"Swanson\",\n" +
+//                         "    \"password\": \"IAmDukeSilverandIWouldLikeAllYourEggsPlease\",\n" +
+//                         "    \"email\": \"ron@pawnee.gov\",\n" +
+//                         "    \"dateCreated\": \"2020-08-23\"\n" +
+//                         "}"))
+//                 .andExpect(status().isBadRequest());
+//     }
 
     @Test
     void createNewWorker_passwordBlank() throws Exception {
