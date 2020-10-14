@@ -71,8 +71,8 @@ class Timeslot_Controller_GetTimeslotTest {
     DateFormat df;
     Date tomorrow;
 
-    int serviceId1;
-    int serviceId2;
+//     int serviceId1;
+//     int serviceId2;
     int workerId1;
     int workerId2;
     String adminToken1;
@@ -155,11 +155,10 @@ class Timeslot_Controller_GetTimeslotTest {
        workerId1 = (int) workerCreateMap1.get("id");
 
         service1 = new Service_();
-        service1.setServiceId((long) 1);
         service1.setServiceName("Paunch Burger");
         service1.setServiceDescription("Home of the Greasy Lard Bomb");
         service1.setAdmin(adminRepository.findById(Long.valueOf(adminId1)).get());
-        serviceRepository.save(service1);
+        service1 = serviceRepository.save(service1);
 
         Account account3 = new Account();
         account3.setEmail("teremy.jamm@pawnee.gov");
@@ -228,11 +227,10 @@ class Timeslot_Controller_GetTimeslotTest {
        workerId2 = (int) workerCreateMap2.get("id");
 
         service2 = new Service_();
-        service2.setServiceId((long) 2);
         service2.setServiceName("Entertainment 720");
         service2.setServiceDescription("premiere, high-end, all-media entertainment conglomerate");
         service2.setAdmin(adminRepository.findById(Long.valueOf(adminId2)).get());
-        serviceRepository.save(service2);
+        service2 = serviceRepository.save(service2);
 
         tomorrow = new Date();
         Calendar c = Calendar.getInstance();
@@ -255,7 +253,7 @@ class Timeslot_Controller_GetTimeslotTest {
         timeslot1.setEndTime(end1);
         timeslot1.setPrice(10.00);
         timeslot1.setWorker(workerRepository.findById(Long.valueOf(workerId1)).get());
-        timeslotRepository.save(timeslot1);
+        timeslot1 = timeslotRepository.save(timeslot1);
 
         timeslot2 = new Timeslot();
         timeslot2.setService(service1);
@@ -267,13 +265,13 @@ class Timeslot_Controller_GetTimeslotTest {
         timeslot2.setEndTime(end2);
         timeslot2.setPrice(10.00);
         timeslot2.setWorker(workerRepository.findById(Long.valueOf(workerId2)).get());
-        timeslotRepository.save(timeslot2);
+        timeslot2 = timeslotRepository.save(timeslot2);
     }
 
     @Test
     void getByService_accepted() throws Exception {
         // Format request to use service id of first service
-        String request = String.format("/api/timeslot/getbyservice/%d", serviceId1);
+        String request = String.format("/api/timeslot/getbyservice/%d", service1.getServiceId());
         // Perform get request
         mvc.perform(get(request)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -287,7 +285,7 @@ class Timeslot_Controller_GetTimeslotTest {
     void getByService_noSlotsForService() throws Exception {
 
         // Format request to use service id of second service
-        String request = String.format("/api/timeslot/getbyservice/%d", serviceId2);
+        String request = String.format("/api/timeslot/getbyservice/%d", service2.getServiceId());
         // Perform get request
         mvc.perform(get(request)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -299,7 +297,7 @@ class Timeslot_Controller_GetTimeslotTest {
     void getByService_badServiceId() throws Exception {
 
         // Format request to use service id that is past the previously added one
-        String request = String.format("/api/timeslot/getbyservice/%d", serviceId2 + 1);
+        String request = String.format("/api/timeslot/getbyservice/%d", service2.getServiceId() + 1);
         // Perform get request
         mvc.perform(get(request)
                 .contentType(MediaType.APPLICATION_JSON))
