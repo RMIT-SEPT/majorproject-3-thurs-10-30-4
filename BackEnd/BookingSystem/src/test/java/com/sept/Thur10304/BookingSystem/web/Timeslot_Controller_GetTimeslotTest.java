@@ -92,12 +92,7 @@ class Timeslot_Controller_GetTimeslotTest {
         account1.setEmail("jeremy.jamm@pawnee.gov");
         account1.setFirstName("Jeremy");
         account1.setLastName("Jamm");
-        // account1.setId((long) 1);
         account1.setPassword("YouJustGotJammed");
-        // Admin admin = new Admin();
-        // admin.setAccount(account1);
-        // // accountRepository.save(account1);
-        // adminRepository.save(admin);
 
         // Saves admin into database through post request
         // (not done manually as this way automatically does the password encryption)
@@ -137,13 +132,7 @@ class Timeslot_Controller_GetTimeslotTest {
         account2.setEmail("geremy.gamm@pawnee.gov");
         account2.setFirstName("Geremy");
         account2.setLastName("Gamm");
-        // account2.setId((long) 2);
         account2.setPassword("YouJustGotGammed");
-        // Worker worker = new Worker();
-        // worker.setAccount(account2);
-        // worker.setAdmin(admin);
-        // // accountRepository.save(account2);
-        // workerRepository.save(worker);
 
         // Formats request to use admin id and token
         String workerRequest1 = String.format("/api/Account/saveworker/%d?token=%s",adminId1, adminToken1);
@@ -176,12 +165,7 @@ class Timeslot_Controller_GetTimeslotTest {
         account3.setEmail("teremy.jamm@pawnee.gov");
         account3.setFirstName("Teremy");
         account3.setLastName("Tamm");
-        // account3.setId((long) 3);
         account3.setPassword("YouJustGotTammed");
-        // Admin admin2 = new Admin();
-        // admin2.setAccount(account3);
-        // // accountRepository.save(account3);
-        // adminRepository.save(admin2);
 
         // Saves admin into database through post request
         // (not done manually as this way automatically does the password encryption)
@@ -221,13 +205,7 @@ class Timeslot_Controller_GetTimeslotTest {
         account4.setEmail("beremy.gamm@pawnee.gov");
         account4.setFirstName("Beremy");
         account4.setLastName("Bamm");
-        // account4.setId((long) 4);
         account4.setPassword("YouJustGotBammed");
-        // Worker worker2 = new Worker();
-        // worker2.setAccount(account4);
-        // worker2.setAdmin(admin2);
-        // // accountRepository.save(account4);
-        // workerRepository.save(worker2);
 
         // Formats request to use admin id and token
         String workerRequest2 = String.format("/api/Account/saveworker/%d?token=%s",adminId2, adminToken2);

@@ -86,12 +86,7 @@ class Timeslot_Controller_CreateTimeslotTest {
         account1.setEmail("jeremy.jamm@pawnee.gov");
         account1.setFirstName("Jeremy");
         account1.setLastName("Jamm");
-        // account1.setId((long) 1);
         account1.setPassword("YouJustGotJammed");
-        // accountRepository.save(account1);
-        // Admin admin = new Admin();
-        // admin.setAccount(account1);
-        // adminRepository.save(admin);
 
         // Saves admin into database through post request
         // (not done manually as this way automatically does the password encryption)
@@ -131,13 +126,7 @@ class Timeslot_Controller_CreateTimeslotTest {
         account2.setEmail("geremy.gamm@pawnee.gov");
         account2.setFirstName("Geremy");
         account2.setLastName("Gamm");
-        // account2.setId((long) 2);
         account2.setPassword("YouJustGotGammed");
-        // accountRepository.save(account2);
-        // worker = new Worker();
-        // worker.setAccount(account2);
-        // worker.setAdmin(admin);
-        // workerRepository.save(worker);
 
          // Formats request to use admin id and token
          String request = String.format("/api/Account/saveworker/%d?token=%s",adminId, adminToken);
