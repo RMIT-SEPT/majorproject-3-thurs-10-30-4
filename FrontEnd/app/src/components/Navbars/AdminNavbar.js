@@ -61,6 +61,8 @@ class AdminNavbar extends React.Component {
     localStorage.removeItem('id');
     localStorage.removeItem('firstName');
     localStorage.removeItem('lastName');
+    localStorage.removeItem('email');
+    localStorage.removeItem('type');
     window.location.href = "http://localhost:3000/";
   }
   render() {
@@ -78,8 +80,6 @@ class AdminNavbar extends React.Component {
               <UncontrolledDropdown nav>
                 <DropdownToggle className="pr-0" nav>
                   <Media className="align-items-center">
-                    <span className="avatar avatar-sm rounded-circle">
-                    </span>
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
                         {this.state.firstName} {this.state.lastName}
@@ -94,10 +94,6 @@ class AdminNavbar extends React.Component {
                   <DropdownItem to="/admin/user-profile" tag={Link}>
                     <i className="ni ni-single-02" />
                     <span>My profile</span>
-                  </DropdownItem>
-                  <DropdownItem to="/admin/user-profile" tag={Link}>
-                    <i className="ni ni-settings-gear-65" />
-                    <span>My Bookings</span>
                   </DropdownItem>
                   <DropdownItem divider />
                   <DropdownItem href="#pablo" onClick={this.logout}>

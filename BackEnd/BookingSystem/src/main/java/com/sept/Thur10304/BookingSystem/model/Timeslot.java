@@ -37,11 +37,11 @@ public class Timeslot {
     private Date date;
 
     // @NotBlank(message = "Start time is required.")
-    @JsonFormat(pattern = "hh:mm")
+    @JsonFormat(pattern = "HH:mm")
     private Date startTime;
 
     // @NotBlank(message = "End time is required.")
-    @JsonFormat(pattern = "hh:mm")
+    @JsonFormat(pattern = "HH:mm")
     private Date endTime;
 
     @JsonManagedReference

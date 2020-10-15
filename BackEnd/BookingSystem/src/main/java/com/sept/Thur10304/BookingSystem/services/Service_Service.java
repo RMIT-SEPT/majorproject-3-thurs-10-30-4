@@ -2,6 +2,8 @@ package com.sept.Thur10304.BookingSystem.services;
 
 import com.sept.Thur10304.BookingSystem.repositories.Service_Repository;
 import com.sept.Thur10304.BookingSystem.model.Service_;
+import com.sept.Thur10304.BookingSystem.model.Worker;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sept.Thur10304.BookingSystem.model.Admin;
@@ -20,6 +22,9 @@ public class Service_Service {
 
     @Autowired
     private Service_Repository serviceRepository;
+
+    @Autowired
+    private AccountService accountService;
 
     @Autowired
     private AdminRepository adminRepository;
@@ -110,6 +115,31 @@ public class Service_Service {
             return true;
         } else {
             return false;
+    }
+
+    public Service_ findServiceByAdmin(Long adminId) throws Exception {
+        // Finds admin
+        Admin admin = accountService.findAdmin(adminId);
+
+        // Returns service (null if no service)
+        return admin.getService();
+    }
+
+    public List<Worker> findWorkersForService(Long serviceId) throws Exception {
+        // Finds service
+        Optional<Service_> findService = serviceRepository.findById(serviceId);
+
+        // If service not found then throw exceptioon
+        if (!findService.isPresent()){
+            throw new Exception("Service not found");
         }
+
+        Service_ service = findService.get();
+
+        // Gets admin that manages service
+        Admin admin = service.getAdmin();
+
+        // Returns workers that the admin manages
+        return admin.getWorkers();
     }
 }

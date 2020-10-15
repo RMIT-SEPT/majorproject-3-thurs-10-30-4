@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Set;
+
 import javax.validation.Valid;
 
 /**
@@ -71,9 +75,9 @@ public class TimeslotController {
     // Gets all timeslots for a service
     @GetMapping("/getbyservice/{serviceId}")
     public ResponseEntity<?> getTimeslotByService(@Valid @PathVariable Long serviceId){
-        Iterable<Timeslot> timeslots = timeslotService.getAllTimeslotsForService(serviceId);
+        Set<Timeslot> timeslots = timeslotService.getAllTimeslotsForService(serviceId);
         if (timeslots != null){
-            return new ResponseEntity<Iterable<Timeslot>>(timeslots, HttpStatus.FOUND);
+            return new ResponseEntity<Set<Timeslot>>(timeslots, HttpStatus.FOUND);
         } else {
             // TODO make error message more clear as to what is wrong
             return new ResponseEntity<String>("Invalid Service Id", HttpStatus.BAD_REQUEST);
@@ -93,6 +97,18 @@ public class TimeslotController {
         }
     }
 
+    @GetMapping("/getbyworkerid/{workerId}")
+    public ResponseEntity<?> getTimeslotByWorkerId(@Valid @PathVariable Long workerId){
+        try{
+        // Retrieves timeslot through service
+            Set<Timeslot> timeslots = timeslotService.getTimeslotsByWorkerId(workerId); 
+            return new ResponseEntity<Set<Timeslot>>(timeslots, HttpStatus.FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+  
+  
     @DeleteMapping("/delete/{timeslotId}")
     public ResponseEntity<?> deleteService(@Valid @PathVariable Long timeslotId,
       @RequestParam(name="token", required=true) String token) {
@@ -118,6 +134,16 @@ public class TimeslotController {
             return new ResponseEntity<Boolean>(true, HttpStatus.OK);
         } else {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
+  
+    @GetMapping("/getbyadmin/{adminId}")
+    public ResponseEntity<?> getTimeslotsByAdmin(@Valid @PathVariable Long adminId) {
+        try {
+            Set<Timeslot> timeslots = timeslotService.getTimeslotsByAdmin(adminId);
+            return new ResponseEntity<Set<Timeslot>>(timeslots, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

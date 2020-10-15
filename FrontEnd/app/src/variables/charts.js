@@ -20,6 +20,49 @@ const Chart = require("chart.js");
 // Chart extension for making the bars rounded
 // Code from: https://codepen.io/jedtrow/full/ygRYgo
 //
+Chart.plugins.register({
+  afterDraw: function(chart) {
+  
+  if (chart.data.datasets.length === 0 || chart.data.datasets[0].data[0] === undefined) {
+      // No data is present
+    var ctx = chart.chart.ctx;
+    var width = chart.chart.width;
+    var height = chart.chart.height
+    chart.clear();
+
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = "16px normal 'Helvetica Nueue'";
+    ctx.fillText('No data to display', width / 2, height / 2);
+    ctx.restore();
+  } else {
+    var isEmpty = true;
+
+    for(var i = 0; i < chart.data.datasets[0].data.length; i++) {
+      if(chart.data.datasets[0].data[i] != 0) {
+        isEmpty = false;
+      }
+    }
+
+    if(isEmpty) {
+            // No data is present
+    var ctx = chart.chart.ctx;
+    var width = chart.chart.width;
+    var height = chart.chart.height
+    chart.clear();
+
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = "16px normal 'Helvetica Nueue'";
+    ctx.fillText('No data to display', width / 2, height / 2);
+    ctx.restore();
+    }
+  }
+}
+});
+
 
 Chart.elements.Rectangle.prototype.draw = function() {
   var ctx = this._chart.ctx;
@@ -143,9 +186,6 @@ Chart.elements.Rectangle.prototype.draw = function() {
 };
 
 var mode = "light"; //(themeMode) ? themeMode : 'light';
-var fonts = {
-  base: "Open Sans"
-};
 
 // Colors
 var colors = {
@@ -186,7 +226,6 @@ function chartOptions() {
         maintainAspectRatio: false,
         defaultColor: mode === "dark" ? colors.gray[700] : colors.gray[600],
         defaultFontColor: mode === "dark" ? colors.gray[700] : colors.gray[600],
-        defaultFontFamily: fonts.base,
         defaultFontSize: 13,
         layout: {
           padding: 0
@@ -258,7 +297,7 @@ function chartOptions() {
       color: mode === "dark" ? colors.gray[900] : colors.gray[300],
       drawBorder: false,
       drawTicks: false,
-      lineWidth: 0,
+      lineWidth: 1,
       zeroLineWidth: 0,
       zeroLineColor: mode === "dark" ? colors.gray[900] : colors.gray[300],
       zeroLineBorderDash: [2],
@@ -301,114 +340,7 @@ function parseOptions(parent, options) {
   }
 }
 
-// Example 1 of Chart inside src/views/Index.js (Sales value - Card)
-let chartExample1 = {
-  options: {
-    scales: {
-      yAxes: [
-        {
-          gridLines: {
-            color: colors.gray[900],
-            zeroLineColor: colors.gray[900]
-          },
-          ticks: {
-            callback: function(value) {
-              if (!(value % 10)) {
-                return "$" + value + "k";
-              }
-            }
-          }
-        }
-      ]
-    },
-    tooltips: {
-      callbacks: {
-        label: function(item, data) {
-          var label = data.datasets[item.datasetIndex].label || "";
-          var yLabel = item.yLabel;
-          var content = "";
-
-          if (data.datasets.length > 1) {
-            content += label;
-          }
-
-          content += "$" + yLabel + "k";
-          return content;
-        }
-      }
-    }
-  },
-  data1: canvas => {
-    return {
-      labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      datasets: [
-        {
-          label: "Performance",
-          data: [0, 20, 10, 30, 15, 40, 20, 60, 60]
-        }
-      ]
-    };
-  },
-  data2: canvas => {
-    return {
-      labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      datasets: [
-        {
-          label: "Performance",
-          data: [0, 20, 5, 25, 10, 30, 15, 40, 40]
-        }
-      ]
-    };
-  }
-};
-
-// Example 2 of Chart inside src/views/Index.js (Total orders - Card)
-let chartExample2 = {
-  options: {
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            callback: function(value) {
-              if (!(value % 10)) {
-                //return '$' + value + 'k'
-                return value;
-              }
-            }
-          }
-        }
-      ]
-    },
-    tooltips: {
-      callbacks: {
-        label: function(item, data) {
-          var label = data.datasets[item.datasetIndex].label || "";
-          var yLabel = item.yLabel;
-          var content = "";
-          if (data.datasets.length > 1) {
-            content += label;
-          }
-          content += yLabel;
-          return content;
-        }
-      }
-    }
-  },
-  data: {
-    labels: ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    datasets: [
-      {
-        label: "Sales",
-        data: [25, 20, 30, 22, 17, 29],
-        maxBarThickness: 10
-      }
-    ]
-  }
-};
-
 module.exports = {
   chartOptions, // used inside src/views/Index.js
-  parseOptions, // used inside src/views/Index.js
-  chartExample1, // used inside src/views/Index.js
-  chartExample2 // used inside src/views/Index.js
+  parseOptions // used inside src/views/Index.js
 };
