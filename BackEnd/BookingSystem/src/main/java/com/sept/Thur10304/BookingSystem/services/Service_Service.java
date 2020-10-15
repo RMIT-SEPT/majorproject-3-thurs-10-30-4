@@ -100,6 +100,23 @@ public class Service_Service {
         }
     }
 
+    // Verifies if admin manages service
+    public boolean verifyIfAdmin(Long serviceId, Long adminId) throws Exception{
+        // Checks if service exists
+        Service_ service = getServiceById(Long.toString(serviceId));
+
+        if (service == null){
+            throw new Exception("Service not found");
+        }
+
+        Admin admin = service.getAdmin();
+
+        if (admin.getAccount().getId() == adminId){
+            return true;
+        } else {
+            return false;
+    }
+
     public Service_ findServiceByAdmin(Long adminId) throws Exception {
         // Finds admin
         Admin admin = accountService.findAdmin(adminId);

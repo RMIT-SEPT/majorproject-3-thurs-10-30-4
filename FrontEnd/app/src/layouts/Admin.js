@@ -23,17 +23,27 @@ import { Container } from "reactstrap";
 import AdminNavbar from "../components/Navbars/AdminNavbar.js";
 import AdminFooter from "../components/Footers/AdminFooter.js";
 import Sidebar from "../components/Sidebar/Sidebar.js";
+import { connect } from "react-redux";
 
 import routes from "../routes.js";
 
 var id = localStorage.getItem('id');
 
 class Admin extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      security: {}
+    };
+  }
+
   componentDidUpdate(e) {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     this.refs.mainContent.scrollTop = 0;
   }
+
   getRoutes = routes => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
@@ -49,6 +59,7 @@ class Admin extends React.Component {
       }
     });
   };
+
   getBrandText = path => {
     for (let i = 0; i < routes.length; i++) {
       if (
@@ -62,14 +73,11 @@ class Admin extends React.Component {
     return "Brand";
   };
 
-  checkLogin() {
-    if(id == null) {
-      window.location.href = "http://localhost:3000/";
-    }
-  };
+  auth() {
+    console.log(this.state.security);
+  }
 
   render() {
-    this.checkLogin();
     return (
       <>
         <Sidebar
@@ -99,4 +107,8 @@ class Admin extends React.Component {
   }
 }
 
-export default Admin;
+const mapStateToProps = state => {
+  return { security: state.security };
+};
+
+export default connect(mapStateToProps)(Admin);

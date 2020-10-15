@@ -18,6 +18,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import {Provider} from "react-redux";
+import store from './store';
 
 import "./assets/plugins/nucleo/css/nucleo.css"
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -28,17 +30,21 @@ import AuthLayout from "./layouts/Auth.js";
 import About from "./views/About.js"
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Route path="/admin" render={props => <AdminLayout {...props} />} />
-      <Route path="/auth" render={props => <AuthLayout {...props} />} />
-      <Route
-      path="/about-us"
-      exact
-      render={props => <About {...props} />}
-      />
-      <Redirect from="/" to="/auth/login" />
-    </Switch>
-  </BrowserRouter>,
-  document.getElementById("root")
+  <React.StrictMode>
+  <Provider store={store}>
+    <BrowserRouter>
+      <Switch>
+        <Route path="/admin" render={props => <AdminLayout {...props} />} />
+        <Route path="/auth" render={props => <AuthLayout {...props} />} />
+        <Route
+        path="/about-us"
+        exact
+        render={props => <About {...props} />}
+        />
+        <Redirect from="/" to="/auth/login" />
+      </Switch>
+    </BrowserRouter>
+    </Provider>
+    </React.StrictMode>,
+    document.getElementById("root")
 );

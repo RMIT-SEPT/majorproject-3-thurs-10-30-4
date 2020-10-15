@@ -33,13 +33,28 @@ class AdminNavbar extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-        firstName : localStorage.getItem('firstName').charAt(0).toUpperCase()
-                    + localStorage.getItem('firstName').slice(1),
-        lastName : localStorage.getItem('lastName').charAt(0).toUpperCase()
-                    + localStorage.getItem('lastName').slice(1)
-    };
+    var fName = localStorage.getItem('firstName');
+    var lName = localStorage.getItem('firstName');
 
+    if (fName === null || lName === null)
+    {
+      console.log("Error: No firstname or lastname for AdminNavbar. Setting to defaults.");
+
+      this.state = {
+        firstName : "???",
+        lastName : "???"
+      };
+    }
+    else
+    {
+        this.state = {
+          firstName : localStorage.getItem('firstName').charAt(0).toUpperCase()
+                      + localStorage.getItem('firstName').slice(1),
+          lastName : localStorage.getItem('lastName').charAt(0).toUpperCase()
+                      + localStorage.getItem('lastName').slice(1)
+      };
+
+    }
   }
 
   logout() {

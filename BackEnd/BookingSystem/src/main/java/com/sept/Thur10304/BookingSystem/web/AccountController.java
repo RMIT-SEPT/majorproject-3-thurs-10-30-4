@@ -4,6 +4,8 @@ import com.sept.Thur10304.BookingSystem.model.Account;
 import com.sept.Thur10304.BookingSystem.model.AuthorizationToken;
 import com.sept.Thur10304.BookingSystem.model.Worker;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
+import com.sept.Thur10304.BookingSystem.validator.AccountValidator; //JWT
+import com.sept.Thur10304.BookingSystem.payload.JWTLoginSucessReponse; // JWT
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +26,21 @@ import java.util.List;
 import java.util.Map; // error map.
 import java.util.HashMap; // error map
 
+//import com.rmit.sept.turtorial.demo.payload.JWTLoginSucessReponse;
+//import com.rmit.sept.turtorial.demo.payload.LoginRequest;
+import com.sept.Thur10304.BookingSystem.security.JwtTokenProvider;
+//import com.rmit.sept.turtorial.demo.services.MapValidationErrorService;
+//import com.rmit.sept.turtorial.demo.services.UserService;
+//import com.rmit.sept.turtorial.demo.validator.UserValidator;
+
+// JWT and Spring security Authentication/authorisation
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import static com.sept.Thur10304.BookingSystem.security.SecurityConstant.TOKEN_PREFIX;
+
 @RestController
 @RequestMapping("/api/Account")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -31,9 +49,14 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private AccountValidator accountValidator;
+
+    // Register
     @PostMapping("")
     public ResponseEntity<?> createNewAccount(@Valid @RequestBody Account account, BindingResult result) {
         if (result.hasErrors()){
+            accountValidator.validate(account,result);
 
             System.out.println("Create new account.");
 
@@ -64,7 +87,8 @@ public class AccountController {
     }
 
     @PostMapping("/saveworker/{adminId}")
-    public ResponseEntity<?> createNewWorker(@Valid @RequestBody Account account, @PathVariable Long adminId, BindingResult result) {
+    public ResponseEntity<?> createNewWorker(@Valid @RequestBody Account account, @PathVariable Long adminId,
+      @RequestParam(name="token", required=true) String token, BindingResult result) {
         if (result.hasErrors()){
             //Map <String, String> errorMap = new HashMap<>();
 
@@ -81,6 +105,16 @@ public class AccountController {
             FieldError fe = new FieldError("", "", null, false, null, null, "Email already registered");
             return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
         }
+
+        // Check that token is valid and id of login token is same as admin id
+        if (!(tokenProvider.validateToken(token))){
+            FieldError fe = new FieldError("", "", null, false, null, null, "Invalid token");
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        } else if (tokenProvider.getUserIdFromJWT(token) != adminId.longValue()){
+            FieldError fe = new FieldError("", "", null, false, null, null, "Not logged in as same account as admin id");
+            return new ResponseEntity <FieldError>(fe, HttpStatus.BAD_REQUEST);
+        }
+
         try {
             Account account1 = accountService.saveWorker(account, adminId);
             return new ResponseEntity<Account>(account, HttpStatus.CREATED);
@@ -149,6 +183,12 @@ public class AccountController {
         return accountService.findAllEmails();
     }
 
+    // Authentication for login
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     // to login, make sure the account details match up with email and password.
     // I assume we can just construct an account object with nulls for everything except email and password
     // Todo: Add password check
@@ -166,81 +206,133 @@ public class AccountController {
             //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
         }
 
-        if (accountService.verifyAccount(account.getEmail(), account.getPassword()))
+        // new Spring security authentication
+        // first authenticate email and password,
+        // then generate JWT.
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    account.getEmail(),
+                    account.getPassword()
+                    //account.getId(),
+                    //account.getEmail()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String rawtoken = tokenProvider.generateToken(authentication);
+        String jwt = TOKEN_PREFIX +  rawtoken;
+
+        if (tokenProvider.validateToken(rawtoken))
         {
-            Account loginAccount = accountService.getAccount(account.getEmail(), account.getPassword());
-            // login authorised
-            // presumably we send an authentication token or do a redirect
-            //Account account1 = accountService.saveOrUpdateAccount(account);
-            // HTTP Status for successful login should be 200 OK
-            return new ResponseEntity<Account>(loginAccount, HttpStatus.OK);
+            System.out.println("Token validated");
+            //return ResponseEntity.ok("VALID: "+jwt);
         }
-        // login not authorised
-        // return failed login message
-        FieldError fe = new FieldError("", "", null, false, null, null, "Invalid login credentials");
-        // HTTP Status for failed login is 401 Unauthorized
-        return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+        else
+        {
+            System.out.println("Token did not validate");
+            //return ResponseEntity.ok("INVALID:"+jwt);
+        }
+
+        // Try getting user ID from token
+        long userID = tokenProvider.getUserIdFromJWT(rawtoken);
+        System.out.println("Token matches with user ID: "+userID);
+
+        // I don't know why we are prefixing the token (except perhaps so frontend knows it got it)
+        // So I am just returning the raw token because that's what you want to be passing anyway.
+        return ResponseEntity.ok(new JWTLoginSucessReponse(true, rawtoken));
     }
 
+    // TODO: Integrate this code with all FrontEnd mappings.
+    // You pass the raw JWT to this mapping and it will return the Account tied to it.
+    // This expects the token and nothing else, however if there are { and " characters
+    // we can just strip them and we should be fine.
+
+    //Note that Frontend can POST the JWT to Authenticate at any time to get the Account details
+    @PostMapping("Authenticate")
+    public ResponseEntity<?> authenticateAccount(@Valid @RequestBody String token, BindingResult result) {
+        System.out.println("Authenticate called");
+
+        if (result.hasErrors()){
+                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
+        }
+
+        System.out.println("Authenticating: "+token);
+        // Passing the raw token seems to work, for example just posting:
+        // eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjEiLCJleHAi...
+        // I'm not sure if this is possible using AXIOS.
+
+        try
+        {
+            if ( tokenProvider.validateToken(token) )
+            {
+                // Token validated okay, return the account we want
+                long userID = tokenProvider.getUserIdFromJWT(token);
+                Account retAccount = accountService.loadAccountById(userID);
+                return new ResponseEntity<Account>(retAccount, HttpStatus.OK);
+            }
+        }
+        catch (Exception e)
+        {
+            // tokenProvider threw exception.
+            FieldError fe = new FieldError("", "", null, false, null, null, "JWT EXCEPTION");
+            return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+            //return ResponseEntity.ok("EXCEPTION");
+        }
+        // tokenProvider returned false on validate.
+        FieldError fe = new FieldError("", "", null, false, null, null, "JWT FAIL");
+        return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+        //return ResponseEntity.ok("BAD");
+
+    }
+
+    //TODO: Update all mappings to use JWT
 
     // Frontend POSTs their JWT. Backend returns the user Account.
+    // This is basically doing exactly the same thing as "Authenticate" mapping
     @PostMapping("Profile")
-    public ResponseEntity<?> authoriseToken(@Valid @RequestBody AuthorizationToken token, BindingResult result) {
+    public ResponseEntity<?> profileMapping(@Valid @RequestBody String token, BindingResult result) {
         if (result.hasErrors()){
-            // Todo: return cleaner error codes using tutorial
-            // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
-            //Map <String, String> errorMap = new HashMap<>();
-
-            //for (FieldError error : result.getFieldErrors()){
-                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
-            //}
-
-            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
-        }
-        // for now this simply returns the first account in the repo, for testing
-        // it returns null if repo is empty
-        Account authorisedAccount = accountService.authoriseJWT(token);
-
-        if (authorisedAccount!=null)
-        {
-            //jwt authorisation failed
-            FieldError fe = new FieldError("", "", null, false, null, null, "jwt authorisation failed");
-            // 401 Unauthorized
-            return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
-        }
-        // 200 OK and return matching account
-        return new ResponseEntity<Account>(authorisedAccount, HttpStatus.OK);
+            return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
     }
 
+    System.out.println("Authenticating: "+token);
+    // Passing the raw token seems to work, for example just posting:
+    // eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjEiLCJleHAi...
+    // I'm not sure if this is possible using AXIOS.
+
+    try
+    {
+        if ( tokenProvider.validateToken(token) )
+        {
+            // Token validated okay, return the account we want
+            long userID = tokenProvider.getUserIdFromJWT(token);
+            Account retAccount = accountService.loadAccountById(userID);
+            return new ResponseEntity<Account>(retAccount, HttpStatus.OK);
+        }
+    }
+    catch (Exception e)
+    {
+        // tokenProvider threw exception.
+        FieldError fe = new FieldError("", "", null, false, null, null, "JWT EXCEPTION");
+        return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+    }
+    // tokenProvider returned false on validate.
+    FieldError fe = new FieldError("", "", null, false, null, null, "JWT FAIL");
+    return new ResponseEntity <FieldError>(fe, HttpStatus.UNAUTHORIZED);
+}
+
+
+    // I don't know if backend needs a logout function. I think FrontEnd can just throw away the JWT.
+    // But there might be some JWT function to deauthorise a token for security.
+/*
     // Frontend POSTs JWT to logout. Backend will delete the token, requiring user to login again.
     @PostMapping("Logout")
     public ResponseEntity<?> deauthoriseToken(@Valid @RequestBody AuthorizationToken token, BindingResult result) {
         if (result.hasErrors()){
-            // Todo: return cleaner error codes using tutorial
-            // https://web.microsoftstream.com/video/a2eee04a-9636-45c7-aa67-47d934e76acf @ 4:21
-            //Map <String, String> errorMap = new HashMap<>();
 
-            //for (FieldError error : result.getFieldErrors()){
-                return new ResponseEntity <List<FieldError>>(result.getFieldErrors(), HttpStatus.BAD_REQUEST);
-            //}
-
-            //return new ResponseEntity<String>("Invalid Account Object", HttpStatus.BAD_REQUEST);
         }
-
-        // pass the jwt token to deauthorise
-        // if the token doesn't exist or is wrong, function will return false
-        if (accountService.deauthoriseJWT(token))
-        {
-            // 200 OK, jwt deauthorised
-            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
-        }
-        // jwt deauthorisation failed
-        // there is probably nothing we can do about this except ignore it
-        FieldError fe = new FieldError("", "", null, false, null, null, "jwt deauthorisation failed");
-        // 417 expectatoin failed (expected valid jwt to deauthorise)
-        return new ResponseEntity <FieldError>(fe, HttpStatus.EXPECTATION_FAILED);
     }
-
+*/
     @GetMapping("/adminanalytics/{adminId}")
     public ResponseEntity<?> adminAnalytics(@Valid @PathVariable Long adminId) {
 
@@ -252,5 +344,4 @@ public class AccountController {
             return new ResponseEntity<FieldError>(fe, HttpStatus.BAD_REQUEST);
         }
     }
-
 }

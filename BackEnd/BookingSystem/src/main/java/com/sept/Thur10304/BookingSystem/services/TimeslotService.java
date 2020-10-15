@@ -106,6 +106,19 @@ public class TimeslotService {
         }
     }
 
+    // Verifies if admin manages service of timeslot
+    public boolean verifyIfAdmin(Long timeslotId, Long adminId) throws Exception{
+        Timeslot timeslot = getTimeslotById(timeslotId);
+
+        if (timeslot == null){
+            throw new Exception("Timeslot not found");
+        }
+
+        boolean isAdmin = serviceService.verifyIfAdmin(timeslot.getService().getServiceId(), adminId);
+
+        return isAdmin;
+     }
+
     public Set<Timeslot> getTimeslotsByAdmin(Long adminId) throws Exception{
         Admin admin = accountService.findAdmin(adminId);
         if (admin.getService() == null){
