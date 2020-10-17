@@ -1,7 +1,6 @@
 package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
-import com.sept.Thur10304.BookingSystem.model.AuthorizationToken;
 import com.sept.Thur10304.BookingSystem.model.Worker;
 import com.sept.Thur10304.BookingSystem.services.AccountService;
 import com.sept.Thur10304.BookingSystem.validator.AccountValidator; //JWT
