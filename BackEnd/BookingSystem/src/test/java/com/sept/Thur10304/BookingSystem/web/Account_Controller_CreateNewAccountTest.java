@@ -2,7 +2,12 @@ package com.sept.Thur10304.BookingSystem.web;
 
 import com.sept.Thur10304.BookingSystem.model.Account;
 import com.sept.Thur10304.BookingSystem.repositories.AccountRepository;
+import com.sept.Thur10304.BookingSystem.repositories.AdminRepository;
+import com.sept.Thur10304.BookingSystem.repositories.CustomerRepository;
+import com.sept.Thur10304.BookingSystem.repositories.WorkerRepository;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,15 +34,29 @@ class Account_Controller_CreateNewAccountTest {
     @Autowired
     private MockMvc mvc;
 
-    //@Resource
-    //private AccountRepository accountRepository;
+    @Resource
+    private AccountRepository accountRepository;
 
+    @Resource
+    private AdminRepository adminRepository;
+
+    @Resource
+    private WorkerRepository workerRepository;
+
+    @Resource
+    private CustomerRepository customerRepository;
 
     //Account testAccount1;
     //Account testAccount2;
 
     @BeforeEach
-    void setUp() throws ParseException {
+    void setUp() throws Exception {
+        // Clears all repositories
+        workerRepository.deleteAll();
+        adminRepository.deleteAll();
+        customerRepository.deleteAll();
+        accountRepository.deleteAll();
+
         //testAccount1 = new Account();
 
         //testAccount1.setId((long) 1);
@@ -50,6 +69,15 @@ class Account_Controller_CreateNewAccountTest {
        // accountRepository.save(testAccount1);
     }
 
+    @AfterEach
+    void cleanUp() throws Exception {
+        // Clears all repositories
+        workerRepository.deleteAll();
+        adminRepository.deleteAll();
+        customerRepository.deleteAll();
+        accountRepository.deleteAll();
+    }
+
     @Test
     void createNewAccount_accepted() throws Exception {
 
@@ -60,17 +88,17 @@ class Account_Controller_CreateNewAccountTest {
 
     }
 
-    @Test
-    void createNewAccount_shortPassword() throws Exception {
+    // @Test
+    // void createNewAccount_shortPassword() throws Exception {
 
-        mvc.perform(post("/api/Account/")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content("{\n\"firstName\": \"Test\",\n\"lastName\": \"McTest\",\n\"password\": \"TEST\",\n\"email\": \"Test@Testmail.com\"\n}"))
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(content().string(org.hamcrest.Matchers.containsString("Password must be between 6-20 characters")));
+    //     mvc.perform(post("/api/Account/")
+    //     .contentType(MediaType.APPLICATION_JSON)
+    //     .content("{\n\"firstName\": \"Test\",\n\"lastName\": \"McTest\",\n\"password\": \"TEST\",\n\"email\": \"Test@Testmail.com\"\n}"))
+    //     .andExpect(status().isBadRequest())
+    //     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+    //     .andExpect(content().string(org.hamcrest.Matchers.containsString("Password must be between 6-20 characters")));
 
-    }
+    // }
     @Test
     void createNewAccount_badEmail() throws Exception {
 
