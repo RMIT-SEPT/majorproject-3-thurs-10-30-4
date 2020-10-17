@@ -168,14 +168,6 @@ public class AccountController {
         }
     }
 
-    // for demonstration purposes:
-    // this maps http://localhost:8080/api/Account/test
-    // and returns the test function
-    @GetMapping("test")
-    public String test() {
-
-        return accountService.test();
-    }
 
     @GetMapping("emails")
     public List<String> allEmails() {
