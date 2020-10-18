@@ -36,6 +36,8 @@ public class TimeslotService {
         Worker worker = accountService.findWorker(workerId);
         Calendar tommorow = Calendar.getInstance();
         tommorow.add(Calendar.DATE, 1);
+        tommorow.set(Calendar.HOUR_OF_DAY, 0);
+        tommorow.set(Calendar.MINUTE, 0);
         // Checks if service exists
         if (service == null){
             throw new Exception("Service not found");
