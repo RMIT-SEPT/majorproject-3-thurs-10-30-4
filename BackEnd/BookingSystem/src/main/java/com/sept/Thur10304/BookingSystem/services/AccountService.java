@@ -288,7 +288,7 @@ public class AccountService {
                 } else {
                     unbookedToday += 1;
                 }
-                expectedIncome[0] = timeslot.getPrice();
+                expectedIncome[0] += timeslot.getPrice();
             } else {
                 // Check if booking is on during the next week
                 if (timeslot.getBooking() != null){
